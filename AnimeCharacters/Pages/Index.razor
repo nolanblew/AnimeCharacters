@@ -1,0 +1,37 @@
+﻿@page "/"
+
+<div class="flex-container">
+
+    <div class="control">
+        <h1>Kitsu List</h1>
+    </div>
+
+    <div class="main-content">
+        <div class="control">Welcome to Kitsu! Please enter your username to fetch the number of items you have:</div>
+
+        <div class="control">
+            <input type="text" @bind="KitsuUsername" placeholder="Kitsu Username" aria-label="Kitsu Username" aria-describedby="kitsu-username" />
+            @if (User != null)
+            {
+                <button class="btn btn-danger" @onclick="_ClearUser">X</button>
+            }
+        </div>
+
+        <div class="control">Status: @StatusLabel</div>
+
+        @if (!string.IsNullOrWhiteSpace(User?.AvatarUrl))
+        {
+            <div class="control">
+                <img src="@User.AvatarUrl" width="80" height="80" />
+            </div>
+        }
+
+        <div class="control">
+            <button class="btn btn-primary" @onclick="_GetKitsuUsername">Get User</button>
+        </div>
+
+        <div class="control">
+            <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" Closed="@IsNotBusy" />
+        </div>
+    </div>
+</div>

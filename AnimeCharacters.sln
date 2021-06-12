@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimeCharacters", "AnimeCharacters\AnimeCharacters.csproj", "{29872D6E-99A4-4600-9EAF-13609679ED5C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kitsu", "Kitsu\Kitsu.csproj", "{9F1E8B25-B9BF-4EBC-956F-65899CCF480A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29872D6E-99A4-4600-9EAF-13609679ED5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29872D6E-99A4-4600-9EAF-13609679ED5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29872D6E-99A4-4600-9EAF-13609679ED5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29872D6E-99A4-4600-9EAF-13609679ED5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F1E8B25-B9BF-4EBC-956F-65899CCF480A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F1E8B25-B9BF-4EBC-956F-65899CCF480A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F1E8B25-B9BF-4EBC-956F-65899CCF480A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F1E8B25-B9BF-4EBC-956F-65899CCF480A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2EE115D-FA84-4F5E-8BE3-D89FF829C696}
+	EndGlobalSection
+EndGlobal
