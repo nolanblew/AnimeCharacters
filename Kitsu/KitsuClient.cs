@@ -1,8 +1,5 @@
 ﻿using Kitsu.Controllers;
 using Newtonsoft.Json;
-using RestSharp;
-using RestSharp.Authenticators;
-using RestSharp.Serialization;
 using System.Threading.Tasks;
 
 namespace Kitsu
@@ -14,7 +11,7 @@ namespace Kitsu
 
             //_Auth = new AuthorizationController();
             Users = new UserController(_baseApiUrl);
-            //UserLibraries = new LibraryController(_baseApiUrl);
+            UserLibraries = new LibraryController(_baseApiUrl);
             //Anime = new MediaController(_baseApiUrl);
         }
 
@@ -28,7 +25,7 @@ namespace Kitsu
 
         public UserController Users { get; }
 
-        //public LibraryController UserLibraries { get; }
+        public LibraryController UserLibraries { get; }
 
         //public MediaController Anime { get; }
 
@@ -38,29 +35,5 @@ namespace Kitsu
         //{
         //    await _Auth.Login(_client, username, password);
         //}
-    }
-
-    class JsonDeserializer : IRestSerializer
-    {
-        public string Serialize(object obj)
-        {
-            return JsonConvert.SerializeObject(obj);
-        }
-
-        public string ContentType { get; set; } = "application/json";
-
-        public T Deserialize<T>(IRestResponse response)
-        {
-            return JsonConvert.DeserializeObject<T>(response.Content);
-        }
-
-        public string Serialize(Parameter parameter)
-        {
-            return this.Serialize(parameter.Value);
-        }
-
-        public string[] SupportedContentTypes => RestSharp.Serialization.ContentType.JsonAccept;
-
-        public DataFormat DataFormat => DataFormat.Json;
     }
 }

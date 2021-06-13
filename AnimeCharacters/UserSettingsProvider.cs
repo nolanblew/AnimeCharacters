@@ -1,6 +1,9 @@
 ﻿using Kitsu.Models;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -11,13 +14,21 @@ namespace AnimeCharacters
     {
         private const string KeyName = "state";
 
+        readonly JsonSerializerSettings _jsonSerializerSettings = new()
+        {
+            Formatting = Formatting.None,
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+        };
+
         private readonly IJSRuntime _jsRuntime;
         private bool _initialized;
         private UserSettings _settings;
 
         public event EventHandler Changed;
 
-        public bool AutoSave { get; set; } = true;
+        public bool AutoSave { get; set; } = false;
 
         public UserSettingsProvider(IJSRuntime jsRuntime)
         {
@@ -43,14 +54,9 @@ namespace AnimeCharacters
             UserSettings result;
             var str = await _jsRuntime.InvokeAsync<string>("BlazorGetLocalStorage", KeyName);
 
-            if (str != null)
-            {
-                result = System.Text.Json.JsonSerializer.Deserialize<UserSettings>(str) ?? new UserSettings();
-            }
-            else
-            {
-                result = new UserSettings();
-            }
+            result = str != null
+                ? JsonConvert.DeserializeObject<UserSettings>(str, _jsonSerializerSettings) ?? new UserSettings()
+                : new UserSettings();
 
             // Register the OnPropertyChanged event, so it automatically persists the settings as soon as a value is changed
             result.PropertyChanged += OnPropertyChanged;
@@ -60,8 +66,22 @@ namespace AnimeCharacters
 
         public async Task Save()
         {
-            var json = System.Text.Json.JsonSerializer.Serialize(_settings);
+            var json = JsonConvert.SerializeObject(_settings);
             await _jsRuntime.InvokeVoidAsync("BlazorSetLocalStorage", KeyName, json);
+        }
+
+        public async Task Clear()
+        {
+            var shouldAutoSave = AutoSave;
+            AutoSave = false;
+
+            var settings = await Get();
+
+            settings.CurrentUser = null;
+
+            await Save();
+
+            AutoSave = shouldAutoSave;
         }
 
         // Automatically persist the settings when a property changed
@@ -89,13 +109,13 @@ namespace AnimeCharacters
     // The class that stores the user settings
     public class UserSettings : INotifyPropertyChanged
     {
-        private User currentUser;
+        User _currentUser;
 
         public User CurrentUser
         {
-            get => currentUser; set
+            get => _currentUser; set
             {
-                currentUser = value;
+                _currentUser = value;
                 RaisePropertyChanged();
             }
         }

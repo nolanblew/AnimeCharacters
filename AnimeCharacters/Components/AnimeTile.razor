@@ -1,0 +1,17 @@
+﻿@using Kitsu.Models
+
+<div class="item">
+    <div class="row">
+        <div class="col">
+            <img src="@(Anime?.PosterImageUrl ?? "#")" width="350" />
+        </div>
+        <div class="col">
+            <div class="text-md-center">@(Anime?.EnglishTitle ?? "Loading...")</div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Anime Anime { get; set; } = null;
+}

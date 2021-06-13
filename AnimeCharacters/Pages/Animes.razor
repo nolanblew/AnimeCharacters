@@ -1,0 +1,24 @@
+﻿@page "/animes"
+
+<div class="content">
+    <div class="row">
+        <div class="col text-center">
+            <h3>Animes</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Hello, @CurrentUser.Name! You currently have @(LibraryEntries?.Count.ToString() ?? "--") animes in your library.
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="item-container">
+                @foreach(var librayEntry in LibraryEntries)
+                {
+                    <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
