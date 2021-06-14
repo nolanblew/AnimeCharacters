@@ -16,7 +16,13 @@
 </head>
 
 <body>
-    <div id="app">Loading...</div>
+    <div id="app">
+        <div class="app-spinner">
+            <div class="spinner-border text-secondary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">&nbsp;</span>
+            </div>
+        </div>
+    </div>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -25,21 +31,6 @@
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
-    <script>
-        function BlazorSetLocalStorage(key, value) {
-            localStorage.setItem(key, value);
-        }
-
-        function BlazorGetLocalStorage(key) {
-            return localStorage.getItem(key);
-        }
-
-        function BlazorRegisterStorageEvent(component) {
-            window.addEventListener("storage", async e => {
-                await component.invokeMethodAsync("OnStorageUpdated", e.key);
-            });
-        }
-    </script>
 </body>
 
 </html>

@@ -1,10 +1,9 @@
-﻿using Kitsu;
+﻿using Blazored.LocalStorage;
+using Kitsu;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AnimeCharacters.Pages
@@ -14,10 +13,10 @@ namespace AnimeCharacters.Pages
         readonly KitsuClient _kitsuClient = new();
 
         [Inject]
-        UserSettingsProvider _UserSettingsProvider { get; set; }
+        IDatabaseProvider _DatabaseProvider { get; set; }
 
         [Inject]
-        public NavigationManager Navigation { get; set; }
+        NavigationManager _Navigation { get; set; }
 
         public string KitsuUsername { get; set; }
 
@@ -33,8 +32,7 @@ namespace AnimeCharacters.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            var settings = await _UserSettingsProvider.Get();
-            User = settings.CurrentUser;
+            User = await _DatabaseProvider.GetUserAsync();
 
             if (User != null)
             {
@@ -49,9 +47,7 @@ namespace AnimeCharacters.Pages
         {
             User = null;
             KitsuUsername = string.Empty;
-            var settings = await _UserSettingsProvider.Get();
-            settings.CurrentUser = null;
-            await _UserSettingsProvider.Save();
+            await _DatabaseProvider.ClearAsync();
 
             StatusLabel = "User Cleared.";
         }
@@ -91,11 +87,8 @@ namespace AnimeCharacters.Pages
                 }
 
                 User = kitsuUser;
-
-                var settings = await _UserSettingsProvider.Get();
-                settings.CurrentUser = User;
-                await _UserSettingsProvider.Save();
-
+                await _DatabaseProvider.SetUserAsync(User);
+                
                 _SetUserStatus();
             }
             catch (Exception ex)
@@ -108,9 +101,9 @@ namespace AnimeCharacters.Pages
             }
         }
 
-        async void _GetUserAnime()
+        void _GetUserAnime()
         {
-            Navigation.NavigateTo("animes");
+            _Navigation.NavigateTo("animes");
         }
 
         protected void _SetUserStatus()

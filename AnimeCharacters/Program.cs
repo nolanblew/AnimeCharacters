@@ -1,6 +1,6 @@
+using Blazored.LocalStorage;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
@@ -17,8 +17,10 @@ namespace AnimeCharacters
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddScoped<UserSettingsProvider>();
+            builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMatBlazor();
+
+            builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
 
             await builder.Build().RunAsync();
         }

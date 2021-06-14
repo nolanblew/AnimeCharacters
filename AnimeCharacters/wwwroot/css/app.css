@@ -79,6 +79,7 @@ a, .btn-link {
 .item-container img {
     width: 115px;
     height: 165px;
+    border-radius: 4px;
 }
 
 .item {
@@ -86,4 +87,14 @@ a, .btn-link {
     height: max-content;
     width: 115px;
     text-align: center;
+}
+
+.app-spinner {
+    display: block;
+    position: fixed;
+    z-index: 1031; /* High z-index so it is on top of the page */
+    top: 50%;
+    right: 50%; /* or: left: 50%; */
+    margin-top: -..px; /* half of the elements height */
+    margin-right: -..px; /* half of the elements widht */
 }

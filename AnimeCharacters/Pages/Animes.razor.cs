@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace AnimeCharacters.Pages
 {
@@ -14,18 +15,37 @@ namespace AnimeCharacters.Pages
         readonly KitsuClient _kitsuClient = new();
 
         [Inject]
-        public UserSettingsProvider UserSettingsProvider { get; set; }
+        IDatabaseProvider _DatabaseProvider { get; set; }
 
         [Inject]
         public NavigationManager Navigation { get; set; }
 
+        List<LibraryEntry> _LibraryEntries { get; set; }
+
         public User CurrentUser { get; set; }
-        public List<LibraryEntry> LibraryEntries { get; set; } = new List<LibraryEntry>();
+
+        string _searchFilter;
+
+        public string SearchFilter { get; set; }
+
+        public List<LibraryEntry> FilteredLibraryEntries
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(SearchFilter))
+                {
+                    return _LibraryEntries;
+                }
+
+                var lowerFilter = SearchFilter.ToLower();
+                return _LibraryEntries?
+                    .Where(e => _MatchesSearch(e.Anime))?.ToList();
+            }
+        }
 
         protected override async Task OnInitializedAsync()
         {
-            var settings = await UserSettingsProvider.Get();
-            CurrentUser = settings.CurrentUser;
+            CurrentUser = await _DatabaseProvider.GetUserAsync();
 
             if (CurrentUser == null)
             {
@@ -34,26 +54,34 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
-            await _GetUserAnime();
+            await base.OnInitializedAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+               _LibraryEntries = (await _DatabaseProvider.GetLibrariesAsync())?.ToList() ?? new();
+
+                await _GetUserAnime();
+            }
+
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         async Task _GetUserAnime()
         {
-            if (LibraryEntries.Count > 0)
+            if (_LibraryEntries.Count > 0)
             {
-                //StatusLabel = $"You already pinged for this. You have {LibraryEntries.Count} entries, your most recent one being {mostRecentText}";
+                StateHasChanged();
                 return;
             }
 
             try
             {
-                //IsNotBusy = false;
-                //StatusLabel = "Loading your anime collection...";
                 var stopwatch = Stopwatch.StartNew();
 
-                //LibraryEntries = _GetLibraryEntries();
-
-                LibraryEntries =
+                _LibraryEntries =
                     (await _kitsuClient.UserLibraries.GetCompleteLibraryCollectionAsync
                         (CurrentUser.Id,
                         Kitsu.Controllers.LibraryType.Anime,
@@ -61,17 +89,16 @@ namespace AnimeCharacters.Pages
                     .OrderByDescending(e => e.ProgressedAt)
                     .ToList();
 
+                StateHasChanged();
+
+                await _DatabaseProvider.SetLibrariesAsync(_LibraryEntries);
+                await _DatabaseProvider.SetLastFetchedAsync(DateTimeOffset.Now);
+
                 stopwatch.Stop();
-                //StatusLabel = $"Finished in {stopwatch.Elapsed}! You have {LibraryEntries.Count} entries, your most recent one being {mostRecentText}";
                 return;
             }
             catch (Exception ex)
             {
-                //StatusLabel = $"Something went wrong: {ex.Message}";
-            }
-            finally
-            {
-                //IsNotBusy = true;
             }
         }
 
@@ -112,5 +139,38 @@ namespace AnimeCharacters.Pages
                         }
                     }, 100))
             .ToList();
+
+        bool _MatchesSearch(Anime anime)
+        {
+            if (anime == null) { return false; }
+
+            var lowerFilter = SearchFilter.ToLower();
+
+            var titleSplit = anime.Title.ToLower().Split(' ');
+            if (titleSplit.Any(t => t.StartsWith(lowerFilter)))
+            {
+                return true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(anime.RomanjiTitle))
+            {
+                var romanjiTitleSplit = anime.Title.ToLower().Split(' ');
+                if (romanjiTitleSplit.Any(t => t.StartsWith(lowerFilter)))
+                {
+                    return true;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(anime.EnglishTitle))
+            {
+                var englishTitleSplit = anime.EnglishTitle.ToLower().Split(' ');
+                if (englishTitleSplit.Any(t => t.StartsWith(lowerFilter)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
