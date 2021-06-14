@@ -69,3 +69,21 @@ a, .btn-link {
     flex-direction: column;
     justify-content: safe center;
 }
+
+.item-container {
+    display: flex;
+    flex-flow: column;
+    margin-bottom: 12px;
+}
+
+.item-container img {
+    width: 115px;
+    height: 165px;
+}
+
+.item {
+    flex-grow: 1;
+    height: max-content;
+    width: 115px;
+    text-align: center;
+}

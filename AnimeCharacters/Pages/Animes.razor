@@ -1,0 +1,38 @@
+﻿@page "/animes"
+
+<div class="content">
+    <div class="row">
+        <div class="col text-center">
+            <h3>Animes</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Hello, @CurrentUser.Name! You currently have @(LibraryEntries?.Count.ToString() ?? "--") animes in your library.
+        </div>
+    </div>
+    <br /><br />
+    <h4>Currently Watching</h4>
+    <div class="row">
+        @foreach (var librayEntry in LibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Current) ?? new List<Kitsu.Models.LibraryEntry>())
+        {
+            <div class="col">
+                <div class="item-container">
+                    <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
+                </div>
+            </div>
+        }
+    </div>
+
+    <h4>Completed</h4>
+    <div class="row">
+        @foreach (var librayEntry in LibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Completed) ?? new List<Kitsu.Models.LibraryEntry>())
+        {
+            <div class="col">
+                <div class="item-container">
+                    <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
+                </div>
+            </div>
+        }
+    </div>
+</div>

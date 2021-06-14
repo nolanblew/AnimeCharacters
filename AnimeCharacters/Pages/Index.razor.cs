@@ -2,6 +2,9 @@
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AnimeCharacters.Pages
@@ -13,13 +16,20 @@ namespace AnimeCharacters.Pages
         [Inject]
         UserSettingsProvider _UserSettingsProvider { get; set; }
 
+        [Inject]
+        public NavigationManager Navigation { get; set; }
+
         public string KitsuUsername { get; set; }
 
         public string StatusLabel { get; set; }
 
         public User User { get; set; }
 
+        public List<LibraryEntry> LibraryEntries { get; set; }
+
         public bool IsNotBusy { get; set; } = true;
+
+        public string ButtonLabel => User == null ? "Get User" : "Fetch Anime";
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,6 +48,7 @@ namespace AnimeCharacters.Pages
         protected async Task _ClearUser()
         {
             User = null;
+            KitsuUsername = string.Empty;
             var settings = await _UserSettingsProvider.Get();
             settings.CurrentUser = null;
             await _UserSettingsProvider.Save();
@@ -45,7 +56,19 @@ namespace AnimeCharacters.Pages
             StatusLabel = "User Cleared.";
         }
 
-        protected async Task _GetKitsuUsername()
+        protected async Task _ButtonClicked()
+        {
+            if (User == null)
+            {
+                await _GetKitsuUsername();
+            }
+            else
+            {
+                _GetUserAnime();
+            }
+        }
+
+        async Task _GetKitsuUsername()
         {
             if (string.IsNullOrWhiteSpace(KitsuUsername))
             {
@@ -83,6 +106,11 @@ namespace AnimeCharacters.Pages
             {
                 IsNotBusy = true;
             }
+        }
+
+        async void _GetUserAnime()
+        {
+            Navigation.NavigateTo("animes");
         }
 
         protected void _SetUserStatus()

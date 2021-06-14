@@ -19,16 +19,7 @@ namespace Kitsu.Controllers
                 value: username,
                 encode: false);
 
-            //var result = await _restClient.ExecuteGetAsync<UserGetResponse>(request);
-
-            using var httpClient = new HttpClient();
-
-            var result = await httpClient.SendAsync(request);
-
-            if (!result.IsSuccessStatusCode) { return null; }
-
-            var json = await result.Content.ReadAsStringAsync();
-            var resultContent = JsonConvert.DeserializeObject<UserGetResponse>(json);
+            var resultContent = await ExecuteGetRequestAsync<UserGetResponse>(request);
 
             if (resultContent.data.Length != 1) { return null; }
 

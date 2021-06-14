@@ -1,6 +1,5 @@
 ﻿using Kitsu.Models;
 using Kitsu.Responses;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +10,11 @@ namespace Kitsu.Controllers
 {
     public class LibraryController : ControllerBase
     {
-        public LibraryController(IRestClient client)
-            : base(client, "library-entries") { }
+        public LibraryController(string baseUrl)
+            : base(baseUrl, "library-entries") { }
 
         // https://kitsu.io/api/edge/library-entries?filter[userId]={{user_id}}&filter[kind]=anime&filter[status]=completed&include=anime,anime.mappings
-        public async Task<List<LibraryEntry>> GetLibraryCollectionAsync(int userId, LibraryType type = LibraryType.All, LibraryStatus status = LibraryStatus.All)
+        public async Task<List<LibraryEntry>> GetCompleteLibraryCollectionAsync(int userId, LibraryType type = LibraryType.All, LibraryStatus status = LibraryStatus.All)
         {
             var rtn = new List<LibraryEntry>();
 
@@ -51,14 +50,14 @@ namespace Kitsu.Controllers
 
             while (request != null)
             {
-                var restResult = await _restClient.ExecuteGetTaskAsync(request);
+                var restJson = await ExecuteGetRequestAsync(request);
 
-                if (!restResult.IsSuccessful)
+                if (string.IsNullOrWhiteSpace(restJson))
                 {
                     return null;
                 }
 
-                var result = UserLibraryGetRequest.FromJson(restResult.Content);
+                var result = UserLibraryGetRequest.FromJson(restJson);
 
                 var listedResults = result.Data.Select(entry =>
                 {
@@ -68,12 +67,9 @@ namespace Kitsu.Controllers
                         .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings && inc.Attributes.ExternalSite == "myanimelist/anime")
                         ?.Attributes.ExternalId;
 
-                    if (includedAnime != null)
-                    {
-                        return new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, includedAnime.Attributes);
-                    }
-
-                    return new LibraryEntry(entry, type);
+                    return includedAnime != null
+                        ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, includedAnime.Attributes)
+                        : new LibraryEntry(entry, type);
                 }).ToList();
 
                 rtn.AddRange(listedResults);

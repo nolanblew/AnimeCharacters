@@ -1,6 +1,4 @@
-﻿using RestSharp;
-using RestSharp.Authenticators;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,11 +9,11 @@ namespace Kitsu
 {
     public static class Extensions
     {
-        public static bool HasAuthenticated(this IRestClient client)
-        {
-            return client.Authenticator != null
-                && client.Authenticator is OAuth2AuthorizationRequestHeaderAuthenticator;
-        }
+        //public static bool HasAuthenticated(this IRestClient client)
+        //{
+        //    return client.Authenticator != null
+        //        && client.Authenticator is OAuth2AuthorizationRequestHeaderAuthenticator;
+        //}
 
         public static IEnumerable<T> MaskToList<T>(this T mask, bool includeFirst = true) where T : IConvertible
         {
