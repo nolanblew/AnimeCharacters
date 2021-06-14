@@ -51,6 +51,8 @@ namespace AnimeCharacters.Pages
                 //StatusLabel = "Loading your anime collection...";
                 var stopwatch = Stopwatch.StartNew();
 
+                //LibraryEntries = _GetLibraryEntries();
+
                 LibraryEntries =
                     (await _kitsuClient.UserLibraries.GetCompleteLibraryCollectionAsync
                         (CurrentUser.Id,
@@ -72,5 +74,43 @@ namespace AnimeCharacters.Pages
                 //IsNotBusy = true;
             }
         }
+
+        List<LibraryEntry> _GetLibraryEntries() =>
+            Enumerable.Repeat(
+                new LibraryEntry
+                {
+                    Id = 0,
+                    Progress = 1,
+                    Status = Kitsu.Controllers.LibraryStatus.Current,
+                    Type = Kitsu.Controllers.LibraryType.Anime,
+                    StartedAt = DateTime.Now,
+                    ProgressedAt = DateTime.Now,
+                    Anime = new Anime
+                    {
+                        EnglishTitle = "Currently Watching",
+                        Title = "Loading...",
+                        PosterImageUrl = "https://via.placeholder.com/150x215.png?text=Loading...",
+                        ShowType = AnimeType.Show,
+                    }
+                }, 8)
+            .Concat(
+                Enumerable.Repeat(
+                    new LibraryEntry
+                    {
+                        Id = 0,
+                        Progress = 1,
+                        Status = Kitsu.Controllers.LibraryStatus.Completed,
+                        Type = Kitsu.Controllers.LibraryType.Anime,
+                        StartedAt = DateTime.Now,
+                        ProgressedAt = DateTime.Now,
+                        Anime = new Anime
+                        {
+                            EnglishTitle = "The longest anime title that I have right now is currently loading up a storm",
+                            Title = "Loading...",
+                            PosterImageUrl = "https://via.placeholder.com/150x215.png?text=Loading...",
+                            ShowType = AnimeType.Show,
+                        }
+                    }, 100))
+            .ToList();
     }
 }

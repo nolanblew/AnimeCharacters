@@ -3,10 +3,12 @@
 <div class="item">
     <div class="row">
         <div class="col">
-            <img src="@(Anime?.PosterImageUrl ?? "#")" width="350" />
+            <img src="@(Anime?.PosterImageUrl ?? "#")" />
         </div>
+    </div>
+    <div class="row">
         <div class="col">
-            <div class="text-md-center">@(Anime?.EnglishTitle ?? "Loading...")</div>
+            <div class="text-md-center">@(Anime?.EnglishTitle ?? Anime?.Title ?? "Loading...")</div>
         </div>
     </div>
 </div>
