@@ -9,12 +9,6 @@ namespace AnimeCharacters.Pages
     public partial class AnimeDetails
     {
         [Inject]
-        IDatabaseProvider _DatabaseProvider { get; set; }
-
-        [Inject]
-        public NavigationManager Navigation { get; set; }
-
-        [Inject]
         JikanDotNet.IJikan Jikan { get; set; }
 
         public User CurrentUser { get; set; }
@@ -36,20 +30,20 @@ namespace AnimeCharacters.Pages
 
             if (string.IsNullOrWhiteSpace(Id))
             {
-                Navigation.NavigateTo("/");
+                NavigationManager.NavigateTo("/");
             }
 
-            CurrentUser = await _DatabaseProvider.GetUserAsync();
-            CurrentAnime = (await _DatabaseProvider.GetLibrariesAsync()).FirstOrDefault(libray => libray.Anime?.KitsuId == Id).Anime;
+            CurrentUser = await DatabaseProvider.GetUserAsync();
+            CurrentAnime = (await DatabaseProvider.GetLibrariesAsync()).FirstOrDefault(libray => libray.Anime?.KitsuId == Id).Anime;
 
             if (CurrentAnime == null)
             {
-                Navigation.NavigateTo("/");
+                NavigationManager.NavigateTo("/");
             }
 
             if (string.IsNullOrWhiteSpace(CurrentAnime.MyAnimeListId))
             {
-                Navigation.NavigateTo("/animes");
+                NavigationManager.NavigateTo("/animes");
             }
 
             StateHasChanged();
@@ -65,7 +59,7 @@ namespace AnimeCharacters.Pages
 
             if (voiceActor == null) { return; }
 
-            Navigation.NavigateTo($"/characters/{voiceActor.MalId}");
+            NavigationManager.NavigateTo($"/characters/{voiceActor.MalId}");
         }
 
         async Task _LoadCharacters()

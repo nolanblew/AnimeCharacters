@@ -1,7 +1,6 @@
 ﻿using AnimeCharacters.Models;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,12 +9,6 @@ namespace AnimeCharacters.Pages
 {
     public partial class Characters
     {
-        [Inject]
-        IDatabaseProvider _DatabaseProvider { get; set; }
-
-        [Inject]
-        public NavigationManager Navigation { get; set; }
-
         [Inject]
         JikanDotNet.IJikan Jikan { get; set; }
 
@@ -37,15 +30,15 @@ namespace AnimeCharacters.Pages
 
             if (string.IsNullOrWhiteSpace(Id))
             {
-                Navigation.NavigateTo("/");
+                NavigationManager.NavigateTo("/");
             }
 
-            CurrentUser = await _DatabaseProvider.GetUserAsync();
+            CurrentUser = await DatabaseProvider.GetUserAsync();
             CurrentPerson = await Jikan.GetPerson(long.Parse(Id));
 
             if (CurrentPerson == null)
             {
-                Navigation.NavigateTo("/animes");
+                NavigationManager.NavigateTo("/animes");
             }
 
             StateHasChanged();
@@ -59,7 +52,7 @@ namespace AnimeCharacters.Pages
         {
             if (model == null) { return; }
 
-            Navigation.NavigateTo($"/animes/{model.KitsuId}");
+            NavigationManager.NavigateTo($"/animes/{model.KitsuId}");
         }
 
         protected void _OnCharacterClicked(CharacterAnimeModel model)
@@ -73,7 +66,7 @@ namespace AnimeCharacters.Pages
                 .GroupBy(role => role.Anime.MalId)
                 .ToDictionary(group => group.Key.ToString());
 
-            var libraryEntries = await _DatabaseProvider.GetLibrariesAsync();
+            var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
 
             MyCharactersList =
                 libraryEntries.Where(libraryEntry => !string.IsNullOrWhiteSpace(libraryEntry.Anime.MyAnimeListId) && vaRoles.ContainsKey(libraryEntry.Anime.MyAnimeListId))
