@@ -1,0 +1,31 @@
+﻿@using Kitsu.Models
+
+<div class="item">
+    <div class="row">
+        <div class="col">
+            <img src="@(Character?.ImageURL ?? "#")" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="text-md-center text-primary">@(Character?.Name ?? "Loading...")</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="text-md-center text-secondary">VA: @(VoiceActor?.Name ?? "Loading...")</div>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    [Parameter]
+    public JikanDotNet.CharacterEntry Character { get; set; } = null;
+
+    [Parameter]
+    public string Language { get; set; } = "Japanese";
+
+    JikanDotNet.VoiceActorEntry VoiceActor => Character?.VoiceActors.FirstOrDefault(va => va.Language == Language);
+}
+

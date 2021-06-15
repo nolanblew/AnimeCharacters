@@ -69,6 +69,13 @@ namespace AnimeCharacters.Pages
             await base.OnAfterRenderAsync(firstRender);
         }
 
+        protected void _Anime_OnClicked(LibraryEntry libraryEntry)
+        {
+            if (libraryEntry?.Anime == null) { return; }
+
+            Navigation.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
+        }
+
         async Task _GetUserAnime()
         {
             if (_LibraryEntries.Count > 0)
@@ -101,44 +108,6 @@ namespace AnimeCharacters.Pages
             {
             }
         }
-
-        List<LibraryEntry> _GetLibraryEntries() =>
-            Enumerable.Repeat(
-                new LibraryEntry
-                {
-                    Id = 0,
-                    Progress = 1,
-                    Status = Kitsu.Controllers.LibraryStatus.Current,
-                    Type = Kitsu.Controllers.LibraryType.Anime,
-                    StartedAt = DateTime.Now,
-                    ProgressedAt = DateTime.Now,
-                    Anime = new Anime
-                    {
-                        EnglishTitle = "Currently Watching",
-                        Title = "Loading...",
-                        PosterImageUrl = "https://via.placeholder.com/150x215.png?text=Loading...",
-                        ShowType = AnimeType.Show,
-                    }
-                }, 8)
-            .Concat(
-                Enumerable.Repeat(
-                    new LibraryEntry
-                    {
-                        Id = 0,
-                        Progress = 1,
-                        Status = Kitsu.Controllers.LibraryStatus.Completed,
-                        Type = Kitsu.Controllers.LibraryType.Anime,
-                        StartedAt = DateTime.Now,
-                        ProgressedAt = DateTime.Now,
-                        Anime = new Anime
-                        {
-                            EnglishTitle = "The longest anime title that I have right now is currently loading up a storm",
-                            Title = "Loading...",
-                            PosterImageUrl = "https://via.placeholder.com/150x215.png?text=Loading...",
-                            ShowType = AnimeType.Show,
-                        }
-                    }, 100))
-            .ToList();
 
         bool _MatchesSearch(Anime anime)
         {

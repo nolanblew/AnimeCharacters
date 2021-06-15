@@ -89,6 +89,13 @@ a, .btn-link {
     text-align: center;
 }
 
+.center-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}
+
 .app-spinner {
     display: block;
     position: fixed;
