@@ -82,11 +82,26 @@ a, .btn-link {
     border-radius: 4px;
 }
 
+.col {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
 .item {
     flex-grow: 1;
-    height: max-content;
-    width: 115px;
+    max-width: 115px;
     text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+    .item-container img {
+        max-width: 90px;
+        height: 129px;
+    }
+
+    .item {
+        width: 90px;
+    }
 }
 
 .center-image {
