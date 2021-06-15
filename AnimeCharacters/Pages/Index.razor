@@ -7,24 +7,22 @@
     </div>
 
     <div class="main-content">
+        <img src="/kitsu_logo.png" class="center-image" style="width: 68px; height: 68px;" />
+
+        @if (!string.IsNullOrWhiteSpace(ErrorLabel))
+        {
+            <div class="alert alert-danger">@ErrorLabel</div>
+        }
+
         <div class="control">Welcome to Kitsu! Please enter your username to fetch the number of items you have:</div>
 
         <div class="control">
-            <input type="text" @bind="KitsuUsername" placeholder="Kitsu Username" aria-label="Kitsu Username" aria-describedby="kitsu-username" />
-            @if (User != null)
+            <input type="text" class="form-control" @bind="KitsuUsername" @bind:event="oninput" placeholder="Kitsu Username" aria-label="Kitsu Username" aria-describedby="kitsu-username" />
+            @if (IsPasswordVisible)
             {
-                <button class="btn btn-danger" @onclick="_ClearUser">X</button>
+                <input type="password" class="form-control" @bind="KitsuPassword" placeholder="Kitsu Password" aria-label="Kitsu Password" aria-describedby="kitsu-password" />
             }
         </div>
-
-        <div class="control">Status: @StatusLabel</div>
-
-        @if (!string.IsNullOrWhiteSpace(User?.AvatarUrl))
-        {
-            <div class="control">
-                <img src="@User.AvatarUrl" width="80" height="80" />
-            </div>
-        }
 
         <div class="control">
             <button class="btn btn-primary" @onclick="_ButtonClicked">@ButtonLabel</button>

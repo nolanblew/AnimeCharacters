@@ -48,6 +48,12 @@ namespace Kitsu.Controllers
             return restRequest;
         }
 
+        protected HttpRequestMessage _GetRelativeRequest(string relativePath)
+        {
+            var url = new Uri(_baseUrl, relativePath);
+            return GetBaseRequest(url.AbsoluteUri);
+        }
+
         protected async Task<string> ExecuteGetRequestAsync(HttpRequestMessage requestMessage)
         {
             if (requestMessage == null) { throw new NullReferenceException("Parameter 'requestMessage' is null."); }
@@ -66,6 +72,34 @@ namespace Kitsu.Controllers
             if (requestMessage == null) { throw new NullReferenceException("Parameter 'requestMessage' is null."); }
 
             var json = await ExecuteGetRequestAsync(requestMessage);
+
+            if (string.IsNullOrWhiteSpace(json)) { return default(T); }
+
+            var resultContent = JsonConvert.DeserializeObject<T>(json);
+
+            return resultContent;
+        }
+
+        protected async Task<string> ExecutePostRequestAsync(HttpRequestMessage requestMessage)
+        {
+            if (requestMessage == null) { throw new NullReferenceException("Parameter 'requestMessage' is null."); }
+
+            requestMessage.Method = HttpMethod.Post;
+
+            var result = await HttpClient.SendAsync(requestMessage);
+
+            if (!result.IsSuccessStatusCode) { return null; }
+
+            var json = await result.Content.ReadAsStringAsync();
+
+            return json;
+        }
+
+        protected async Task<T> ExecutePostRequestAsync<T>(HttpRequestMessage requestMessage)
+        {
+            if (requestMessage == null) { throw new NullReferenceException("Parameter 'requestMessage' is null."); }
+
+            var json = await ExecutePostRequestAsync(requestMessage);
 
             if (string.IsNullOrWhiteSpace(json)) { return default(T); }
 
