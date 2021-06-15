@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\AuthorizationController.cs" />
     <Compile Remove="Controllers\MediaController.cs" />
   </ItemGroup>
 

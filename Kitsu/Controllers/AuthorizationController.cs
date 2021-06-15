@@ -1,58 +1,34 @@
 ﻿using Kitsu.Responses;
-using RestSharp;
-using RestSharp.Authenticators;
-using System.Net;
-using System.Security.Authentication;
+using System;
 using System.Threading.Tasks;
 
 namespace Kitsu.Controllers
 {
-    public sealed class AuthorizationController
+    public sealed class AuthorizationController : ControllerBase
     {
+        const string _clientId = "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd";
+        const string _clientSecret = "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151";
+
         public AuthorizationController()
-        {
-            _oauthClient = new RestClient("https://kitsu.io/api/oauth/");
-        }
-
-        readonly IRestClient _oauthClient;
-
-        public async Task<AuthorizationResponse> Login(IRestClient restClient, string username, string password)
-        {
-            var result = await Login(username, password);
-            if (result != null)
-            {
-                restClient.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(result.access_token, result.token_type);
-            }
-
-            return result;
-        }
+            : base("https://kitsu.io/api/oauth/", "") { }
 
         public async Task<AuthorizationResponse> Login(string username, string password)
         {
-            var request = new RestRequest("token");
+            var request = _GetRelativeRequest("token");
             request.AddHeader("Accept", "application/vnd.api+json");
 
             request.AddQueryParameter("grant_type", "password");
             request.AddQueryParameter("username", username);
             request.AddQueryParameter("password", password);
 
-            var url = _oauthClient.BuildUri(request);
+            var result = await ExecutePostRequestAsync<AuthorizationResponse>(request);
 
-            var result = await _oauthClient.ExecutePostTaskAsync<AuthorizationResponse>(request);
-
-            if (!result.IsSuccessful)
+            if (result == null)
             {
-                if (result.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    throw new InvalidCredentialException("Username and password do not match.");
-                }
-                else
-                {
-                    throw result.ErrorException;
-                }
+                throw new UnauthorizedAccessException("Username and password do not match.");
             }
 
-            return result.Data;
+            return result;
         }
     }
 }

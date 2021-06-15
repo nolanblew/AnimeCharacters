@@ -1,8 +1,7 @@
 ﻿using Kitsu.Models;
 using Kitsu.Requests;
-using Newtonsoft.Json;
 using System.Linq;
-using System.Net.Http;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 
 namespace Kitsu.Controllers
@@ -26,25 +25,27 @@ namespace Kitsu.Controllers
             return new User(resultContent.data.First());
         }
 
-        //public async Task<User> GetUserSelfAsync()
-        //{
-        //    if (!_restClient.HasAuthenticated())
-        //    {
-        //        throw new AuthenticationException("User has not authenticated. Use client.Login() to authenticate first.");
-        //    }
+        public async Task<User> GetUserSelfAsync(string authToken)
+        {
+            if (string.IsNullOrWhiteSpace(authToken))
+            {
+                throw new AuthenticationException("User has not authenticated. Use client.Login() to authenticate first.");
+            }
 
-        //    var request = _GetBaseRequest();
-        //    request.AddQueryParameter(
-        //        name: "filter[self]",
-        //        value: "true",
-        //        encode: false);
+            var request = _GetBaseRequest();
+            request.AddQueryParameter(
+                name: "filter[self]",
+                value: "true",
+                encode: false);
 
-        //    var result = await _restClient.ExecuteGetAsync<UserGetResponse>(request);
+            request.AddHeader("Authorization", $"Bearer {authToken}");
 
-        //    if (!result.IsSuccessful) { return null; }
-        //    if (result.Data.data.Length != 1) { return null; }
+            var result = await ExecuteGetRequestAsync<UserGetResponse>(request);
 
-        //    return new User(result.Data.data.First());
-        //}
+            if (result == null) { return null; }
+            if (result.data.Length != 1) { return null; }
+
+            return new User(result.data.First());
+        }
     }
 }

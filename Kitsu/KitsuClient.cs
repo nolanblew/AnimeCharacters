@@ -1,6 +1,4 @@
 ﻿using Kitsu.Controllers;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
 
 namespace Kitsu
 {
@@ -9,19 +7,16 @@ namespace Kitsu
         public KitsuClient()
         {
 
-            //_Auth = new AuthorizationController();
+            Auth = new AuthorizationController();
             Users = new UserController(_baseApiUrl);
             UserLibraries = new LibraryController(_baseApiUrl);
             //Anime = new MediaController(_baseApiUrl);
         }
 
-        const string _clientId = "dd031b32d2f56c990b1425efe6c42ad847e7fe3ab46bf1299f05ecd856bdb7dd";
-        const string _clientSecret = "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151";
-
         const string _baseApiUrl = "https://kitsu.io/api/edge/";
 
 
-        //AuthorizationController _Auth { get; }
+        public AuthorizationController Auth { get; }
 
         public UserController Users { get; }
 

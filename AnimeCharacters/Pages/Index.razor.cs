@@ -1,4 +1,4 @@
-﻿using Blazored.LocalStorage;
+﻿using AnimeCharacters.Helpers;
 using Kitsu;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
@@ -18,9 +18,23 @@ namespace AnimeCharacters.Pages
         [Inject]
         NavigationManager _Navigation { get; set; }
 
-        public string KitsuUsername { get; set; }
+        string _kitsuUsername = "";
 
-        public string StatusLabel { get; set; }
+        public string KitsuUsername
+        {
+            get => _kitsuUsername;
+            set
+            {
+                _kitsuUsername = value;
+                _UsernameChanged();
+            }
+        }
+
+        public string KitsuPassword { get; set; }
+
+        public bool IsPasswordVisible { get; set; }
+
+        public string ErrorLabel { get; set; }
 
         public User User { get; set; }
 
@@ -28,16 +42,22 @@ namespace AnimeCharacters.Pages
 
         public bool IsNotBusy { get; set; } = true;
 
-        public string ButtonLabel => User == null ? "Get User" : "Fetch Anime";
+        public string ButtonLabel => KitsuUsername.Contains("@") ? "Login" : "Continue";
 
         protected override async Task OnInitializedAsync()
         {
             User = await _DatabaseProvider.GetUserAsync();
 
+            var forceLogout = _Navigation.QueryString("logout") == "true";
+
+            if (forceLogout)
+            {
+                await _ClearUser();
+            }
+
             if (User != null)
             {
-                KitsuUsername = User.Username;
-                _SetUserStatus();
+                _Navigation.NavigateTo("/animes");
             }
 
             await base.OnInitializedAsync();
@@ -48,19 +68,39 @@ namespace AnimeCharacters.Pages
             User = null;
             KitsuUsername = string.Empty;
             await _DatabaseProvider.ClearAsync();
-
-            StatusLabel = "User Cleared.";
         }
 
         protected async Task _ButtonClicked()
         {
             if (User == null)
             {
-                await _GetKitsuUsername();
+                if (KitsuUsername.Contains("@"))
+                {
+                    if (!string.IsNullOrWhiteSpace(KitsuPassword))
+                    {
+                        await _GetKitsuUsernameFromEmail();
+                    }
+                    else
+                    {
+                        ErrorLabel = "Please enter a password.";
+                    }
+                }
+                else
+                {
+                    await _GetKitsuUsername();
+                }
             }
             else
             {
-                _GetUserAnime();
+                _GoToAnimes();
+            }
+        }
+
+        protected void _UsernameChanged()
+        {
+            if (!IsPasswordVisible && KitsuUsername.Contains("@"))
+            {
+                IsPasswordVisible = true;
             }
         }
 
@@ -68,11 +108,10 @@ namespace AnimeCharacters.Pages
         {
             if (string.IsNullOrWhiteSpace(KitsuUsername))
             {
-                StatusLabel = "Uh oh, we couldn't process that. Please enter a valid Kitsu username.";
+                ErrorLabel = "Please enter a valid Kitsu username or email address.";
                 return;
             }
 
-            StatusLabel = $"Loading...";
             IsNotBusy = false;
 
             try
@@ -81,19 +120,18 @@ namespace AnimeCharacters.Pages
 
                 if (kitsuUser == null)
                 {
-
-                    StatusLabel = "Can't find that user. Try again.";
+                    ErrorLabel = "Can't find that user. Try again or login with your email address.";
                     return;
                 }
 
                 User = kitsuUser;
                 await _DatabaseProvider.SetUserAsync(User);
-                
-                _SetUserStatus();
+
+                _GoToAnimes();
             }
             catch (Exception ex)
             {
-                StatusLabel = $"Uh oh, something went wrong: {ex.Message}";
+                ErrorLabel = $"Uh oh, something went wrong: {ex.Message}";
             }
             finally
             {
@@ -101,14 +139,66 @@ namespace AnimeCharacters.Pages
             }
         }
 
-        void _GetUserAnime()
+        async Task _GetKitsuUsernameFromEmail()
         {
-            _Navigation.NavigateTo("animes");
+            if (!KitsuUsername.Contains("@") || !KitsuUsername.Contains("@"))
+            {
+                ErrorLabel = "Please enter a valid Kitsu username or email address.";
+                return;
+            }
+
+            if (KitsuPassword.Length < 3)
+            {
+                ErrorLabel = "Please enter a valid password.";
+                return;
+            }
+
+            IsNotBusy = false;
+
+            try
+            {
+                string authToken;
+
+                try
+                {
+                    var loginToken = await _kitsuClient.Auth.Login(KitsuUsername, KitsuPassword);
+
+                    if (loginToken == null) { throw new UnauthorizedAccessException("Username and password do not match."); }
+
+                    authToken = loginToken.access_token;
+                }
+                catch (InvalidCastException ex)
+                {
+                    ErrorLabel = ex.Message;
+                    return;
+                }
+
+                var kitsuUser = await _kitsuClient.Users.GetUserSelfAsync(authToken);
+
+                if (kitsuUser == null)
+                {
+                    ErrorLabel = "Something went wrong. Try again.";
+                    return;
+                }
+
+                User = kitsuUser;
+                await _DatabaseProvider.SetUserAsync(User);
+
+                _GoToAnimes();
+            }
+            catch (Exception ex)
+            {
+                ErrorLabel = $"Something went wrong: {ex.Message}";
+            }
+            finally
+            {
+                IsNotBusy = true;
+            }
         }
 
-        protected void _SetUserStatus()
+        void _GoToAnimes()
         {
-            StatusLabel = $"Welcome, {User.Name}. Good to see you!";
+            _Navigation.NavigateTo("animes");
         }
     }
 }
