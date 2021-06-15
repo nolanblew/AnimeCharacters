@@ -63,8 +63,13 @@ namespace Kitsu.Controllers
                 {
                     var includedAnime = result.Included
                         .FirstOrDefault(a => a.Id == entry.Relationships.Anime.Data.Id);
+
+                    var mappingIds = includedAnime.Relationships.Mappings.Data.Select(map => map.Id).ToArray();
+
                     var myAnimeListId = result.Included
-                        .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings && inc.Attributes.ExternalSite == "myanimelist/anime")
+                        .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                            && mappingIds.Contains(inc.Id)
+                            && inc.Attributes.ExternalSite == "myanimelist/anime")
                         ?.Attributes.ExternalId;
 
                     return includedAnime != null

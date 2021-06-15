@@ -48,7 +48,7 @@
                 @foreach (var librayEntry in FilteredLibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Current) ?? new List<Kitsu.Models.LibraryEntry>())
                 {
                     <div class="col">
-                        <div class="item-container">
+                        <div class="item-container" @onclick="() => _Anime_OnClicked(librayEntry)">
                             <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                 @foreach (var librayEntry in FilteredLibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Completed) ?? new List<Kitsu.Models.LibraryEntry>())
                 {
                     <div class="col">
-                        <div class="item-container">
+                        <div class="item-container" @onclick="() => _Anime_OnClicked(librayEntry)">
                             <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
                         </div>
                     </div>

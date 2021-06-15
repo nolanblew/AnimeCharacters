@@ -1,0 +1,69 @@
+﻿@page "/characters/{id}"
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Characters</a>
+        <span class="navbar-text">
+            Hello, @CurrentUser?.Name!
+        </span>
+        <div class="nav-item">
+            <a class="nav-link" href="/">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="content">
+    <div class="row">
+        <div class="col text-center">
+            <div class="item-container center-image">
+                <img src="@CurrentPerson?.ImageURL" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col text-center text-secondary">
+            @CurrentPerson?.Name
+        </div>
+    </div>
+
+    <br /><br /><br />
+    <h3>Characters from My Anime</h3>
+    <hr />
+
+    @if (MyCharactersList?.Any() == true)
+    {
+        <div class="row">
+            @foreach (var characterAnime in MyCharactersList)
+            {
+                <div class="col">
+                    <div class="item-container">
+                        <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)"  OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (NotMyCharactersList?.Any() == true)
+    {
+        <div class="row">
+            @foreach (var characterAnime in NotMyCharactersList)
+            {
+                <div class="col">
+                    <div class="item-container">
+                        <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)"  OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+                    </div>
+                </div>                
+            }
+        </div>
+    }
+
+    @if (MyCharactersList?.Any() != true && NotMyCharactersList?.Any() != true)
+    { 
+        <div class="d-flex justify-content-center">
+            <div class="control">
+                <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
+            </div>
+        </div>
+    }
+</div>

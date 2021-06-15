@@ -21,6 +21,7 @@ namespace AnimeCharacters
             builder.Services.AddMatBlazor();
 
             builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
+            builder.Services.AddScoped<JikanDotNet.IJikan>(_ => new JikanDotNet.Jikan());
 
             await builder.Build().RunAsync();
         }
