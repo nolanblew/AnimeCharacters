@@ -49,6 +49,8 @@ namespace AnimeCharacters.Pages
                 await _ClearUser();
             }
 
+            PageStateManager.Clear();
+
             if (User != null)
             {
                 _GoToAnimes();

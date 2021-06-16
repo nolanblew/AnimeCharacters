@@ -27,6 +27,9 @@ namespace AnimeCharacters
 
     public class DatabaseProvider : IDatabaseProvider
     {
+        readonly Version _DatabaseVersion = new("1.1.0");
+
+        const string _DB_VERSION_STORE = "db_version";
         const string _USER_STORE = "user";
         const string _LAST_FETCHED_ID_STORE = "last_fetched_id";
         const string _LAST_FETCHED_DATE_STORE = "last_fetched_date";
@@ -38,10 +41,16 @@ namespace AnimeCharacters
         {
             _localStorageService = localStorageService;
             _eventAggregator = eventAggregator;
+
+            _CheckVersion();
         }
 
         ILocalStorageService _localStorageService;
         IEventAggregator _eventAggregator;
+
+        // DB Version (private)
+        ValueTask<Version> _GetVersionAsync() => _localStorageService.GetItemAsync<Version>(_DB_VERSION_STORE);
+        ValueTask _SetVersionAsync(Version value) => _TriggerEvent(() => _localStorageService.SetItemAsync(_DB_VERSION_STORE, value));
 
         // User
         public ValueTask<User> GetUserAsync() => _localStorageService.GetItemAsync<User>(_USER_STORE);
@@ -67,6 +76,17 @@ namespace AnimeCharacters
             _eventAggregator.PublishAsync(new DatabaseEvent());
 
             return result;
+        }
+
+        async void _CheckVersion()
+        {
+            var currentDbVersion = await _GetVersionAsync();
+            if (currentDbVersion == null || currentDbVersion < _DatabaseVersion)
+            {
+                // Erase everything. In the future possibly we can do a migration
+                await ClearAsync();
+                await _SetVersionAsync(_DatabaseVersion);
+            }
         }
     }
 }
