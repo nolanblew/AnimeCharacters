@@ -89,6 +89,8 @@ namespace Kitsu.Controllers
 
             return rtn;
         }
+
+        public async Task<List<LibraryEntry>>
     }
 
     [Flags]

@@ -4,7 +4,34 @@ using System;
 
 namespace Kitsu.Models
 {
-    public class LibraryEntry
+    public class LibraryEntrySlim
+    {
+        public LibraryEntrySlim() { }
+
+        public LibraryEntrySlim(UserLibraryEventGetResponse.IncludedItems includedLibraryItems, LibraryType type)
+        {
+            Id = (int?)includedLibraryItems.Id ?? 0;
+            Type = type;
+            Status = (LibraryStatus)Enum.Parse(typeof(LibraryStatus), includedLibraryItems.Attributes.Status, true);
+            IsReconsuming = includedLibraryItems.Attributes.Reconsuming.Value;
+            StartedAt = includedLibraryItems.Attributes.StartedAt;
+            FinishedAt = includedLibraryItems.Attributes.FinishedAt;
+            ProgressedAt = includedLibraryItems.Attributes.ProgressedAt;
+            Progress = includedLibraryItems.Attributes.Progress;
+        }
+
+        public int Id { get; set; }
+        public LibraryType Type { get; set; }
+        public LibraryStatus Status { get; set; }
+        public long? MangaId { get; set; }
+        public bool IsReconsuming { get; set; }
+        public DateTimeOffset? StartedAt { get; set; }
+        public DateTimeOffset? FinishedAt { get; set; }
+        public DateTimeOffset? ProgressedAt { get; set; }
+        public long? Progress { get; set; }
+    }
+
+    public class LibraryEntry : LibraryEntrySlim
     {
         public LibraryEntry() { }
 
@@ -26,17 +53,8 @@ namespace Kitsu.Models
         {
             Anime = new Anime(animeId, myAnimeListId, includedAttributes);
         }
-        public int Id { get; set; }
-        public LibraryType Type { get; set; }
-        public LibraryStatus Status { get; set; }
-        public long? AnimeId { get; set; }
-        public long? MangaId { get; set; }
-        public bool IsReconsuming { get; set; }
-        public DateTimeOffset? StartedAt { get; set; }
-        public DateTimeOffset? FinishedAt { get; set; }
-        public DateTimeOffset? ProgressedAt { get; set; }
-        public long? Progress { get; set; }
 
+        public long? AnimeId { get; set; }
         public Anime Anime { get; set; }
     }
 }
