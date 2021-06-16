@@ -122,7 +122,7 @@ namespace Kitsu.Responses
         {
             [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
             [JsonConverter(typeof(ParseStringConverter))]
-            public long? Id { get; set; }
+            public long Id { get; set; }
 
             [JsonProperty("type", NullValueHandling = NullValueHandling.Ignore)]
             public DataType? Type { get; set; }
@@ -239,6 +239,6 @@ namespace Kitsu.Responses
 
         public enum DatumType { LibraryEvents };
 
-        public static UserLibraryEventGetResponse FromJson(string json) => JsonConvert.DeserializeObject<UserLibraryEventGetResponse>(json, Kitsu.Responses.Converter.Settings);
+        public static UserLibraryEventGetResponse FromJson(string json) => JsonConvert.DeserializeObject<UserLibraryEventGetResponse>(json, Kitsu.Converters.Converter.Settings);
     }
 }

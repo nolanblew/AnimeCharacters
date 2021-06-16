@@ -10,7 +10,7 @@ namespace Kitsu.Models
 
         public LibraryEntrySlim(UserLibraryEventGetResponse.IncludedItems includedLibraryItems, LibraryType type)
         {
-            Id = (int?)includedLibraryItems.Id ?? 0;
+            Id = includedLibraryItems.Id;
             Type = type;
             Status = (LibraryStatus)Enum.Parse(typeof(LibraryStatus), includedLibraryItems.Attributes.Status, true);
             IsReconsuming = includedLibraryItems.Attributes.Reconsuming.Value;
@@ -20,7 +20,7 @@ namespace Kitsu.Models
             Progress = includedLibraryItems.Attributes.Progress;
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public LibraryType Type { get; set; }
         public LibraryStatus Status { get; set; }
         public long? MangaId { get; set; }
@@ -37,7 +37,7 @@ namespace Kitsu.Models
 
         public LibraryEntry(UserLibraryGetRequest.UserLibraryGet libraryResponse, LibraryType type)
         {
-            Id = (int?)libraryResponse.Id ?? 0;
+            Id = libraryResponse.Id ?? 0;
             Type = type;
             Status = (LibraryStatus)Enum.Parse(typeof(LibraryStatus), libraryResponse.Attributes.Status, true);
             AnimeId = libraryResponse.Relationships.Anime.Data?.Id ?? 0;

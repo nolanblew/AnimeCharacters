@@ -10,6 +10,7 @@ namespace Kitsu
             Auth = new AuthorizationController();
             Users = new UserController(_baseApiUrl);
             UserLibraries = new LibraryController(_baseApiUrl);
+            UserLibraryEvents = new LibraryEventsController(_baseApiUrl);
             //Anime = new MediaController(_baseApiUrl);
         }
 
@@ -21,6 +22,8 @@ namespace Kitsu
         public UserController Users { get; }
 
         public LibraryController UserLibraries { get; }
+
+        public LibraryEventsController UserLibraryEvents { get; }
 
         //public MediaController Anime { get; }
 

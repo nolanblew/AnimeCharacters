@@ -1,4 +1,5 @@
 ﻿using Kitsu;
+using Kitsu.Controllers;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -13,7 +14,7 @@ namespace AnimeCharacters.Pages
     {
         readonly KitsuClient _kitsuClient = new();
 
-        List<LibraryEntry> _LibraryEntries { get; set; }
+        Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
 
         public User CurrentUser { get; set; }
 
@@ -25,12 +26,13 @@ namespace AnimeCharacters.Pages
             {
                 if (string.IsNullOrWhiteSpace(SearchFilter))
                 {
-                    return _LibraryEntries;
+                    return _LibraryEntries?.Values?.ToList();
                 }
 
                 var lowerFilter = SearchFilter.ToLower();
-                return _LibraryEntries?
-                    .Where(e => _MatchesSearch(e.Anime))?.ToList();
+                return _LibraryEntries?.Values?
+                    .Where(e => _MatchesSearch(e.Anime))?
+                    .ToList();
             }
         }
 
@@ -52,9 +54,10 @@ namespace AnimeCharacters.Pages
         {
             if (firstRender)
             {
-               _LibraryEntries = (await DatabaseProvider.GetLibrariesAsync())?.ToList() ?? new();
+                _LibraryEntries = ((await DatabaseProvider.GetLibrariesAsync()) ?? new List<LibraryEntry>())
+                     .ToDictionary(lib => lib.Id);
 
-                await _GetUserAnime();
+                await _FetchLibraries();
             }
 
             await base.OnAfterRenderAsync(firstRender);
@@ -67,36 +70,133 @@ namespace AnimeCharacters.Pages
             NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
         }
 
-        async Task _GetUserAnime()
+        async Task _FetchLibraries()
         {
-            if (_LibraryEntries.Count > 0)
+            if (!_LibraryEntries.Any())
             {
-                StateHasChanged();
+                await _FetchAllUserAnime();
                 return;
             }
 
+            var lastFetchedDate = await DatabaseProvider.GetLastFetchedDateAsnyc();
+
+            if (DateTimeOffset.Now.Subtract(TimeSpan.FromSeconds(0)) > lastFetchedDate)
+            {
+                await _UpdateUserAnime();
+                return;
+            }
+        }
+
+        async Task _FetchAllUserAnime()
+        {
             try
             {
+                await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Loading Complete Library..."));
+
                 var stopwatch = Stopwatch.StartNew();
 
                 _LibraryEntries =
                     (await _kitsuClient.UserLibraries.GetCompleteLibraryCollectionAsync
                         (CurrentUser.Id,
-                        Kitsu.Controllers.LibraryType.Anime,
-                        Kitsu.Controllers.LibraryStatus.Current | Kitsu.Controllers.LibraryStatus.Completed))
+                        LibraryType.Anime,
+                        LibraryStatus.Current | Kitsu.Controllers.LibraryStatus.Completed))
                     .OrderByDescending(e => e.ProgressedAt)
-                    .ToList();
+                    .ToDictionary(lib => lib.Id);
 
                 StateHasChanged();
 
-                await DatabaseProvider.SetLibrariesAsync(_LibraryEntries);
-                await DatabaseProvider.SetLastFetchedAsync(DateTimeOffset.Now);
+                await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
+                await _SetLastFetchedId();
 
                 stopwatch.Stop();
                 return;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
+                await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
+            }
+        }
+
+        async Task _UpdateUserAnime()
+        {
+            void updateLibraryEntry(LibraryEntrySlim libraryEntrySlim)
+            {
+                var libraryEntry = _LibraryEntries[libraryEntrySlim.Id];
+                libraryEntry.Progress = libraryEntrySlim.Progress;
+                libraryEntry.ProgressedAt = libraryEntrySlim.ProgressedAt;
+                libraryEntry.IsReconsuming = libraryEntrySlim.IsReconsuming;
+                libraryEntry.Status = libraryEntrySlim.Status;
+                libraryEntry.FinishedAt = libraryEntrySlim.FinishedAt;
+            }
+
+            var lastFetchedId = await DatabaseProvider.GetLastFetchedIdAsnyc();
+
+            if (!_LibraryEntries.Any() || !lastFetchedId.HasValue)
+            {
+                await _FetchAllUserAnime();
+                return;
+            }
+
+            try
+            {
+                var deltaLibraryEvents = await _kitsuClient.UserLibraryEvents.GetLibraryEventsSinceTime(CurrentUser.Id, lastFetchedId.Value);
+
+                // TODO: This is temporary - if there are any added library entries, we need to re-fetch all the libraries and then add the ones that have been added.
+                // We should just query the individual libraries we didn't have already
+                if (deltaLibraryEvents.LibraryEntryEvents.Any(e => !_LibraryEntries.ContainsKey(e.LibraryEntrySlim.Id)))
+                {
+                    await _FetchAllUserAnime();
+                    return;
+                }
+
+                bool hasChanges = false;
+
+                foreach(var libraryEvent in deltaLibraryEvents.LibraryEntryEvents)
+                {
+                    if (_LibraryEntries.ContainsKey(libraryEvent.LibraryEntrySlim.Id))
+                    {
+                        if (libraryEvent.Type == LibraryEntryEvent.EventType.Updated)
+                        {
+                            updateLibraryEntry(libraryEvent.LibraryEntrySlim);
+                            hasChanges = true;
+                        }
+                        else if (libraryEvent.Type == LibraryEntryEvent.EventType.Removed)
+                        {
+                            _LibraryEntries.Remove(libraryEvent.LibraryEntrySlim.Id);
+                            hasChanges = true;
+                        }
+                        else if (libraryEvent.Type == LibraryEntryEvent.EventType.Completed)
+                        {
+                            updateLibraryEntry(libraryEvent.LibraryEntrySlim);
+                            hasChanges = true;
+                        }
+                    }
+                    else
+                    {
+                        // TODO: The library entry didn't exist before, so we need to add it
+                        // Currently handled above
+                    }
+                }
+                await DatabaseProvider.SetLastFetchedIdAsync(deltaLibraryEvents.LastFetchedId);
+                await DatabaseProvider.SetLastFetchedDateAsync(DateTimeOffset.Now);
+
+                if (hasChanges)
+                {
+                    await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
+                    await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Updated your library."));
+                }
+
+                StateHasChanged();
+            }
+            catch (RequestCapacityExceededException)
+            {
+                // There were too many events to delta, so let's just refresh the entire library
+                await _FetchAllUserAnime();
+                return;
+            }
+            catch(Exception ex)
+            {
+                await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
             }
         }
 
@@ -131,6 +231,18 @@ namespace AnimeCharacters.Pages
             }
 
             return false;
+        }
+
+        async Task _SetLastFetchedId()
+        {
+            // Ensure we have some library entries, otherwise
+            // there's no point in setting up the Sync endpoint
+            if (CurrentUser != null && _LibraryEntries.Any())
+            {
+                var lastEventId = await _kitsuClient.UserLibraryEvents.GetLatestLibraryEventId(CurrentUser.Id);
+                await DatabaseProvider.SetLastFetchedIdAsync(lastEventId);
+                await DatabaseProvider.SetLastFetchedDateAsync(DateTimeOffset.Now);
+            }
         }
     }
 }
