@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using EventAggregator.Blazor;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace AnimeCharacters
 {
-    public interface IPageStateManager : INotifyPropertyChanged
+    public interface IPageStateManager
     {
         bool CanGoBack { get; }
         string CurrentPage { get; }
@@ -16,8 +15,15 @@ namespace AnimeCharacters
         string GoBack();
     }
 
-    public class PageStateManager : IPageStateManager, INotifyPropertyChanged
+    public class PageStateManager : IPageStateManager
     {
+        public PageStateManager(IEventAggregator eventAggregator)
+        {
+            _eventAggregator = eventAggregator;
+        }
+
+        readonly IEventAggregator _eventAggregator;
+
         readonly Stack<string> _pageHistory = new();
 
         public string CurrentPage { get; private set; }
@@ -61,15 +67,7 @@ namespace AnimeCharacters
 
         void _NotifyPropertyChanges()
         {
-            _OnPropertyChanged(nameof(CurrentPage));
-            _OnPropertyChanged(nameof(CanGoBack));
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        void _OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            _eventAggregator.PublishAsync(new Events.PageStateManagerEvent());
         }
     }
 }

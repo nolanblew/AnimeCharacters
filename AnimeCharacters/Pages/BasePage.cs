@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using EventAggregator.Blazor;
+using Microsoft.AspNetCore.Components;
 
 namespace AnimeCharacters.Pages
 {
@@ -16,6 +17,9 @@ namespace AnimeCharacters.Pages
         [Inject]
         protected IPageStateManager PageStateManager { get; set; }
 
+        [Inject]
+        protected IEventAggregator _EventAggregator { get; set; }
+
         protected override void OnInitialized()
         {
             if (!_hasInitializedBeenCalled)
@@ -26,6 +30,7 @@ namespace AnimeCharacters.Pages
                     {
                         _hasInitializedBeenCalled = true;
                         PageStateManager.Add(NavigationManager.Uri);
+                        _EventAggregator.Subscribe(this);
                     }
                 }
             }

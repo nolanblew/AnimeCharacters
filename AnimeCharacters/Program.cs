@@ -19,6 +19,7 @@ namespace AnimeCharacters
 
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMatBlazor();
+            builder.Services.AddEventAggregator();
 
             builder.Services.AddSingleton<IPageStateManager, PageStateManager>();
 
