@@ -19,6 +19,9 @@ namespace AnimeCharacters
 
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddMatBlazor();
+            builder.Services.AddEventAggregator();
+
+            builder.Services.AddSingleton<IPageStateManager, PageStateManager>();
 
             builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
             builder.Services.AddScoped<JikanDotNet.IJikan>(_ => new JikanDotNet.Jikan());

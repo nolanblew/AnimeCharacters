@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Timers;
 
 namespace AnimeCharacters.Pages
 {
@@ -14,17 +13,9 @@ namespace AnimeCharacters.Pages
     {
         readonly KitsuClient _kitsuClient = new();
 
-        [Inject]
-        IDatabaseProvider _DatabaseProvider { get; set; }
-
-        [Inject]
-        public NavigationManager Navigation { get; set; }
-
         List<LibraryEntry> _LibraryEntries { get; set; }
 
         public User CurrentUser { get; set; }
-
-        string _searchFilter;
 
         public string SearchFilter { get; set; }
 
@@ -45,12 +36,12 @@ namespace AnimeCharacters.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            CurrentUser = await _DatabaseProvider.GetUserAsync();
+            CurrentUser = await DatabaseProvider.GetUserAsync();
 
             if (CurrentUser == null)
             {
                 // Redirect to login page
-                Navigation.NavigateTo("/");
+                NavigationManager.NavigateTo("/");
                 return;
             }
 
@@ -61,7 +52,7 @@ namespace AnimeCharacters.Pages
         {
             if (firstRender)
             {
-               _LibraryEntries = (await _DatabaseProvider.GetLibrariesAsync())?.ToList() ?? new();
+               _LibraryEntries = (await DatabaseProvider.GetLibrariesAsync())?.ToList() ?? new();
 
                 await _GetUserAnime();
             }
@@ -73,7 +64,7 @@ namespace AnimeCharacters.Pages
         {
             if (libraryEntry?.Anime == null) { return; }
 
-            Navigation.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
+            NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
         }
 
         async Task _GetUserAnime()
@@ -98,8 +89,8 @@ namespace AnimeCharacters.Pages
 
                 StateHasChanged();
 
-                await _DatabaseProvider.SetLibrariesAsync(_LibraryEntries);
-                await _DatabaseProvider.SetLastFetchedAsync(DateTimeOffset.Now);
+                await DatabaseProvider.SetLibrariesAsync(_LibraryEntries);
+                await DatabaseProvider.SetLastFetchedAsync(DateTimeOffset.Now);
 
                 stopwatch.Stop();
                 return;

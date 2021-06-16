@@ -1,16 +1,5 @@
 ﻿@page "/animes/{id}"
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Characters</a>
-        <span class="navbar-text">
-            Hello, @CurrentUser?.Name!
-        </span>
-        <div class="nav-item">
-            <a class="nav-link" href="/?logout=true">Logout</a>
-        </div>
-    </div>
-</nav>
+@inherits BasePage
 
 <div class="content">
     <div class="row">
@@ -26,30 +15,28 @@
         </div>
     </div>
 
-    <br/>
+    <br />
     <h3>Characters</h3>
-    <hr/>
+    <hr />
 
     @if (CharactersList?.Any() == true)
     {
-        <div class="row">
-                @foreach (var character in CharactersList)
-                {
-                <div class="col">
-                    <div class="item-container" @onclick="() => _Character_OnClicked(character)">
-                        <AnimeCharacters.Components.CharacterTile Character="@character" Language="@Language" />
-                    </div>
-                </div>
-                }
-        </div>
-    }
-    else
+<div class="row">
+    @foreach (var character in CharactersList)
     {
-        <div class="d-flex justify-content-center">
-            <div class="control">
-                <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
-            </div>
-        </div>
-    }
+<div class="col">
+    <div class="item-container" @onclick="() => _Character_OnClicked(character)">
+        <AnimeCharacters.Components.CharacterTile Character="@character" Language="@Language" />
+    </div>
+</div>                }
+</div>
+}
+else
+{
+<div class="d-flex justify-content-center">
+    <div class="control">
+        <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
+    </div>
+</div>}
 
 </div>

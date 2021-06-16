@@ -12,12 +12,6 @@ namespace AnimeCharacters.Pages
     {
         readonly KitsuClient _kitsuClient = new();
 
-        [Inject]
-        IDatabaseProvider _DatabaseProvider { get; set; }
-
-        [Inject]
-        NavigationManager _Navigation { get; set; }
-
         string _kitsuUsername = "";
 
         public string KitsuUsername
@@ -46,9 +40,9 @@ namespace AnimeCharacters.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            User = await _DatabaseProvider.GetUserAsync();
+            User = await DatabaseProvider.GetUserAsync();
 
-            var forceLogout = _Navigation.QueryString("logout") == "true";
+            var forceLogout = NavigationManager.QueryString("logout") == "true";
 
             if (forceLogout)
             {
@@ -57,7 +51,7 @@ namespace AnimeCharacters.Pages
 
             if (User != null)
             {
-                _Navigation.NavigateTo("/animes");
+                _GoToAnimes();
             }
 
             await base.OnInitializedAsync();
@@ -67,7 +61,7 @@ namespace AnimeCharacters.Pages
         {
             User = null;
             KitsuUsername = string.Empty;
-            await _DatabaseProvider.ClearAsync();
+            await DatabaseProvider.ClearAsync();
         }
 
         protected async Task _ButtonClicked()
@@ -125,7 +119,7 @@ namespace AnimeCharacters.Pages
                 }
 
                 User = kitsuUser;
-                await _DatabaseProvider.SetUserAsync(User);
+                await DatabaseProvider.SetUserAsync(User);
 
                 _GoToAnimes();
             }
@@ -182,7 +176,7 @@ namespace AnimeCharacters.Pages
                 }
 
                 User = kitsuUser;
-                await _DatabaseProvider.SetUserAsync(User);
+                await DatabaseProvider.SetUserAsync(User);
 
                 _GoToAnimes();
             }
@@ -198,7 +192,8 @@ namespace AnimeCharacters.Pages
 
         void _GoToAnimes()
         {
-            _Navigation.NavigateTo("animes");
+            PageStateManager.Clear();
+            NavigationManager.NavigateTo("animes");
         }
     }
 }

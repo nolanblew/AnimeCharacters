@@ -1,37 +1,85 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">AnimeCharacters</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿@inherits Pages.BasePage
+@implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
+@implements EventAggregator.Blazor.IHandle<Events.PageStateManagerEvent>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
+
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+    @if (PageStateManager.CanGoBack)
+    {
+        <div class="nav-item" style="display: flex; align-items: center;">
+            <a class="nav-link" href="@PageStateManager.GetLastPage()" @onclick="_GoBack">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                </svg>
+            </a>
+        </div>
+    }
+    <a class="navbar-brand" href="#">
+        <img src="/icon-512.png" width="30" height="30" alt="Anime Characters" />
+        Anime Characters
+    </a>
+
+    @if (IsLoggedIn)
+    {
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/animes">Animes <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <span class="navbar-text">
+                Hello, @CurrentUser?.Name!
+            </span>
+            <div class="nav-item">
+                <a class="nav-link" @onclick="_Logout">Logout</a>
+            </div>
+            @*<div class="nav-item">
+                <a class="nav-link text-muted" href="#">Settings</a>
+            </div>*@
+        </div>
+    }
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    protected override async Task OnInitializedAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
+        await _SetUser();
+        await base.OnInitializedAsync();
     }
+
+    public Kitsu.Models.User CurrentUser { get; set; }
+
+    public bool IsLoggedIn => CurrentUser != null;
+
+    public async Task HandleAsync(Events.DatabaseEvent arg)
+    {
+        await _SetUser();
+        StateHasChanged();
+    }
+
+    public Task HandleAsync(Events.PageStateManagerEvent arg)
+    {
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    void _GoBack()
+    {
+        if (PageStateManager.CanGoBack)
+        {
+            NavigationManager.NavigateTo(PageStateManager.GoBack());
+        }
+    }
+
+    void _Logout()
+    {
+        NavigationManager.NavigateTo("/?logout=true");
+        PageStateManager.Clear();
+    }
+
+    async Task _SetUser() =>  CurrentUser = await DatabaseProvider.GetUserAsync();
 }
