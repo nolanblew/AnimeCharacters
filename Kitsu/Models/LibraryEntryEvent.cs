@@ -56,6 +56,4 @@ namespace Kitsu.Models
         }
 
     }
-
-    public abstract class LibraryEvent { }
 }
