@@ -8,13 +8,10 @@
 
 namespace Kitsu.Responses
 {
+    using Kitsu.Converters;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-
-    using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
-    using static Kitsu.Responses.UserLibraryGetRequest;
 
     public partial class UserLibraryGetRequest
     {
@@ -495,140 +492,6 @@ namespace Kitsu.Responses
 
         public enum ShowTypeEnum { Movie, TV, OVA, Special };
 
-        public static UserLibraryGetRequest FromJson(string json) => JsonConvert.DeserializeObject<UserLibraryGetRequest>(json, Kitsu.Responses.Converter.Settings);
-
-    }
-
-    internal static class Converter
-    {
-        public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-        {
-            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-            DateParseHandling = DateParseHandling.None,
-            Converters =
-            {
-                DataTypeConverter.Singleton,
-                ShowTypeEnumConverter.Singleton,
-                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-            },
-        };
-
-        internal class ParseStringConverter : JsonConverter
-        {
-            public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
-
-            public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.Null) return null;
-                var value = serializer.Deserialize<string>(reader);
-                long l;
-                if (Int64.TryParse(value, out l))
-                {
-                    return l;
-                }
-                throw new Exception("Cannot unmarshal type long");
-            }
-
-            public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-            {
-                if (untypedValue == null)
-                {
-                    serializer.Serialize(writer, null);
-                    return;
-                }
-                var value = (long)untypedValue;
-                serializer.Serialize(writer, value.ToString());
-                return;
-            }
-
-            public static readonly ParseStringConverter Singleton = new ParseStringConverter();
-        }
-
-        internal class DataTypeConverter : JsonConverter
-        {
-            public override bool CanConvert(Type t) => t == typeof(DataType) || t == typeof(DataType?);
-
-            public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.Null) return null;
-                var value = serializer.Deserialize<string>(reader);
-                switch (value)
-                {
-                    case "anime":
-                        return DataType.Anime;
-                    case "mappings":
-                        return DataType.Mappings;
-                }
-                throw new Exception("Cannot unmarshal type DataType");
-            }
-
-            public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-            {
-                if (untypedValue == null)
-                {
-                    serializer.Serialize(writer, null);
-                    return;
-                }
-                var value = (DataType)untypedValue;
-                switch (value)
-                {
-                    case DataType.Anime:
-                        serializer.Serialize(writer, "anime");
-                        return;
-                    case DataType.Mappings:
-                        serializer.Serialize(writer, "mappings");
-                        return;
-                }
-                throw new Exception("Cannot marshal type DataType");
-            }
-
-            public static readonly DataTypeConverter Singleton = new DataTypeConverter();
-        }
-
-        internal class ShowTypeEnumConverter : JsonConverter
-        {
-            public override bool CanConvert(Type t) => t == typeof(ShowTypeEnum) || t == typeof(ShowTypeEnum?);
-
-            public override object ReadJson(JsonReader reader, Type t, object existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.Null) return null;
-                var value = serializer.Deserialize<string>(reader);
-                switch (value.ToLower())
-                {
-                    case "tv":
-                        return ShowTypeEnum.TV;
-                    case "movie":
-                        return ShowTypeEnum.Movie;
-                    case "special":
-                        return ShowTypeEnum.Special;
-                    case "ova":
-                        return ShowTypeEnum.OVA;
-                }
-
-                return ShowTypeEnum.OVA;
-            }
-
-            public override void WriteJson(JsonWriter writer, object untypedValue, JsonSerializer serializer)
-            {
-                if (untypedValue == null)
-                {
-                    serializer.Serialize(writer, null);
-                    return;
-                }
-                var value = (ShowTypeEnum)untypedValue;
-                switch (value)
-                {
-                    case ShowTypeEnum.TV:
-                        serializer.Serialize(writer, "TV");
-                        return;
-                    case ShowTypeEnum.Movie:
-                        serializer.Serialize(writer, "movie");
-                        return;
-                }
-                throw new Exception("Cannot marshal type ShowTypeEnum");
-            }
-
-            public static readonly ShowTypeEnumConverter Singleton = new ShowTypeEnumConverter();
-        }
+        public static UserLibraryGetRequest FromJson(string json) => JsonConvert.DeserializeObject<UserLibraryGetRequest>(json, Converter.Settings);
     }
 }

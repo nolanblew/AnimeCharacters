@@ -1,0 +1,25 @@
+﻿@inherits Pages.BasePage
+@implements EventAggregator.Blazor.IHandle<Events.SnackbarEvent>
+
+<MatSnackbar @bind-IsOpen="_SnackBarOpen">
+    <MatSnackbarContent>@_SnackBarText</MatSnackbarContent>
+</MatSnackbar>
+
+@code {
+    bool _SnackBarOpen { get; set; }
+    string _SnackBarText { get; set; }
+
+    public Task HandleAsync(Events.SnackbarEvent arg)
+    {
+        if (_SnackBarOpen)
+        {
+            _SnackBarOpen = false;
+        }
+
+        _SnackBarText = arg.Message;
+        _SnackBarOpen = true;
+
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

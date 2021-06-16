@@ -13,7 +13,7 @@ namespace AnimeCharacters.Pages
 
         [Inject]
         protected NavigationManager NavigationManager { get; set; }
-        
+
         [Inject]
         protected IPageStateManager PageStateManager { get; set; }
 
