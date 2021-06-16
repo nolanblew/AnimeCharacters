@@ -14,8 +14,12 @@ namespace Kitsu.Models
             CreatedAt = response.Attributes.CreatedAt;
             EventKind = response.Attributes.Kind;
             LibraryEntryId = libraryEntry.Id;
-            LibraryEntrySlim = new(libraryEntry, Controllers.LibraryType.Anime);
             Type = _DetermineEventType(EventKind.Value, response.Attributes.ChangedData);
+
+            if (Type != EventType.Removed)
+            {
+                LibraryEntrySlim = new(libraryEntry, Controllers.LibraryType.Anime);
+            }
         }
 
         public long? Id { get; set; }

@@ -12,6 +12,9 @@ namespace AnimeCharacters.Pages
 {
     public partial class Animes
     {
+        const int _CACHE_UPDATE_TIME_MINUTES = 1;
+        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 5;
+
         readonly KitsuClient _kitsuClient = new();
 
         Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
@@ -19,6 +22,8 @@ namespace AnimeCharacters.Pages
         public User CurrentUser { get; set; }
 
         public string SearchFilter { get; set; }
+
+        public bool IsBusy { get; set; } = true;
 
         public List<LibraryEntry> FilteredLibraryEntries
         {
@@ -52,15 +57,17 @@ namespace AnimeCharacters.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             if (firstRender)
             {
                 _LibraryEntries = ((await DatabaseProvider.GetLibrariesAsync()) ?? new List<LibraryEntry>())
                      .ToDictionary(lib => lib.Id);
 
+                StateHasChanged();
+
                 await _FetchLibraries();
             }
-
-            await base.OnAfterRenderAsync(firstRender);
         }
 
         protected void _Anime_OnClicked(LibraryEntry libraryEntry)
@@ -70,20 +77,33 @@ namespace AnimeCharacters.Pages
             NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
         }
 
-        async Task _FetchLibraries()
+        async Task _FetchLibraries(bool forceFullRefresh = false)
         {
-            if (!_LibraryEntries.Any())
+            try
             {
-                await _FetchAllUserAnime();
-                return;
+                IsBusy = true;
+
+                var lastFetchedDate = await DatabaseProvider.GetLastFetchedDateAsnyc();
+
+                if (forceFullRefresh
+                    || lastFetchedDate == null
+                    || DateTimeOffset.Now.Subtract(TimeSpan.FromDays(_CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS)) > lastFetchedDate
+                    || !_LibraryEntries.Any())
+                {
+                    await _FetchAllUserAnime();
+                    return;
+                }
+
+                if (DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(_CACHE_UPDATE_TIME_MINUTES)) > lastFetchedDate)
+                {
+                    await _UpdateUserAnime();
+                    return;
+                }
             }
-
-            var lastFetchedDate = await DatabaseProvider.GetLastFetchedDateAsnyc();
-
-            if (DateTimeOffset.Now.Subtract(TimeSpan.FromSeconds(0)) > lastFetchedDate)
+            finally
             {
-                await _UpdateUserAnime();
-                return;
+                IsBusy = false;
+                StateHasChanged();
             }
         }
 
@@ -91,10 +111,6 @@ namespace AnimeCharacters.Pages
         {
             try
             {
-                await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Loading Complete Library..."));
-
-                var stopwatch = Stopwatch.StartNew();
-
                 _LibraryEntries =
                     (await _kitsuClient.UserLibraries.GetCompleteLibraryCollectionAsync
                         (CurrentUser.Id,
@@ -103,12 +119,8 @@ namespace AnimeCharacters.Pages
                     .OrderByDescending(e => e.ProgressedAt)
                     .ToDictionary(lib => lib.Id);
 
-                StateHasChanged();
-
                 await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
                 await _SetLastFetchedId();
-
-                stopwatch.Stop();
                 return;
             }
             catch (Exception)
@@ -143,7 +155,7 @@ namespace AnimeCharacters.Pages
 
                 // TODO: This is temporary - if there are any added library entries, we need to re-fetch all the libraries and then add the ones that have been added.
                 // We should just query the individual libraries we didn't have already
-                if (deltaLibraryEvents.LibraryEntryEvents.Any(e => !_LibraryEntries.ContainsKey(e.LibraryEntrySlim.Id)))
+                if (deltaLibraryEvents.LibraryEntryEvents.Any(e => !_LibraryEntries.ContainsKey(e.Id.Value)))
                 {
                     await _FetchAllUserAnime();
                     return;
@@ -162,7 +174,7 @@ namespace AnimeCharacters.Pages
                         }
                         else if (libraryEvent.Type == LibraryEntryEvent.EventType.Removed)
                         {
-                            _LibraryEntries.Remove(libraryEvent.LibraryEntrySlim.Id);
+                            _LibraryEntries.Remove(libraryEvent.LibraryEntryId.Value);
                             hasChanges = true;
                         }
                         else if (libraryEvent.Type == LibraryEntryEvent.EventType.Completed)
@@ -185,8 +197,6 @@ namespace AnimeCharacters.Pages
                     await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
                     await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Updated your library."));
                 }
-
-                StateHasChanged();
             }
             catch (RequestCapacityExceededException)
             {
@@ -197,6 +207,8 @@ namespace AnimeCharacters.Pages
             catch(Exception ex)
             {
                 await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
+                Console.WriteLine($"ERROR: {ex.GetType().Name} - {ex.Message}");
+                Console.WriteLine($"Stacktrace: {ex.StackTrace}");
             }
         }
 
