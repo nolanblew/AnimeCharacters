@@ -30,7 +30,7 @@ namespace AnimeCharacters
 
         public void Add(string url)
         {
-            if (url == CurrentPage) { return; }
+            if (url == null || url == CurrentPage) { return; }
 
             if (!string.IsNullOrWhiteSpace(CurrentPage))
             {

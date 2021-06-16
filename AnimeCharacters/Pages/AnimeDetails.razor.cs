@@ -31,6 +31,7 @@ namespace AnimeCharacters.Pages
             if (string.IsNullOrWhiteSpace(Id))
             {
                 NavigationManager.NavigateTo("/");
+                return;
             }
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
@@ -39,11 +40,13 @@ namespace AnimeCharacters.Pages
             if (CurrentAnime == null)
             {
                 NavigationManager.NavigateTo("/");
+                return;
             }
 
             if (string.IsNullOrWhiteSpace(CurrentAnime.MyAnimeListId))
             {
                 NavigationManager.NavigateTo("/animes");
+                return;
             }
 
             StateHasChanged();

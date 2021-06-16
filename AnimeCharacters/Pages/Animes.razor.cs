@@ -115,7 +115,7 @@ namespace AnimeCharacters.Pages
                     (await _kitsuClient.UserLibraries.GetCompleteLibraryCollectionAsync
                         (CurrentUser.Id,
                         LibraryType.Anime,
-                        LibraryStatus.Current | Kitsu.Controllers.LibraryStatus.Completed))
+                        LibraryStatus.Current | LibraryStatus.Completed))
                     .OrderByDescending(e => e.ProgressedAt)
                     .ToDictionary(lib => lib.Id);
 
@@ -123,8 +123,10 @@ namespace AnimeCharacters.Pages
                 await _SetLastFetchedId();
                 return;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"ERROR in _FetchAllUserAnime(): {ex.Message}");
+                Console.WriteLine($" STACKTRACE: {ex.StackTrace}");
                 await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
             }
         }
