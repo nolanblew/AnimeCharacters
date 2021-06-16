@@ -108,7 +108,7 @@ namespace Kitsu.Controllers
                 encode: false);
             request.AddQueryParameter(
                 name: "sort",
-                value: "-createdAt",
+                value: "-id",
                 encode: false);
             request.AddQueryParameter(
                 name: "fields[library-events]",
@@ -175,6 +175,32 @@ namespace Kitsu.Controllers
             }
 
             return (mostRecentId, rtn); // Should only hit if we are a new account
+        }
+
+        public async Task<long?> _GetLatestLibraryEventId(int userId)
+        {
+            var request = _GetBaseRequest();
+
+            request.AddQueryParameter(
+                name: "filter[userId]",
+                value: userId.ToString(),
+                encode: false);
+            request.AddQueryParameter(
+                name: "sort",
+                value: "-id",
+                encode: false);
+            request.AddQueryParameter(
+                name: "fields[library-events]",
+                value: "id",
+                encode: false);
+            request.AddQueryParameter(
+                name: "page[limit]",
+                value: "1",
+                encode: false);
+
+            var result = await ExecuteGetRequestAsync<UserLibraryEventIdOnlyGetResponse>(request);
+
+            return result?.Data?.FirstOrDefault()?.Id;
         }
     }
 
