@@ -79,7 +79,7 @@ namespace AnimeCharacters.Pages
                                   LastProgressedAt = libraryEntry.ProgressedAt,
                                   VoiceActingRole = vaRoles[libraryEntry.Anime.MyAnimeListId].FirstOrDefault(),
                               })
-                              .OrderByDescending(item => item.LastProgressedAt.Value)
+                              .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
                               .ToList();
 
         }
