@@ -31,12 +31,16 @@ namespace AnimeCharacters.Pages
             {
                 if (string.IsNullOrWhiteSpace(SearchFilter))
                 {
-                    return _LibraryEntries?.Values?.ToList();
+                    return _LibraryEntries?
+                    .Values?
+                    .OrderByDescending(e => e.ProgressedAt)?
+                    .ToList();
                 }
 
                 var lowerFilter = SearchFilter.ToLower();
                 return _LibraryEntries?.Values?
                     .Where(e => _MatchesSearch(e.Anime))?
+                    .OrderByDescending(e => e.ProgressedAt)
                     .ToList();
             }
         }
@@ -62,7 +66,7 @@ namespace AnimeCharacters.Pages
             if (firstRender)
             {
                 _LibraryEntries = ((await DatabaseProvider.GetLibrariesAsync()) ?? new List<LibraryEntry>())
-                     .ToDictionary(lib => lib.Id);
+                    .ToDictionary(lib => lib.Id);
 
                 StateHasChanged();
 
@@ -90,12 +94,14 @@ namespace AnimeCharacters.Pages
                     || DateTimeOffset.Now.Subtract(TimeSpan.FromDays(_CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS)) > lastFetchedDate
                     || !_LibraryEntries.Any())
                 {
+                    Console.WriteLine($"PATH: Fetching full list from the start.");
                     await _FetchAllUserAnime();
                     return;
                 }
 
                 if (DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(_CACHE_UPDATE_TIME_MINUTES)) > lastFetchedDate)
                 {
+                    Console.WriteLine($"PATH: Fetching only updates from the start.");
                     await _UpdateUserAnime();
                     return;
                 }
@@ -116,7 +122,6 @@ namespace AnimeCharacters.Pages
                         (CurrentUser.Id,
                         LibraryType.Anime,
                         LibraryStatus.Current | LibraryStatus.Completed))
-                    .OrderByDescending(e => e.ProgressedAt)
                     .ToDictionary(lib => lib.Id);
 
                 await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
@@ -147,6 +152,7 @@ namespace AnimeCharacters.Pages
 
             if (!_LibraryEntries.Any() || !lastFetchedId.HasValue)
             {
+                Console.WriteLine($"PATH: No library entries (or no lastFetchedId = {lastFetchedId?.ToString() ?? "[null]"})");
                 await _FetchAllUserAnime();
                 return;
             }
@@ -157,15 +163,16 @@ namespace AnimeCharacters.Pages
 
                 // TODO: This is temporary - if there are any added library entries, we need to re-fetch all the libraries and then add the ones that have been added.
                 // We should just query the individual libraries we didn't have already
-                if (deltaLibraryEvents.LibraryEntryEvents.Any(e => !_LibraryEntries.ContainsKey(e.Id.Value)))
+                if (deltaLibraryEvents.LibraryEntryEvents.Any(e => !e.LibraryEntryId.HasValue || !_LibraryEntries.ContainsKey(e.LibraryEntryId.Value)))
                 {
+                    Console.WriteLine($"PATH: No events were found while fetching library events.");
                     await _FetchAllUserAnime();
                     return;
                 }
 
                 bool hasChanges = false;
 
-                foreach(var libraryEvent in deltaLibraryEvents.LibraryEntryEvents)
+                foreach (var libraryEvent in deltaLibraryEvents.LibraryEntryEvents)
                 {
                     if (_LibraryEntries.ContainsKey(libraryEvent.LibraryEntrySlim.Id))
                     {
@@ -191,6 +198,7 @@ namespace AnimeCharacters.Pages
                         // Currently handled above
                     }
                 }
+
                 await DatabaseProvider.SetLastFetchedIdAsync(deltaLibraryEvents.LastFetchedId);
                 await DatabaseProvider.SetLastFetchedDateAsync(DateTimeOffset.Now);
 
@@ -203,10 +211,11 @@ namespace AnimeCharacters.Pages
             catch (RequestCapacityExceededException)
             {
                 // There were too many events to delta, so let's just refresh the entire library
+                Console.WriteLine("PATH: Too many entries in diff. Fetching all animes in library.");
                 await _FetchAllUserAnime();
                 return;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
                 Console.WriteLine($"ERROR: {ex.GetType().Name} - {ex.Message}");
