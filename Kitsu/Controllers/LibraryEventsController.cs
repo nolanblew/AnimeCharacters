@@ -66,14 +66,14 @@ namespace Kitsu.Controllers
 
                     totalEntries++;
 
-                    if (entry.Id <= lastFetchedId)
-                    {
-                        return (mostRecentId, rtn);
-                    }
-
                     if (entry.Id > mostRecentId)
                     {
                         mostRecentId = entry.Id.Value;
+                    }
+
+                    if (entry.Id <= lastFetchedId)
+                    {
+                        return (mostRecentId, rtn);
                     }
 
                     var includedLibraryData = result.Included
