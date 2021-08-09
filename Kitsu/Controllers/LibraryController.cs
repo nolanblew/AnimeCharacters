@@ -1,4 +1,5 @@
-﻿using Kitsu.Models;
+﻿using Kitsu.Helpers;
+using Kitsu.Models;
 using Kitsu.Responses;
 using System;
 using System.Collections.Generic;
@@ -84,6 +85,91 @@ namespace Kitsu.Controllers
                 {
                     var url = HttpUtility.UrlDecode(result.Links.Next.ToString());
                     request = GetBaseRequest(url);
+                }
+            }
+
+            return rtn;
+        }
+        public async Task<List<LibraryEntry>> GetLibraryCollectionByIdsAsync(int userId, int[] ids, LibraryType type = LibraryType.All, LibraryStatus status = LibraryStatus.All)
+        {
+            var rtn = new List<LibraryEntry>();
+
+            var request = _GetBaseRequest();
+
+            request.AddQueryParameter(
+                name: "filter[userId]",
+                value: userId.ToString(),
+                encode: false);
+
+            var filterTypes = string.Join(",", type.MaskToList()).ToLower();
+            var includeTypes = filterTypes;
+            if (type.HasFlag(LibraryType.Anime))
+            {
+                includeTypes += ",anime.mappings";
+            }
+
+            request.AddQueryParameter(
+                name: "filter[kind]",
+                value: filterTypes,
+                encode: false);
+
+            request.AddQueryParameter(
+                name: "include",
+                value: includeTypes,
+                encode: false);
+
+            var statuses = string.Join(",", status.MaskToList()).ToLower();
+            request.AddQueryParameter(
+                name: "filter[status]",
+                value: statuses,
+                encode: false);
+
+            var idChunks = ids.Chunk(10);
+
+            foreach (var idChunk in idChunks)
+            {
+                while (request != null)
+                {
+                    request.AddQueryParameter(
+                        name: "filter[id]",
+                        value: string.Join(",", idChunk),
+                        encode: false);
+
+                    var restJson = await ExecuteGetRequestAsync(request);
+
+                    if (string.IsNullOrWhiteSpace(restJson))
+                    {
+                        return null;
+                    }
+
+                    var result = UserLibraryGetRequest.FromJson(restJson);
+
+                    var listedResults = result.Data.Select(entry =>
+                    {
+                        var includedAnime = result.Included
+                            .FirstOrDefault(a => a.Id == entry.Relationships.Anime.Data.Id);
+
+                        var mappingIds = includedAnime.Relationships.Mappings.Data.Select(map => map.Id).ToArray();
+
+                        var myAnimeListId = result.Included
+                            .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                                && mappingIds.Contains(inc.Id)
+                                && inc.Attributes.ExternalSite == "myanimelist/anime")
+                            ?.Attributes.ExternalId;
+
+                        return includedAnime != null
+                            ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, includedAnime.Attributes)
+                            : new LibraryEntry(entry, type);
+                    }).ToList();
+
+                    rtn.AddRange(listedResults);
+                    request = null;
+
+                    if (!string.IsNullOrWhiteSpace(result.Links.Next?.ToString()))
+                    {
+                        var url = HttpUtility.UrlDecode(result.Links.Next.ToString());
+                        request = GetBaseRequest(url);
+                    }
                 }
             }
 

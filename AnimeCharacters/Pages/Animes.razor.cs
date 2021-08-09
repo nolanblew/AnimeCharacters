@@ -136,6 +136,32 @@ namespace AnimeCharacters.Pages
             }
         }
 
+        async Task _FetchAnimeIds(int[] ids)
+        {
+            try
+            {
+                var updatedLibraries =
+                    (await _kitsuClient.UserLibraries.GetLibraryCollectionByIdsAsync
+                        (CurrentUser.Id,
+                        ids,
+                        LibraryType.Anime,
+                        LibraryStatus.Current | LibraryStatus.Completed))
+                    .ToDictionary(lib => lib.Id);
+
+                var addedLibraries = 
+
+                await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
+                await _SetLastFetchedId();
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR in _FetchAllUserAnime(): {ex.Message}");
+                Console.WriteLine($" STACKTRACE: {ex.StackTrace}");
+                await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
+            }
+        }
+
         async Task _UpdateUserAnime()
         {
             void updateLibraryEntry(LibraryEntrySlim libraryEntrySlim)
