@@ -2,8 +2,13 @@
 @implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
 @implements EventAggregator.Blazor.IHandle<Events.PageStateManagerEvent>
 
+@{
+    bool isDarkMode = true;
+    string themeText = isDarkMode ? "dark" : "light";
+    string themeTextShort = isDarkMode ? "dk" : "lg";
+}
 
-<nav class="navbar navbar-expand-sm navbar-light bg-light">
+<nav class="navbar navbar-expand-sm navbar-@themeText bg-@themeText">
     @if (PageStateManager.CanGoBack)
     {
         <div class="nav-item" style="display: flex; align-items: center;">
