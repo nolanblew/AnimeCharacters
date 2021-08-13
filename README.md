@@ -1,8 +1,8 @@
 # Anime Characters
 <img src="http://thankful-hill-03c7b7e1e.azurestaticapps.net/icon-512.png" width="90" height="90" />
-Quickly find the characters that a Seyu (voice actor) has also played in other anime you've watched (as listed on [Kitsu](https://kitsu.io))
+Quickly find the characters that a Seyu (voice actor) has also played in other anime you've watched (as listed on [Kitsu](https://kitsu.io) )
 
-**Live site**: http://thankful-hill-03c7b7e1e.azurestaticapps.net/
+**Live site**: https://www.animecharacters.app/
 
 ## Requirements to Use
  - [Kitsu account](https://kitsu.io). If you know your username (slug) you don't have to log in. You may also login with your email address and password
