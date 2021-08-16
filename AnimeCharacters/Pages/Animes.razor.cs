@@ -21,7 +21,7 @@ namespace AnimeCharacters.Pages
             1;
 #endif
 
-        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 5;
+        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 10;
 
         readonly KitsuClient _kitsuClient = new();
 
