@@ -1,5 +1,7 @@
 ﻿using Kitsu;
+using Kitsu.Comparers;
 using Kitsu.Controllers;
+using Kitsu.Helpers;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -12,8 +14,14 @@ namespace AnimeCharacters.Pages
 {
     public partial class Animes
     {
-        const int _CACHE_UPDATE_TIME_MINUTES = 1;
-        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 5;
+        const int _CACHE_UPDATE_TIME_MINUTES =
+#if DEBUG
+            0;
+#else
+            1;
+#endif
+
+        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 10;
 
         readonly KitsuClient _kitsuClient = new();
 
@@ -136,6 +144,53 @@ namespace AnimeCharacters.Pages
             }
         }
 
+        async Task _FetchAnimeIds(long[] ids, bool saveLibrary = true)
+        {
+            try
+            {
+                var updatedLibraries =
+                    await _kitsuClient.UserLibraries.GetLibraryCollectionByIdsAsync
+                        (CurrentUser.Id,
+                        ids,
+                        LibraryType.Anime,
+                        LibraryStatus.Current | LibraryStatus.Completed);
+
+                var libraryDeltas = _LibraryEntries
+                    .Where(le => ids.Contains(le.Key))
+                    .Select(le => le.Value)
+                    .GetDelta(updatedLibraries, l => l.Id, LibraryComparer.Default);
+
+                foreach(var newItem in libraryDeltas.Added)
+                {
+                    _LibraryEntries.Add(newItem.Id, newItem);
+                }
+
+                foreach(var oldItem in libraryDeltas.Deleted)
+                {
+                    _LibraryEntries.Remove(oldItem.Id);
+                }
+
+                foreach(var updatedItem in libraryDeltas.Updated)
+                {
+                    _LibraryEntries[updatedItem.Id] = updatedItem;
+                }
+
+                if (saveLibrary)
+                {
+                    await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
+                }
+
+                await _SetLastFetchedId();
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR in _FetchAllUserAnime(): {ex.Message}");
+                Console.WriteLine($" STACKTRACE: {ex.StackTrace}");
+                await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
+            }
+        }
+
         async Task _UpdateUserAnime()
         {
             void updateLibraryEntry(LibraryEntrySlim libraryEntrySlim)
@@ -163,18 +218,23 @@ namespace AnimeCharacters.Pages
 
                 // TODO: This is temporary - if there are any added library entries, we need to re-fetch all the libraries and then add the ones that have been added.
                 // We should just query the individual libraries we didn't have already
-                if (deltaLibraryEvents.LibraryEntryEvents.Any(e => !e.LibraryEntryId.HasValue || !_LibraryEntries.ContainsKey(e.LibraryEntryId.Value)))
-                {
-                    Console.WriteLine($"PATH: No events were found while fetching library events.");
-                    await _FetchAllUserAnime();
-                    return;
-                }
+
+                var idsToAdd = deltaLibraryEvents.LibraryEntryEvents
+                    .Where(e => !e.LibraryEntryId.HasValue || !_LibraryEntries.ContainsKey(e.LibraryEntryId.Value))
+                    .ToArray();
 
                 bool hasChanges = false;
 
+                if (idsToAdd.Any())
+                {
+                    Console.WriteLine($"PATH: There were {idsToAdd.Length} items to add.");
+                    await _FetchAnimeIds(idsToAdd.Select(l => l.LibraryEntryId.Value).ToArray(), saveLibrary: false);
+                    hasChanges = true;
+                }
+
                 foreach (var libraryEvent in deltaLibraryEvents.LibraryEntryEvents)
                 {
-                    if (_LibraryEntries.ContainsKey(libraryEvent.LibraryEntrySlim.Id))
+                    if (_LibraryEntries.ContainsKey(libraryEvent.LibraryEntryId.Value))
                     {
                         if (libraryEvent.Type == LibraryEntryEvent.EventType.Updated)
                         {
@@ -191,11 +251,6 @@ namespace AnimeCharacters.Pages
                             updateLibraryEntry(libraryEvent.LibraryEntrySlim);
                             hasChanges = true;
                         }
-                    }
-                    else
-                    {
-                        // TODO: The library entry didn't exist before, so we need to add it
-                        // Currently handled above
                     }
                 }
 
