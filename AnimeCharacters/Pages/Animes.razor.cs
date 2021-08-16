@@ -1,5 +1,7 @@
 ﻿using Kitsu;
+using Kitsu.Comparers;
 using Kitsu.Controllers;
+using Kitsu.Helpers;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System;
@@ -141,14 +143,28 @@ namespace AnimeCharacters.Pages
             try
             {
                 var updatedLibraries =
-                    (await _kitsuClient.UserLibraries.GetLibraryCollectionByIdsAsync
+                    await _kitsuClient.UserLibraries.GetLibraryCollectionByIdsAsync
                         (CurrentUser.Id,
                         ids,
                         LibraryType.Anime,
-                        LibraryStatus.Current | LibraryStatus.Completed))
-                    .ToDictionary(lib => lib.Id);
+                        LibraryStatus.Current | LibraryStatus.Completed);
 
-                var addedLibraries = 
+                var libraryDeltas = _LibraryEntries.Values.GetDelta(updatedLibraries, l => l.Id, LibraryComparer.Default);
+
+                foreach(var newItem in libraryDeltas.Added)
+                {
+                    _LibraryEntries.Add(newItem.Id, newItem);
+                }
+
+                foreach(var oldItem in libraryDeltas.Deleted)
+                {
+                    _LibraryEntries.Remove(oldItem.Id);
+                }
+
+                foreach(var updatedItem in libraryDeltas.Updated)
+                {
+                    _LibraryEntries[updatedItem.Id] = updatedItem;
+                }
 
                 await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
                 await _SetLastFetchedId();

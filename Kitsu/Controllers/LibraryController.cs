@@ -90,6 +90,7 @@ namespace Kitsu.Controllers
 
             return rtn;
         }
+
         public async Task<List<LibraryEntry>> GetLibraryCollectionByIdsAsync(int userId, int[] ids, LibraryType type = LibraryType.All, LibraryStatus status = LibraryStatus.All)
         {
             var rtn = new List<LibraryEntry>();
