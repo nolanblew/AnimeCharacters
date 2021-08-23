@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnimeCharacters", "AnimeCha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kitsu", "Kitsu\Kitsu.csproj", "{9F1E8B25-B9BF-4EBC-956F-65899CCF480A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kitsu.Tests", "Kitsu.Tests\Kitsu.Tests.csproj", "{4D8A2CCF-0E0C-4C37-9CB6-B49E960BBD64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kitsu.Tests", "Kitsu.Tests\Kitsu.Tests.csproj", "{4D8A2CCF-0E0C-4C37-9CB6-B49E960BBD64}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E90B4538-B291-4ECF-AAAA-2F8FFB298ECB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniListClient", "AniListClient\AniListClient.csproj", "{7D06720E-7412-4D05-82E3-D2587BF9D076}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{4D8A2CCF-0E0C-4C37-9CB6-B49E960BBD64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D8A2CCF-0E0C-4C37-9CB6-B49E960BBD64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D8A2CCF-0E0C-4C37-9CB6-B49E960BBD64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D06720E-7412-4D05-82E3-D2587BF9D076}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D06720E-7412-4D05-82E3-D2587BF9D076}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D06720E-7412-4D05-82E3-D2587BF9D076}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D06720E-7412-4D05-82E3-D2587BF9D076}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
