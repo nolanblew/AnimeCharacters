@@ -7,6 +7,6 @@ namespace AnimeCharacters.Models
         public string KitsuId { get; set; }
         public string AnimeImageUrl { get; set; }
         public DateTimeOffset? LastProgressedAt { get; set; }
-        public JikanDotNet.VoiceActingRole VoiceActingRole { get; set; }
+        public AniListClient.Models.Character VoiceActingRole { get; set; }
     }
 }

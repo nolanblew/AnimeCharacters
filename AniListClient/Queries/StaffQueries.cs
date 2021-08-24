@@ -54,6 +54,13 @@ query getStaffByAnime($staff_id: Int, $page:Int=1) {
           }
         }
       }
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
     }
   }
 }";

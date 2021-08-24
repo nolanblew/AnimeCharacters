@@ -10,5 +10,12 @@
         string Medium,
         string Large,
         string ExtraLarge,
-        string Color);
+        string Color)
+    {
+        public string GetOptimalImage() =>
+            !string.IsNullOrWhiteSpace(Large) ? Large :
+            !string.IsNullOrWhiteSpace(ExtraLarge) ? ExtraLarge :
+            !string.IsNullOrWhiteSpace(Medium) ? Medium :
+            null;
+    }
 }

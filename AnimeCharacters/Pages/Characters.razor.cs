@@ -2,6 +2,7 @@
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +11,11 @@ namespace AnimeCharacters.Pages
     public partial class Characters
     {
         [Inject]
-        JikanDotNet.IJikan Jikan { get; set; }
+        AniListClient.AniListClient _anilistClient { get; set; }
 
         public User CurrentUser { get; set; }
 
-        public JikanDotNet.Person CurrentPerson { get; set; }
+        public AniListClient.Models.Staff CurrentPerson { get; set; }
 
         public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
         public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
@@ -35,7 +36,7 @@ namespace AnimeCharacters.Pages
             }
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
-            CurrentPerson = await Jikan.GetPerson(long.Parse(Id));
+            CurrentPerson = await _anilistClient.Staff.GetStaffById(int.Parse(Id));
 
             if (CurrentPerson == null)
             {
@@ -63,21 +64,28 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            var vaRoles = CurrentPerson
-                .VoiceActingRoles
-                .GroupBy(role => role.Anime.MalId)
-                .ToDictionary(group => group.Key.ToString());
+            var vaRoles = new Dictionary<string, AniListClient.Models.Character>();
+
+            foreach(var person in CurrentPerson.Characters.Where(role => role.Media != null))
+            {
+                foreach(var mediaItem in person.Media)
+                {
+                    if (!vaRoles.TryAdd(mediaItem.Id.ToString(), person))
+                    {
+                    }
+                }
+            }
 
             var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
 
             MyCharactersList =
-                libraryEntries.Where(libraryEntry => !string.IsNullOrWhiteSpace(libraryEntry.Anime.MyAnimeListId) && vaRoles.ContainsKey(libraryEntry.Anime.MyAnimeListId))
+                libraryEntries.Where(libraryEntry => !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) && vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
                               .Select(libraryEntry => new CharacterAnimeModel
                               {
                                   KitsuId = libraryEntry.Anime.KitsuId,
                                   AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
                                   LastProgressedAt = libraryEntry.ProgressedAt,
-                                  VoiceActingRole = vaRoles[libraryEntry.Anime.MyAnimeListId].FirstOrDefault(),
+                                  VoiceActingRole = vaRoles[libraryEntry.Anime.AnilistId],
                               })
                               .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
                               .ToList();
