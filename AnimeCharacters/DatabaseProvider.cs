@@ -22,6 +22,9 @@ namespace AnimeCharacters
         ValueTask<IList<LibraryEntry>> GetLibrariesAsync();
         ValueTask SetLibrariesAsync(IList<LibraryEntry> value);
 
+        ValueTask<int?> GetMigrationVersionAsnyc();
+        ValueTask SetMigrationVersionAsync(int value);
+
         ValueTask ClearAsync();
     }
 
@@ -31,6 +34,7 @@ namespace AnimeCharacters
         const string _LAST_FETCHED_ID_STORE = "last_fetched_id";
         const string _LAST_FETCHED_DATE_STORE = "last_fetched_date";
         const string _LIBRARIES_STORE = "libraries";
+        const string _MIGRATION_VERSION = "migration_version";
 
         public DatabaseProvider(
             ILocalStorageService localStorageService,
@@ -57,6 +61,10 @@ namespace AnimeCharacters
         // Libraries
         public ValueTask<IList<LibraryEntry>> GetLibrariesAsync() => _localStorageService.GetItemAsync<IList<LibraryEntry>>(_LIBRARIES_STORE);
         public ValueTask SetLibrariesAsync(IList<LibraryEntry> value) => _TriggerEvent(() => _localStorageService.SetItemAsync(_LIBRARIES_STORE, value));
+
+        // Migration Version
+        public ValueTask<int?> GetMigrationVersionAsnyc() => _localStorageService.GetItemAsync<int?>(_MIGRATION_VERSION);
+        public ValueTask SetMigrationVersionAsync(int value) => _TriggerEvent(() => _localStorageService.SetItemAsync(_MIGRATION_VERSION, value));
 
         public ValueTask ClearAsync() => _TriggerEvent(() => _localStorageService.ClearAsync());
 
