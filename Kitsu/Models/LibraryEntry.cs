@@ -52,11 +52,12 @@ namespace Kitsu.Models
             UserLibraryGetRequest.UserLibraryGet libraryResponse,
             LibraryType type,
             string animeId,
+            string myAnimeListId,
             string anilistId,
             UserLibraryGetRequest.IncludedAttributes includedAttributes)
              : this(libraryResponse, type)
         {
-            Anime = new Anime(animeId, anilistId, includedAttributes);
+            Anime = new Anime(animeId, myAnimeListId, anilistId, includedAttributes);
         }
 
         public long? AnimeId { get; set; }

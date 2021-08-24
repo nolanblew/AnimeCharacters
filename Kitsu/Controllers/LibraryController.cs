@@ -67,6 +67,12 @@ namespace Kitsu.Controllers
 
                     var mappingIds = includedAnime.Relationships.Mappings.Data.Select(map => map.Id).ToArray();
 
+                    var myAnimeListId = result.Included
+                        .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                            && mappingIds.Contains(inc.Id)
+                            && inc.Attributes.ExternalSite == "myanimelist/anime")
+                        ?.Attributes.ExternalId;
+
                     var anilistId = result.Included
                         .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
                             && mappingIds.Contains(inc.Id)
@@ -74,7 +80,7 @@ namespace Kitsu.Controllers
                         ?.Attributes.ExternalId;
 
                     return includedAnime != null
-                        ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), anilistId, includedAnime.Attributes)
+                        ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, anilistId, includedAnime.Attributes)
                         : new LibraryEntry(entry, type);
                 }).ToList();
 
@@ -152,6 +158,12 @@ namespace Kitsu.Controllers
 
                         var mappingIds = includedAnime.Relationships.Mappings.Data.Select(map => map.Id).ToArray();
 
+                        var myAnimeListId = result.Included
+                            .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                                && mappingIds.Contains(inc.Id)
+                                && inc.Attributes.ExternalSite == "myanimelist/anime")
+                            ?.Attributes.ExternalId;
+
                         var anilistId = result.Included
                             .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
                                 && mappingIds.Contains(inc.Id)
@@ -159,7 +171,7 @@ namespace Kitsu.Controllers
                             ?.Attributes.ExternalId;
 
                         return includedAnime != null
-                            ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), anilistId, includedAnime.Attributes)
+                            ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, anilistId, includedAnime.Attributes)
                             : new LibraryEntry(entry, type);
                     }).ToList();
 

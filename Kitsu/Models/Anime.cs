@@ -9,10 +9,12 @@ namespace Kitsu.Models
 
         public Anime(
             string kitsuId,
+            string myAnimeListId,
             string anilistId,
             Responses.UserLibraryGetRequest.IncludedAttributes animeResponse)
         {
             KitsuId = kitsuId;
+            MyAnimeListId = myAnimeListId;
             AnilistId = anilistId;
             Title = animeResponse.CanonicalTitle;
             RomanjiTitle = animeResponse.Titles.EnJp;
@@ -25,6 +27,7 @@ namespace Kitsu.Models
 
         public Anime(
             string kistuId,
+            string myAnimeListId,
             string anilistId,
             string title,
             string romanjiTitle,
@@ -35,6 +38,7 @@ namespace Kitsu.Models
             AnimeType? showType)
         {
             KitsuId = kistuId;
+            MyAnimeListId = myAnimeListId;
             AnilistId = anilistId;
             Title = title;
             RomanjiTitle = romanjiTitle;
@@ -46,6 +50,7 @@ namespace Kitsu.Models
         }
 
         public string KitsuId { get; set; }
+        public string MyAnimeListId { get; set; }
         public string AnilistId { get; set; }
 
         public string Title { get; set; }
