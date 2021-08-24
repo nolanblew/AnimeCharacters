@@ -2,5 +2,5 @@
 {
     public record VoiceActorSlim(
         int Id,
-        CharacterName Name);
+        Names Name);
 }

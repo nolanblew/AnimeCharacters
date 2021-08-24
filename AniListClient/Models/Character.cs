@@ -4,12 +4,14 @@ namespace AniListClient.Models
 {
     public record Character(
         int Id,
-        CharacterName Name,
+        Names Name,
         Images Image,
+        string Description,
         CharacterRole? Role,
+        List<MediaBase> Media,
         List<VoiceActorSlim> VoiceActors);
 
-    public record CharacterName(
+    public record Names(
         string Romaji,
         string First,
         string Last,

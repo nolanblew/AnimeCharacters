@@ -1,4 +1,5 @@
-﻿using Kitsu.Models;
+﻿using AnimeCharacters.Comparers;
+using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,8 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            CharactersList = await AnilistClient.Characters.GetCharactersById(int.Parse(CurrentAnime.AnilistId));
+            var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
+            CharactersList = media.Characters.OrderByDescending(c => c, CharacterByRoleComparer.Instance).ToList();
         }
     }
 }

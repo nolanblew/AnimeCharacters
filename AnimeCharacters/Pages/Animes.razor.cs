@@ -93,7 +93,7 @@ namespace AnimeCharacters.Pages
 
         async Task _TestCode()
         {
-            var characters = await _aniListClient.Characters.GetCharactersById(120697);
+            var characters = await _aniListClient.Characters.GetMediaWithCharactersById(120697);
         }
 
         async Task _FetchLibraries(bool forceFullRefresh = false)
