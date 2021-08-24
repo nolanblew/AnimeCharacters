@@ -1,7 +1,7 @@
 ﻿<div class="item">
     <div class="row">
         <div class="col">
-            <img src="@(Character?.Image?.Large ?? Character?.Image?.ExtraLarge ?? Character?.Image?.Medium ?? "#")" />
+            <img src="@(Character?.Image?.GetOptimalImage() ?? "#")" />
         </div>
     </div>
     <div class="row">

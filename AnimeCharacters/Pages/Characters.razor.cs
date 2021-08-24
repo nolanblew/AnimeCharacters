@@ -70,9 +70,8 @@ namespace AnimeCharacters.Pages
             {
                 foreach(var mediaItem in person.Media)
                 {
-                    if (!vaRoles.TryAdd(mediaItem.Id.ToString(), person))
-                    {
-                    }
+                    // TODO: Allow VAs to have multiple roles in the same anime
+                    vaRoles.TryAdd(mediaItem.Id.ToString(), person);
                 }
             }
 

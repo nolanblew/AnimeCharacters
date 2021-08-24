@@ -18,29 +18,19 @@ namespace AniListClient.Controllers
             _graphQLHttpClient = graphQLHttpClient;
         }
 
-        //internal async Task<List<TResult>> GetPaginatedList<TBase,TResult>(string query, string operationName, IHasPage variables, Func<TBase, IList<TResult>> selector, Func<TBase, bool> hasMorePagesFunc)
-        //{
-        //    var returnList = new List<TResult>();
-        //    var page = 1;
-
-        //    var request = new GraphQLRequest(query);
-        //    request.OperationName = operationName;
-
-        //    while (true)
-        //    {
-        //        variables.Page = page++;
-        //        request.Variables = variables;
-
-        //        var result = await _graphQLHttpClient.SendQueryAsync<TBase>(request);
-        //        returnList.AddRange(selector(result.Data));
-
-        //        if (!hasMorePagesFunc(result.Data))
-        //        {
-        //            return returnList;
-        //        }
-        //    }
-        //}
-
+        /// <summary>
+        /// Gets a paginated list of items that are nested in a request
+        /// </summary>
+        /// <typeparam name="TBase">The base type to directly convert the request to</typeparam>
+        /// <typeparam name="TResult">The base result type you'd like to have at the end</typeparam>
+        /// <typeparam name="TListType">The type that will be paginated in a list</typeparam>
+        /// <param name="query">The GraphQL Query</param>
+        /// <param name="operationName">The operation of the GraphQL. Note: As of now all queries must be in "operation" form</param>
+        /// <param name="variables">The variables to pass in. This must implement <see cref="IHasPage"/> to allow this method to modify and pass through the paging</param>
+        /// <param name="selectorExpression">The expression that points to the PROPERTY (with public get and public set) that holds the list of <typeparamref name="TListType"/> that we want to paginate on</param>
+        /// <param name="conversionSelector">How to convert from <typeparamref name="TBase"/> to <typeparamref name="TResult"/></param>
+        /// <param name="hasMorePagesFunc">The property or func that tells us when we have more items to page through</param>
+        /// <returns></returns>
         internal async Task<TResult> GetPaginatedList<TBase,TResult,TListType>(
             string query,
             string operationName,
