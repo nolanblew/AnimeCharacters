@@ -8,7 +8,7 @@ namespace AniListClient.Models
         string Description,
         Images Image,
         MediaStatus Status,
-        List<CharacterResponse> Characters
+        List<Character> Characters
     );
 
     public enum MediaStatus

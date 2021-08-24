@@ -6,21 +6,8 @@ namespace AniListClient.Models
         int Id,
         CharacterName Name,
         Images Image,
-        CharacterRole Role,
+        CharacterRole? Role,
         List<VoiceActorSlim> VoiceActors);
-
-    public record CharacterResponse(
-        int Id,
-        CharacterName Name,
-        Images Image,
-        CharacterRole Role,
-        List<VoiceActorSlim> VoiceActors,
-        PageInfo PageInfo) : Character(
-        Id,
-        Name,
-        Image,
-        Role,
-        VoiceActors), IHasPageInfo;
 
     public record CharacterName(
         string Romaji,
