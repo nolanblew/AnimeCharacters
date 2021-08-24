@@ -1,4 +1,5 @@
-﻿using Kitsu;
+﻿using AnimeCharacters.Helpers;
+using Kitsu;
 using Kitsu.Comparers;
 using Kitsu.Controllers;
 using Kitsu.Helpers;
@@ -23,6 +24,8 @@ namespace AnimeCharacters.Pages
         const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 10;
 
         readonly KitsuClient _kitsuClient = new();
+
+        bool _isMigrating = false;
 
         Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
 
@@ -72,8 +75,19 @@ namespace AnimeCharacters.Pages
 
             if (firstRender)
             {
-                _LibraryEntries = ((await DatabaseProvider.GetLibrariesAsync()) ?? new List<LibraryEntry>())
-                    .ToDictionary(lib => lib.Id);
+                // Check if we need to migrate
+                // TODO: Remove after everyone has updated to latest version
+                _isMigrating = !MigrationHelper.IsOnLatestVersion(await DatabaseProvider.GetMigrationVersionAsnyc());
+
+                if (_isMigrating)
+                {
+                    _LibraryEntries = new();
+                }
+                else
+                {
+                    _LibraryEntries = ((await DatabaseProvider.GetLibrariesAsync()) ?? new List<LibraryEntry>())
+                        .ToDictionary(lib => lib.Id);
+                }
 
                 StateHasChanged();
 
@@ -94,6 +108,8 @@ namespace AnimeCharacters.Pages
             {
                 IsBusy = true;
 
+                if (_isMigrating) { forceFullRefresh = true; }
+
                 var lastFetchedDate = await DatabaseProvider.GetLastFetchedDateAsnyc();
 
                 if (forceFullRefresh
@@ -103,6 +119,15 @@ namespace AnimeCharacters.Pages
                 {
                     Console.WriteLine($"PATH: Fetching full list from the start.");
                     await _FetchAllUserAnime();
+
+                    if (_isMigrating)
+                    {
+                        await DatabaseProvider.SetMigrationVersionAsync(MigrationHelper.CURRENT_MIGRATION_VERSION);
+                        _isMigrating = false;
+
+                        await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Updated to the latest version."));
+                    }
+
                     return;
                 }
 
