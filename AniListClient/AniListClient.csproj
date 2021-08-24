@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GraphQL-Parser" Version="7.2.0" />
+    <PackageReference Include="GraphQL.Client" Version="3.2.4" />
+    <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="3.2.4" />
+  </ItemGroup>
+
+</Project>

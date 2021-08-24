@@ -4,15 +4,15 @@
             <img src="@(CharacterAnime?.AnimeImageUrl ?? "#")" />
         </div>
         <div class="col" @onclick="_OnCharacterClicked">
-            <img src="@(CharacterAnime?.VoiceActingRole?.Character?.ImageURL ?? "#")" />
+            <img src="@(CharacterAnime?.VoiceActingRole?.Image?.GetOptimalImage() ?? "#")" />
         </div>
     </div>
     <div class="row">
         <div class="col" @onclick="_OnAnimeClicked">
-            <div class="text-md-center text-primary">@(CharacterAnime?.VoiceActingRole?.Anime?.Name ?? "Loading...")</div>
+            <div class="text-md-center text-primary">@(CharacterAnime?.VoiceActingRole?.Media?.FirstOrDefault()?.Title?.UserPreferred ?? "Loading...")</div>
         </div>
         <div class="col" @onclick="_OnCharacterClicked">
-            <div class="text-md-center text-secondary">@(CharacterAnime?.VoiceActingRole?.Character?.Name ?? "Loading...")</div>
+            <div class="text-md-center text-secondary">@(CharacterAnime?.VoiceActingRole?.Name?.Full ?? "Loading...")</div>
         </div>
     </div>
 </div>

@@ -41,6 +41,7 @@ namespace Kitsu.Models
             Type = type;
             Status = (LibraryStatus)Enum.Parse(typeof(LibraryStatus), libraryResponse.Attributes.Status, true);
             AnimeId = libraryResponse.Relationships.Anime.Data?.Id ?? 0;
+
             IsReconsuming = libraryResponse.Attributes.Reconsuming;
             StartedAt = libraryResponse.Attributes.StartedAt;
             FinishedAt = libraryResponse.Attributes.FinishedAt;
@@ -48,10 +49,16 @@ namespace Kitsu.Models
             Progress = libraryResponse.Attributes.Progress;
         }
 
-        public LibraryEntry(UserLibraryGetRequest.UserLibraryGet libraryResponse, LibraryType type, string animeId, string myAnimeListId, Responses.UserLibraryGetRequest.IncludedAttributes includedAttributes)
+        public LibraryEntry(
+            UserLibraryGetRequest.UserLibraryGet libraryResponse,
+            LibraryType type,
+            string animeId,
+            string myAnimeListId,
+            string anilistId,
+            UserLibraryGetRequest.IncludedAttributes includedAttributes)
              : this(libraryResponse, type)
         {
-            Anime = new Anime(animeId, myAnimeListId, includedAttributes);
+            Anime = new Anime(animeId, myAnimeListId, anilistId, includedAttributes);
         }
 
         public long? AnimeId { get; set; }

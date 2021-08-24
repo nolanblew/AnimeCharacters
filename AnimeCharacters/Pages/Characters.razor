@@ -5,13 +5,13 @@
     <div class="row">
         <div class="col text-center">
             <div class="item-container center-image">
-                <img src="@CurrentPerson?.ImageURL" />
+                <img src="@CurrentPerson?.Images?.GetOptimalImage()" />
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col text-center text-secondary">
-            @CurrentPerson?.Name
+            @(CurrentPerson?.Name?.Full ?? "Loading...")
         </div>
     </div>
 

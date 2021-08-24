@@ -1,19 +1,17 @@
-﻿@using Kitsu.Models
-
-<div class="item">
+﻿<div class="item">
     <div class="row">
         <div class="col">
-            <img src="@(Character?.ImageURL ?? "#")" />
+            <img src="@(Character?.Image?.GetOptimalImage() ?? "#")" />
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <div class="text-md-center text-primary">@(Character?.Name ?? "Loading...")</div>
+            <div class="text-md-center text-primary">@(Character?.Name?.Full ?? "Loading...")</div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <div class="text-md-center text-secondary">VA: @(VoiceActor?.Name ?? "Loading...")</div>
+            <div class="text-md-center text-secondary">VA: @(VoiceActor?.Name?.Full ?? "Loading...")</div>
         </div>
     </div>
 </div>
@@ -21,11 +19,11 @@
 @code 
 {
     [Parameter]
-    public JikanDotNet.CharacterEntry Character { get; set; } = null;
+    public AniListClient.Models.Character Character { get; set; } = null;
 
     [Parameter]
     public string Language { get; set; } = "Japanese";
 
-    JikanDotNet.VoiceActorEntry VoiceActor => Character?.VoiceActors.FirstOrDefault(va => va.Language == Language);
+    AniListClient.Models.VoiceActorSlim VoiceActor => Character?.VoiceActors.FirstOrDefault();
 }
 
