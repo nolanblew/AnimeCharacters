@@ -20,6 +20,7 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
     coverImage {
       extraLarge
       large
+      medium
       color
     }
     status
@@ -30,9 +31,11 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
           name {
             first
             last
+            full
           }
           image {
             large
+            medium
           }
         }
         role
@@ -41,7 +44,7 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
           name {
             first
             last
-            userPreferred
+            full
           }
         }
       }

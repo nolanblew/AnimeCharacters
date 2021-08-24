@@ -73,8 +73,14 @@ namespace Kitsu.Controllers
                             && inc.Attributes.ExternalSite == "myanimelist/anime")
                         ?.Attributes.ExternalId;
 
+                    var anilistId = result.Included
+                        .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                            && mappingIds.Contains(inc.Id)
+                            && inc.Attributes.ExternalSite == "anilist/anime")
+                        ?.Attributes.ExternalId;
+
                     return includedAnime != null
-                        ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, includedAnime.Attributes)
+                        ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, anilistId, includedAnime.Attributes)
                         : new LibraryEntry(entry, type);
                 }).ToList();
 
@@ -158,8 +164,14 @@ namespace Kitsu.Controllers
                                 && inc.Attributes.ExternalSite == "myanimelist/anime")
                             ?.Attributes.ExternalId;
 
+                        var anilistId = result.Included
+                            .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                                && mappingIds.Contains(inc.Id)
+                                && inc.Attributes.ExternalSite == "anilist/anime")
+                            ?.Attributes.ExternalId;
+
                         return includedAnime != null
-                            ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, includedAnime.Attributes)
+                            ? new LibraryEntry(entry, type, includedAnime.Id.ToString(), myAnimeListId, anilistId, includedAnime.Attributes)
                             : new LibraryEntry(entry, type);
                     }).ToList();
 

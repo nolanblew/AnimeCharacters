@@ -9,7 +9,7 @@ namespace AnimeCharacters.Pages
     public partial class AnimeDetails
     {
         [Inject]
-        JikanDotNet.IJikan Jikan { get; set; }
+        AniListClient.AniListClient AnilistClient { get; set; }
 
         public User CurrentUser { get; set; }
 
@@ -17,7 +17,7 @@ namespace AnimeCharacters.Pages
 
         public string Language { get; set; } = "Japanese";
 
-        public List<JikanDotNet.CharacterEntry> CharactersList { get; set; } = new();
+        public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
 
         [Parameter]
         public string Id { get; set; }
@@ -43,7 +43,7 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(CurrentAnime.MyAnimeListId))
+            if (string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
             {
                 NavigationManager.NavigateTo("/animes");
                 return;
@@ -56,19 +56,18 @@ namespace AnimeCharacters.Pages
             StateHasChanged();
         }
 
-        protected void _Character_OnClicked(JikanDotNet.CharacterEntry character)
+        protected void _Character_OnClicked(AniListClient.Models.Character character)
         {
-            var voiceActor = character?.VoiceActors?.FirstOrDefault(va => va.Language == Language);
+            var voiceActor = character?.VoiceActors?.FirstOrDefault();
 
             if (voiceActor == null) { return; }
 
-            NavigationManager.NavigateTo($"/characters/{voiceActor.MalId}");
+            NavigationManager.NavigateTo($"/characters/{voiceActor.Id}");
         }
 
         async Task _LoadCharacters()
         {
-            var animeCharactersStaff = await Jikan.GetAnimeCharactersStaff(long.Parse(CurrentAnime.MyAnimeListId));
-            CharactersList = animeCharactersStaff.Characters.ToList();
+            CharactersList = await AnilistClient.Characters.GetCharactersById(int.Parse(CurrentAnime.AnilistId));
         }
     }
 }
