@@ -40,7 +40,8 @@ namespace Kitsu.Models
             Id = libraryResponse.Id ?? 0;
             Type = type;
             Status = (LibraryStatus)Enum.Parse(typeof(LibraryStatus), libraryResponse.Attributes.Status, true);
-            AnimeId = libraryResponse.Relationships.Anime.Data?.Id ?? 0; 
+            AnimeId = libraryResponse.Relationships.Anime.Data?.Id ?? 0;
+
             IsReconsuming = libraryResponse.Attributes.Reconsuming;
             StartedAt = libraryResponse.Attributes.StartedAt;
             FinishedAt = libraryResponse.Attributes.FinishedAt;
