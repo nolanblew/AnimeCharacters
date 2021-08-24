@@ -1,13 +1,18 @@
-﻿using GraphQL.Client.Http;
+﻿using AniListClient.Controllers;
+using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
-using System;
 
 namespace AniListClient
 {
     public class AniListClient
     {
-        GraphQLHttpClient _graphQLClient = new("", new NewtonsoftJsonSerializer());
+        public AniListClient()
+        {
+            Characters = new(_graphQLClient);
+        }
 
+        GraphQLHttpClient _graphQLClient = new("https://graphql.anilist.co", new NewtonsoftJsonSerializer());
 
+        public CharactersController Characters { get; }
     }
 }

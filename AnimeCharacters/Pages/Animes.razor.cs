@@ -1,4 +1,5 @@
-﻿using Kitsu;
+﻿using AniListClient;
+using Kitsu;
 using Kitsu.Comparers;
 using Kitsu.Controllers;
 using Kitsu.Helpers;
@@ -6,7 +7,6 @@ using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,6 +24,8 @@ namespace AnimeCharacters.Pages
         const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 10;
 
         readonly KitsuClient _kitsuClient = new();
+
+        readonly AniListClient.AniListClient _aniListClient = new();
 
         Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
 
@@ -87,6 +89,11 @@ namespace AnimeCharacters.Pages
             if (libraryEntry?.Anime == null) { return; }
 
             NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
+        }
+
+        async Task _TestCode()
+        {
+            var characters = await _aniListClient.Characters.GetCharactersById(120697);
         }
 
         async Task _FetchLibraries(bool forceFullRefresh = false)

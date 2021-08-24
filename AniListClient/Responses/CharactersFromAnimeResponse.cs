@@ -10,12 +10,6 @@ namespace AniListClient.Responses
 {
     internal partial class CharactersFromAnimeResponse
     {
-        [JsonProperty("data", NullValueHandling = NullValueHandling.Ignore)]
-        public Data Data { get; set; }
-    }
-
-    internal partial class Data
-    {
         [JsonProperty("Media", NullValueHandling = NullValueHandling.Ignore)]
         public Media Media { get; set; }
     }

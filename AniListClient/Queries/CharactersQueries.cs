@@ -1,4 +1,6 @@
-﻿namespace AniListClient.Queries
+﻿using Newtonsoft.Json;
+
+namespace AniListClient.Queries
 {
     internal static class CharactersQueries
     {
@@ -64,7 +66,10 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
             AnimeId = animeId;
         }
 
+        [JsonProperty("page")]
         public int Page { get; set; }
+
+        [JsonProperty("anime_id")]
         public int AnimeId { get; set; }
     }
 }

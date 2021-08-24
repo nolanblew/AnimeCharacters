@@ -19,7 +19,7 @@ namespace AniListClient.Controllers
                 CharactersQueries.GET_STAFF_BY_ANIME_ID_QUERY,
                 CharactersQueries.GET_STAFF_BY_ANIME_ID_NAME,
                 new CharacterQueryVariable(id),
-                q => q.Data.Media.Characters.Edges.Select(c => c.ToCharacter()).ToList(),
-                q => q.Data.Media.Characters.PageInfo?.HasNextPage ?? false);
+                q => q.Media.Characters.Edges.Select(c => c.ToCharacter()).ToList(),
+                q => q.Media.Characters.PageInfo?.HasNextPage ?? false);
     }
 }

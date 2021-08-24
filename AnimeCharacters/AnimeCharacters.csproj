@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AniListClient\AniListClient.csproj" />
     <ProjectReference Include="..\Kitsu\Kitsu.csproj" />
   </ItemGroup>
 
