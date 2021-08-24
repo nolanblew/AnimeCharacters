@@ -24,7 +24,6 @@ namespace AnimeCharacters
             builder.Services.AddSingleton<IPageStateManager, PageStateManager>();
 
             builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
-            builder.Services.AddScoped<JikanDotNet.IJikan>(_ => new JikanDotNet.Jikan());
             builder.Services.AddScoped(_ => new AniListClient.AniListClient());
 
             await builder.Build().RunAsync();
