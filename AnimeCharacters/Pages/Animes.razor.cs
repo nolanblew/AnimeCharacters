@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AnimeCharacters.Pages
@@ -25,7 +26,11 @@ namespace AnimeCharacters.Pages
 
         readonly KitsuClient _kitsuClient = new();
 
+        readonly SemaphoreSlim _refreshLibrariesSemaphoreSlim = new SemaphoreSlim(1, 1);
+
         bool _isMigrating = false;
+
+        DateTime? _lastManualRefreshTime = null;
 
         Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
 
@@ -102,13 +107,26 @@ namespace AnimeCharacters.Pages
             NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
         }
 
-        async Task _FetchLibraries(bool forceFullRefresh = false)
+        async Task _FetchLibraries(bool isManualRefresh = false)
         {
+            if (!await _refreshLibrariesSemaphoreSlim.WaitAsync(TimeSpan.Zero))
+            {
+                return;
+            }
+
             try
             {
                 IsBusy = true;
 
+                var forceFullRefresh = false;
+
                 if (_isMigrating) { forceFullRefresh = true; }
+
+                if (isManualRefresh && _lastManualRefreshTime.HasValue && _lastManualRefreshTime.Value.AddSeconds(30) > DateTime.Now)
+                {
+                    // If we have a manual refresh that was clicked twice in the last 30 seconds then do a full refresh
+                    forceFullRefresh = true;
+                }
 
                 var lastFetchedDate = await DatabaseProvider.GetLastFetchedDateAsnyc();
 
@@ -118,6 +136,7 @@ namespace AnimeCharacters.Pages
                     || !_LibraryEntries.Any())
                 {
                     Console.WriteLine($"PATH: Fetching full list from the start.");
+                    _lastManualRefreshTime = null;
                     await _FetchAllUserAnime();
 
                     if (_isMigrating)
@@ -135,12 +154,19 @@ namespace AnimeCharacters.Pages
                 {
                     Console.WriteLine($"PATH: Fetching only updates from the start.");
                     await _UpdateUserAnime();
+
+                    if (isManualRefresh)
+                    {
+                        _lastManualRefreshTime = DateTime.Now;
+                    }
+
                     return;
                 }
             }
             finally
             {
                 IsBusy = false;
+                _refreshLibrariesSemaphoreSlim.Release();
                 StateHasChanged();
             }
         }
