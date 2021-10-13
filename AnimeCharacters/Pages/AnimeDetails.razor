@@ -16,7 +16,21 @@
     </div>
 
     <br />
-    <h3>Characters</h3>
+    <div class="row" style="margin-right:4px;">
+        <div class="col col-lg">
+            <h3>Characters</h3>
+        </div>
+        <div class="col-xs" style="display:flex">
+            <div style="align-self:flex-end">
+                <select onchange="LanguageChanged">
+                    <option selected="selected">Japanese</option>
+                    <option>English</option>
+                    <option>Chinese</option>
+                    <option>Korean</option>
+                </select>
+            </div>
+        </div>
+    </div>
     <hr />
 
     @if (CharactersList?.Any() == true)
@@ -26,7 +40,7 @@
     {
 <div class="col">
     <div class="item-container" @onclick="() => _Character_OnClicked(character)">
-        <AnimeCharacters.Components.CharacterTile Character="@character" Language="@Language" />
+        <AnimeCharacters.Components.CharacterTile Character="@character" Language="@Language" IsLoading="@_IsLoading" />
     </div>
 </div>                }
 </div>

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AniListClient.Models;
+using Newtonsoft.Json;
 
 namespace AniListClient.Queries
 {
@@ -7,7 +8,7 @@ namespace AniListClient.Queries
         internal const string GET_STAFF_BY_ANIME_ID_NAME = "getStaffByAnime";
 
         internal const string GET_STAFF_BY_ANIME_ID_QUERY = @"
-query getStaffByAnime($anime_id: Int, $page:Int=1) {
+query getStaffByAnime($anime_id:Int, $language:StaffLanguage=JAPANESE, $page:Int=1) {
   Media(id:$anime_id) {
     id
     title {
@@ -39,7 +40,7 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
           }
         }
         role
-        voiceActors(language:JAPANESE) { # Array of voice actors of this character for the anime
+        voiceActors(language:$language) { # Array of voice actors of this character for the anime
           id
           name {
             first
@@ -74,5 +75,8 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
 
         [JsonProperty("anime_id")]
         public int AnimeId { get; set; }
+
+        [JsonProperty("language")]
+        public Language Language { get; set; } = Language.Japanese;
     }
 }

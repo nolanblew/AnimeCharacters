@@ -12,7 +12,7 @@ namespace AniListClient.Controllers
         public CharactersController(GraphQLHttpClient graphQLHttpClient)
             : base(graphQLHttpClient) { }
 
-        public Task<Media> GetMediaWithCharactersById(int id) =>
+        public Task<Media> GetMediaWithCharactersById(int id, Language) =>
             GetPaginatedList<CharactersFromAnimeResponse, Media, Character>(
                 CharactersQueries.GET_STAFF_BY_ANIME_ID_QUERY,
                 CharactersQueries.GET_STAFF_BY_ANIME_ID_NAME,

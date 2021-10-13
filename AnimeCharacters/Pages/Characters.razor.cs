@@ -20,6 +20,8 @@ namespace AnimeCharacters.Pages
         public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
         public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
 
+        bool _IsLoading { get; set; } = true;
+
         [Parameter]
         public string Id { get; set; }
 
@@ -45,10 +47,13 @@ namespace AnimeCharacters.Pages
             }
 
             StateHasChanged();
+            _IsLoading = true;
 
             await _LoadCharacters();
 
+            _IsLoading = false;
             StateHasChanged();
+
         }
 
         protected void _OnAnimeClicked(CharacterAnimeModel model)

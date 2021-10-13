@@ -1,17 +1,17 @@
 ﻿<div class="item">
     <div class="row">
         <div class="col">
-            <img src="@(Character?.Image?.GetOptimalImage() ?? "#")" />
+            <img src="@(IsLoading ? "#" : Character?.Image?.GetOptimalImage() ?? "#")" />
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <div class="text-md-center text-primary">@(Character?.Name?.Full ?? "Loading...")</div>
+            <div class="text-md-center text-primary">@(IsLoading ? "Loading..." : Character?.Name?.Full ?? "N/A")</div>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <div class="text-md-center text-secondary">VA: @(VoiceActor?.Name?.Full ?? "Loading...")</div>
+            <div class="text-md-center text-secondary">VA: @(IsLoading ? "Loading..." : VoiceActor?.Name?.Full ?? "N/A")</div>
         </div>
     </div>
 </div>
@@ -23,6 +23,9 @@
 
     [Parameter]
     public string Language { get; set; } = "Japanese";
+
+    [Parameter]
+    public bool IsLoading { get; set; }
 
     AniListClient.Models.VoiceActorSlim VoiceActor => Character?.VoiceActors.FirstOrDefault();
 }

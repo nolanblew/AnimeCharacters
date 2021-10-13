@@ -1,4 +1,6 @@
-﻿using AnimeCharacters.Comparers;
+﻿using AniListClient.Enums;
+using AniListClient.Models;
+using AnimeCharacters.Comparers;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
@@ -16,12 +18,14 @@ namespace AnimeCharacters.Pages
 
         public Anime CurrentAnime { get; set; }
 
-        public string Language { get; set; } = "Japanese";
+        public Language Language { get; set; } = Language.Japanese;
 
         public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
 
         [Parameter]
         public string Id { get; set; }
+
+        bool _IsLoading { get; set; } = true;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -50,10 +54,12 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
+            _IsLoading = true;
             StateHasChanged();
 
             await _LoadCharacters();
 
+            _IsLoading = false;
             StateHasChanged();
         }
 
@@ -68,8 +74,31 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
+            var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId), Language);
             CharactersList = media.Characters.OrderByDescending(c => c, CharacterByRoleComparer.Instance).ToList();
+        }
+
+        async Task _SelectLanguage(ChangeEventArgs e)
+        {
+            Language = ((string)e.Value) switch
+            {
+                "Japanese" => Language.Japanese,
+                "English" => Language.English,
+                "Korean" => Language.Korean,
+                "Chinese" => Language.Chinese,
+                "Portugese" => Language.Portuguese,
+                "Spanish" => Language.Spanish,
+                _ => Language.Japanese
+            };
+
+
+            _IsLoading = true;
+            StateHasChanged();
+
+            await _LoadCharacters();
+
+            _IsLoading = false;
+            StateHasChanged();
         }
     }
 }
