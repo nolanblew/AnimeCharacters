@@ -80,7 +80,7 @@ namespace AnimeCharacters.Pages
 
         async Task _SelectLanguage(ChangeEventArgs e)
         {
-            Language = ((string)e.Value) switch
+            Language = (string)e.Value switch
             {
                 "Japanese" => Language.Japanese,
                 "English" => Language.English,

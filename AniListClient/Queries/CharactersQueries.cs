@@ -65,9 +65,10 @@ query getStaffByAnime($anime_id:Int, $language:StaffLanguage=JAPANESE, $page:Int
     {
         internal CharacterQueryVariable() { }
 
-        internal CharacterQueryVariable(int animeId)
+        internal CharacterQueryVariable(int animeId, Language language)
         {
             AnimeId = animeId;
+            Language = language;
         }
 
         [JsonProperty("page")]

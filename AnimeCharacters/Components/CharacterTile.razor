@@ -22,7 +22,7 @@
     public AniListClient.Models.Character Character { get; set; } = null;
 
     [Parameter]
-    public string Language { get; set; } = "Japanese";
+    public AniListClient.Models.Language Language { get; set; } = AniListClient.Models.Language.Japanese;
 
     [Parameter]
     public bool IsLoading { get; set; }
