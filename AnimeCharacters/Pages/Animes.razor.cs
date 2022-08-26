@@ -15,14 +15,14 @@ namespace AnimeCharacters.Pages
 {
     public partial class Animes
     {
-        const int _CACHE_UPDATE_TIME_MINUTES =
+        const int _CACHE_UPDATE_TIME_SECONDS =
 #if DEBUG
             0;
 #else
-            1;
+            15;
 #endif
 
-        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 10;
+        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 6;
 
         readonly KitsuClient _kitsuClient = new();
 
@@ -30,7 +30,7 @@ namespace AnimeCharacters.Pages
 
         bool _isMigrating = false;
 
-        DateTime? _lastManualRefreshTime = null;
+        DateTime? _lastShallowRefresh = null;
 
         Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
 
@@ -122,9 +122,9 @@ namespace AnimeCharacters.Pages
 
                 if (_isMigrating) { forceFullRefresh = true; }
 
-                if (isManualRefresh && _lastManualRefreshTime.HasValue && _lastManualRefreshTime.Value.AddSeconds(30) > DateTime.Now)
+                if (isManualRefresh && _lastShallowRefresh.HasValue && _lastShallowRefresh.Value.AddSeconds(45) > DateTime.Now)
                 {
-                    // If we have a manual refresh that was clicked twice in the last 30 seconds then do a full refresh
+                    // If we have a manual refresh that was clicked twice in the last 45 seconds then do a full refresh
                     forceFullRefresh = true;
                 }
 
@@ -136,7 +136,7 @@ namespace AnimeCharacters.Pages
                     || !_LibraryEntries.Any())
                 {
                     Console.WriteLine($"PATH: Fetching full list from the start.");
-                    _lastManualRefreshTime = null;
+                    _lastShallowRefresh = null;
                     await _FetchAllUserAnime();
 
                     if (_isMigrating)
@@ -150,15 +150,12 @@ namespace AnimeCharacters.Pages
                     return;
                 }
 
-                if (DateTimeOffset.Now.Subtract(TimeSpan.FromMinutes(_CACHE_UPDATE_TIME_MINUTES)) > lastFetchedDate)
+                if (DateTimeOffset.Now.Subtract(TimeSpan.FromSeconds(_CACHE_UPDATE_TIME_SECONDS)) > lastFetchedDate)
                 {
                     Console.WriteLine($"PATH: Fetching only updates from the start.");
                     await _UpdateUserAnime();
 
-                    if (isManualRefresh)
-                    {
-                        _lastManualRefreshTime = DateTime.Now;
-                    }
+                    _lastShallowRefresh = DateTime.Now;
 
                     return;
                 }
