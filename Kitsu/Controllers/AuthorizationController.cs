@@ -10,7 +10,7 @@ namespace Kitsu.Controllers
         const string _clientSecret = "54d7307928f63414defd96399fc31ba847961ceaecef3a5fd93144e960c0e151";
 
         public AuthorizationController()
-            : base("https://kitsu.io/api/oauth/", "") { }
+            : base(KitsuClient.BASE_KITSU_URL + "/api/oauth/", "") { }
 
         public async Task<AuthorizationResponse> Login(string username, string password)
         {

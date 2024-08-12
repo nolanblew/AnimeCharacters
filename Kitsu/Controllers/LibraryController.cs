@@ -14,7 +14,7 @@ namespace Kitsu.Controllers
         public LibraryController(string baseUrl)
             : base(baseUrl, "library-entries") { }
 
-        // https://kitsu.io/api/edge/library-entries?filter[userId]={{user_id}}&filter[kind]=anime&filter[status]=completed&include=anime,anime.mappings
+        // https://kitsu.app/api/edge/library-entries?filter[userId]={{user_id}}&filter[kind]=anime&filter[status]=completed&include=anime,anime.mappings
         public async Task<List<LibraryEntry>> GetCompleteLibraryCollectionAsync(int userId, LibraryType type = LibraryType.All, LibraryStatus status = LibraryStatus.All)
         {
             var rtn = new List<LibraryEntry>();

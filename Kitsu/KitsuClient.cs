@@ -14,7 +14,8 @@ namespace Kitsu
             //Anime = new MediaController(_baseApiUrl);
         }
 
-        const string _baseApiUrl = "https://kitsu.app/api/edge/";
+        internal const string BASE_KITSU_URL = "https://kitsu.app";
+        const string _baseApiUrl = BASE_KITSU_URL + "/api/edge/";
 
 
         public AuthorizationController Auth { get; }
