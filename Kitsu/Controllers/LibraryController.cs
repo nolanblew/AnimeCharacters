@@ -77,6 +77,12 @@ namespace Kitsu.Controllers
                         .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
                             && mappingIds.Contains(inc.Id)
                             && inc.Attributes.ExternalSite == "anilist/anime")
+                        ?.Attributes.ExternalId
+                        // If there is no 'anime' associated, it might be a data error or because there is a manga with the same info. If /anime isn't found, let's just search for anilist/
+                        ?? result.Included
+                        .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                            && mappingIds.Contains(inc.Id)
+                            && inc.Attributes.ExternalSite.StartsWith("anilist/"))
                         ?.Attributes.ExternalId;
 
                     return includedAnime != null
@@ -168,6 +174,12 @@ namespace Kitsu.Controllers
                             .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
                                 && mappingIds.Contains(inc.Id)
                                 && inc.Attributes.ExternalSite == "anilist/anime")
+                            ?.Attributes.ExternalId
+                            ?? result.Included
+                            // If there is no 'anime' associated, it might be a data error or because there is a manga with the same info. If /anime isn't found, let's just search for anilist/
+                            .FirstOrDefault(inc => inc.Type == UserLibraryGetRequest.DataType.Mappings
+                                && mappingIds.Contains(inc.Id)
+                                && inc.Attributes.ExternalSite.StartsWith("anilist/"))
                             ?.Attributes.ExternalId;
 
                         return includedAnime != null
