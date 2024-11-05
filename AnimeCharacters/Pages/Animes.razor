@@ -1,5 +1,8 @@
 ﻿@page "/animes"
 @inherits BasePage
+@using Kitsu.Models
+
+<link href="css/animes.css" rel="stylesheet" />
 
 <div class="content">
     <div class="row">
@@ -21,7 +24,7 @@
                             @:You currently have @(_LibraryEntries.Count) animes in your library.
                         }
                     </div>
-                
+                 
                     <div class="col-auto d-flex align-items-center" style="min-width: 0px;">
                         @if (IsBusy)
                         {
@@ -51,38 +54,40 @@
     {
         if (FilteredLibraryEntries.Any())
         {
-            <h4>Currently Watching</h4>
-            <hr />
-            <div class="row">
-                @foreach (var librayEntry in FilteredLibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Current) ?? new List<Kitsu.Models.LibraryEntry>())
-                {
-                    <div class="col">
-                        <div class="item-container" @onclick="() => _Anime_OnClicked(librayEntry)">
-                            <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
-                        </div>
+            @foreach (var header in headerStates)
+            {
+                <div class="anime-header" @onclick="() => ToggleHeaderState(header.Title)">
+                    <div class="anime-header-title">
+                        <svg class="collapse-icon @(header.IsCollapsed ? "collapsed" : "")" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+                        </svg>
+                        @header.Title
+                        <span class="anime-count">(@(header.Content?.Count ?? 0))</span>
                     </div>
-                }
-            </div>
-
-            <h4>Completed</h4>
-            <hr />
-            <div class="row">
-                @foreach (var librayEntry in FilteredLibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Completed) ?? new List<Kitsu.Models.LibraryEntry>())
-                {
-                    <div class="col">
-                        <div class="item-container" @onclick="() => _Anime_OnClicked(librayEntry)">
-                            <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
-                        </div>
+                </div>
+                <div class="anime-content @(header.IsCollapsed ? "collapsed" : "expanded")">
+                    <div class="row">
+                        @foreach (var libraryEntry in header.Content ?? new List<LibraryEntry>())
+                        {
+                            <div class="col">
+                                <div class="item-container" @onclick="() => _Anime_OnClicked(libraryEntry)">
+                                    <AnimeCharacters.Components.AnimeTile Anime="@libraryEntry.Anime" />
+                                </div>
+                            </div>
+                        }
                     </div>
-                }
-            </div>
-        } else
+                </div>
+            }
+        }
+        else
         {
             <div class="d-flex justify-content-center">
                 <h5 class="text-muted">No animes found</h5>
             </div>
         }
-    } else {
+    }
+    else
+    {
         <div class="d-flex justify-content-center">
             <div class="control">
                 <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />

@@ -1,4 +1,4 @@
-﻿using AnimeCharacters.Helpers;
+using AnimeCharacters.Helpers;
 using Kitsu;
 using Kitsu.Comparers;
 using Kitsu.Controllers;
@@ -32,7 +32,7 @@ namespace AnimeCharacters.Pages
 
         DateTime? _lastShallowRefresh = null;
 
-        Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
+        Dictionary<long, LibraryEntry> _LibraryEntries { get; set; } = new Dictionary<long, LibraryEntry>();
 
         public User CurrentUser { get; set; }
 
@@ -60,18 +60,64 @@ namespace AnimeCharacters.Pages
             }
         }
 
+        // List of header states
+        private List<HeaderState> headerStates = new List<HeaderState>();
+
         protected override async Task OnInitializedAsync()
         {
             CurrentUser = await DatabaseProvider.GetUserAsync();
 
             if (CurrentUser == null)
             {
-                // Redirect to login page
                 NavigationManager.NavigateTo("/");
                 return;
             }
 
+            // Initialize header states with dynamic categories
+            InitializeHeaderStates();
+
             await base.OnInitializedAsync();
+        }
+
+        private void InitializeHeaderStates()
+        {
+            // Define categories and their filter conditions
+            var categories = new[]
+            {
+                new { Title = "Currently Watching", Status = LibraryStatus.Current },
+                new { Title = "Completed", Status = LibraryStatus.Completed },
+                // Add more categories here as needed
+            };
+
+            headerStates = categories.Select(category => new HeaderState
+            {
+                Title = category.Title,
+                IsCollapsed = false,
+                FilterCondition = entry => entry.Status == category.Status
+            }).ToList();
+
+            UpdateHeaderContents();
+        }
+
+        private void UpdateHeaderContents()
+        {
+            if (FilteredLibraryEntries == null) return;
+
+            foreach (var header in headerStates)
+            {
+                header.Content = FilteredLibraryEntries.Where(header.FilterCondition).ToList();
+            }
+        }
+
+        // Method to toggle the collapsed/expanded state of a header
+        private void ToggleHeaderState(string headerName)
+        {
+            var header = headerStates.FirstOrDefault(h => h.Title == headerName);
+            if (header != null)
+            {
+                header.IsCollapsed = !header.IsCollapsed;
+                StateHasChanged();
+            }
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -94,6 +140,7 @@ namespace AnimeCharacters.Pages
                         .ToDictionary(lib => lib.Id);
                 }
 
+                UpdateHeaderContents();
                 StateHasChanged();
 
                 await _FetchLibraries();
@@ -102,7 +149,7 @@ namespace AnimeCharacters.Pages
 
         protected void _Anime_OnClicked(LibraryEntry libraryEntry)
         {
-            if (libraryEntry?.Anime == null) { return; }
+            if (libraryEntry?.Anime == null || _LibraryEntries == null) { return; }
 
             NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
         }
@@ -164,6 +211,7 @@ namespace AnimeCharacters.Pages
             {
                 IsBusy = false;
                 _refreshLibrariesSemaphoreSlim.Release();
+                UpdateHeaderContents();
                 StateHasChanged();
             }
         }
@@ -181,6 +229,7 @@ namespace AnimeCharacters.Pages
 
                 await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
                 await _SetLastFetchedId();
+                UpdateHeaderContents();
                 return;
             }
             catch (Exception ex)
@@ -228,6 +277,7 @@ namespace AnimeCharacters.Pages
                 }
 
                 await _SetLastFetchedId();
+                UpdateHeaderContents();
                 return;
             }
             catch (Exception ex)
@@ -307,6 +357,7 @@ namespace AnimeCharacters.Pages
                 if (hasChanges)
                 {
                     await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
+                    UpdateHeaderContents();
                     await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Updated your library."));
                 }
             }
@@ -368,6 +419,15 @@ namespace AnimeCharacters.Pages
                 await DatabaseProvider.SetLastFetchedIdAsync(lastEventId);
                 await DatabaseProvider.SetLastFetchedDateAsync(DateTimeOffset.Now);
             }
+        }
+
+        // Enhanced HeaderState class with filter condition
+        public class HeaderState
+        {
+            public string Title { get; set; }
+            public bool IsCollapsed { get; set; }
+            public List<LibraryEntry> Content { get; set; }
+            public Func<LibraryEntry, bool> FilterCondition { get; set; }
         }
     }
 }
