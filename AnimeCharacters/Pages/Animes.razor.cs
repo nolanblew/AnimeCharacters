@@ -60,6 +60,22 @@ namespace AnimeCharacters.Pages
             }
         }
 
+        // List of header states
+        private List<HeaderState> headerStates = new List<HeaderState>();
+
+        // List of header names
+        private List<string> headerNames = new List<string> { "Currently Watching", "Completed" };
+
+        // Method to toggle the collapsed/expanded state of a header
+        private void ToggleHeaderState(string headerName)
+        {
+            var header = headerStates.FirstOrDefault(h => h.Title == headerName);
+            if (header != null)
+            {
+                header.IsCollapsed = !header.IsCollapsed;
+            }
+        }
+
         protected override async Task OnInitializedAsync()
         {
             CurrentUser = await DatabaseProvider.GetUserAsync();
@@ -70,6 +86,14 @@ namespace AnimeCharacters.Pages
                 NavigationManager.NavigateTo("/");
                 return;
             }
+
+            // Initialize header states
+            headerStates = headerNames.Select(name => new HeaderState
+            {
+                Title = name,
+                IsCollapsed = false,
+                Content = FilteredLibraryEntries?.Where(l => l.Status == (name == "Currently Watching" ? Kitsu.Controllers.LibraryStatus.Current : Kitsu.Controllers.LibraryStatus.Completed)).ToList()
+            }).ToList();
 
             await base.OnInitializedAsync();
         }
@@ -340,7 +364,7 @@ namespace AnimeCharacters.Pages
             if (!string.IsNullOrWhiteSpace(anime.RomanjiTitle))
             {
                 var romanjiTitleSplit = anime.Title.ToLower().Split(' ');
-                if (romanjiTitleSplit.Any(t => t.StartsWith(lowerFilter)))
+                if (romanjiTitleSplit.Any(t => t.StartsWith(lowerFilter))
                 {
                     return true;
                 }
@@ -349,7 +373,7 @@ namespace AnimeCharacters.Pages
             if (!string.IsNullOrWhiteSpace(anime.EnglishTitle))
             {
                 var englishTitleSplit = anime.EnglishTitle.ToLower().Split(' ');
-                if (englishTitleSplit.Any(t => t.StartsWith(lowerFilter)))
+                if (englishTitleSplit.Any(t => t.StartsWith(lowerFilter))
                 {
                     return true;
                 }
@@ -368,6 +392,14 @@ namespace AnimeCharacters.Pages
                 await DatabaseProvider.SetLastFetchedIdAsync(lastEventId);
                 await DatabaseProvider.SetLastFetchedDateAsync(DateTimeOffset.Now);
             }
+        }
+
+        // Class to represent the state of each header
+        public class HeaderState
+        {
+            public string Title { get; set; }
+            public bool IsCollapsed { get; set; }
+            public List<LibraryEntry> Content { get; set; }
         }
     }
 }

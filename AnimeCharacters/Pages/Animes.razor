@@ -51,31 +51,27 @@
     {
         if (FilteredLibraryEntries.Any())
         {
-            <h4>Currently Watching</h4>
-            <hr />
-            <div class="row">
-                @foreach (var librayEntry in FilteredLibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Current) ?? new List<Kitsu.Models.LibraryEntry>())
+            @foreach (var header in headerStates)
+            {
+                <h4 @onclick="() => ToggleHeaderState(header.Title)">
+                    @header.Title
+                    <button>@(header.IsCollapsed ? "Expand" : "Collapse")</button>
+                </h4>
+                <hr />
+                @if (!header.IsCollapsed)
                 {
-                    <div class="col">
-                        <div class="item-container" @onclick="() => _Anime_OnClicked(librayEntry)">
-                            <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
-                        </div>
+                    <div class="row">
+                        @foreach (var librayEntry in header.Content)
+                        {
+                            <div class="col">
+                                <div class="item-container" @onclick="() => _Anime_OnClicked(librayEntry)">
+                                    <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
+                                </div>
+                            </div>
+                        }
                     </div>
                 }
-            </div>
-
-            <h4>Completed</h4>
-            <hr />
-            <div class="row">
-                @foreach (var librayEntry in FilteredLibraryEntries?.Where(l => l.Status == Kitsu.Controllers.LibraryStatus.Completed) ?? new List<Kitsu.Models.LibraryEntry>())
-                {
-                    <div class="col">
-                        <div class="item-container" @onclick="() => _Anime_OnClicked(librayEntry)">
-                            <AnimeCharacters.Components.AnimeTile Anime="@librayEntry.Anime" />
-                        </div>
-                    </div>
-                }
-            </div>
+            }
         } else
         {
             <div class="d-flex justify-content-center">
