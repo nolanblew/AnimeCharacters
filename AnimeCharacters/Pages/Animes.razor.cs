@@ -1,4 +1,4 @@
-﻿using AnimeCharacters.Helpers;
+using AnimeCharacters.Helpers;
 using Kitsu;
 using Kitsu.Comparers;
 using Kitsu.Controllers;
@@ -32,7 +32,7 @@ namespace AnimeCharacters.Pages
 
         DateTime? _lastShallowRefresh = null;
 
-        Dictionary<long, LibraryEntry> _LibraryEntries { get; set; }
+        Dictionary<long, LibraryEntry> _LibraryEntries { get; set; } = new Dictionary<long, LibraryEntry>();
 
         public User CurrentUser { get; set; }
 
@@ -126,7 +126,7 @@ namespace AnimeCharacters.Pages
 
         protected void _Anime_OnClicked(LibraryEntry libraryEntry)
         {
-            if (libraryEntry?.Anime == null) { return; }
+            if (libraryEntry?.Anime == null || _LibraryEntries == null) { return; }
 
             NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
         }
