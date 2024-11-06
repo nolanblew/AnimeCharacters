@@ -36,7 +36,16 @@ namespace AnimeCharacters.Pages
 
         public User CurrentUser { get; set; }
 
-        public string SearchFilter { get; set; }
+        private string _searchFilter;
+        public string SearchFilter
+        {
+            get => _searchFilter;
+            set
+            {
+                _searchFilter = value;
+                UpdateHeaderContents();
+            }
+        }
 
         public bool IsBusy { get; set; } = true;
 
@@ -44,18 +53,9 @@ namespace AnimeCharacters.Pages
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(SearchFilter))
-                {
-                    return _LibraryEntries?
+                return _LibraryEntries?
                     .Values?
                     .OrderByDescending(e => e.ProgressedAt)?
-                    .ToList();
-                }
-
-                var lowerFilter = SearchFilter.ToLower();
-                return _LibraryEntries?.Values?
-                    .Where(e => _MatchesSearch(e.Anime))?
-                    .OrderByDescending(e => e.ProgressedAt)
                     .ToList();
             }
         }
@@ -105,8 +105,18 @@ namespace AnimeCharacters.Pages
 
             foreach (var header in headerStates)
             {
-                header.Content = FilteredLibraryEntries.Where(header.FilterCondition).ToList();
+                var filteredContent = FilteredLibraryEntries
+                    .Where(header.FilterCondition);
+
+                if (!string.IsNullOrWhiteSpace(SearchFilter))
+                {
+                    filteredContent = filteredContent.Where(entry => _MatchesSearch(entry.Anime));
+                }
+
+                header.Content = filteredContent.ToList();
             }
+
+            StateHasChanged();
         }
 
         // Method to toggle the collapsed/expanded state of a header
@@ -382,28 +392,24 @@ namespace AnimeCharacters.Pages
 
             var lowerFilter = SearchFilter.ToLower();
 
-            var titleSplit = anime.Title.ToLower().Split(' ');
-            if (titleSplit.Any(t => t.StartsWith(lowerFilter)))
+            // Check main title
+            if (anime.Title.ToLower().Contains(lowerFilter))
             {
                 return true;
             }
 
-            if (!string.IsNullOrWhiteSpace(anime.RomanjiTitle))
+            // Check Romanji title
+            if (!string.IsNullOrWhiteSpace(anime.RomanjiTitle) && 
+                anime.RomanjiTitle.ToLower().Contains(lowerFilter))
             {
-                var romanjiTitleSplit = anime.Title.ToLower().Split(' ');
-                if (romanjiTitleSplit.Any(t => t.StartsWith(lowerFilter)))
-                {
-                    return true;
-                }
+                return true;
             }
 
-            if (!string.IsNullOrWhiteSpace(anime.EnglishTitle))
+            // Check English title
+            if (!string.IsNullOrWhiteSpace(anime.EnglishTitle) && 
+                anime.EnglishTitle.ToLower().Contains(lowerFilter))
             {
-                var englishTitleSplit = anime.EnglishTitle.ToLower().Split(' ');
-                if (englishTitleSplit.Any(t => t.StartsWith(lowerFilter)))
-                {
-                    return true;
-                }
+                return true;
             }
 
             return false;
