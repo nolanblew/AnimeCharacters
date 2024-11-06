@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AnimeCharacters.Shared;
 
 namespace AnimeCharacters
 {
@@ -25,6 +26,8 @@ namespace AnimeCharacters
 
             builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
             builder.Services.AddScoped(_ => new AniListClient.AniListClient());
+            
+            builder.Services.AddScoped<IUpdateAvailableDetector, UpdateAvailableDetector>();
 
             await builder.Build().RunAsync();
         }

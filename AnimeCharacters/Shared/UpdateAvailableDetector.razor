@@ -1,16 +1,9 @@
-
+@using EventAggregator.Blazor
+@implements IUpdateAvailableDetector
 @inject IJSRuntime _jsRuntime
-
-@if (_newVersionAvailable)
-{
-  <button type="button" class="btn btn-warning shadow floating-update-button" onclick="window.location.reload()">
-    A new version of the application is available. Click here to reload.
-  </button>
-}
+@inject IEventAggregator _eventAggregator
 
 @code {
-    private bool _newVersionAvailable = false;
-
     protected override async Task OnInitializedAsync()
     {
         await RegisterForUpdateAvailableNotification();
@@ -25,13 +18,14 @@
     }
 
     [JSInvokable(nameof(OnUpdateAvailable))]
-    public Task OnUpdateAvailable()
+    public async Task OnUpdateAvailable()
     {
-        _newVersionAvailable = true;
-
+        await _eventAggregator.PublishAsync(new Events.SnackbarEvent("Update available! Click here to reload."));
         StateHasChanged();
-
-        return Task.CompletedTask;
     }
 
+    public async Task CheckForUpdate()
+    {
+        await _jsRuntime.InvokeVoidAsync("checkForUpdate");
+    }
 }

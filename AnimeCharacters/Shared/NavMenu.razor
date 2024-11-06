@@ -1,7 +1,9 @@
-﻿@inherits Pages.BasePage
-@implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
-@implements EventAggregator.Blazor.IHandle<Events.PageStateManagerEvent>
-
+﻿@using EventAggregator.Blazor
+@inherits Pages.BasePage
+@implements IHandle<Events.DatabaseEvent>
+@implements IHandle<Events.PageStateManagerEvent>
+@inject IJSRuntime _jsRuntime
+@inject IUpdateAvailableDetector UpdateDetector
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
     @if (PageStateManager.CanGoBack)
@@ -35,16 +37,18 @@
                 Hello, @CurrentUser?.Name!
             </span>
             <div class="nav-item">
+                <a class="nav-link" @onclick="_CheckForUpdate">Check for Update</a>
+            </div>
+            <div class="nav-item">
                 <a class="nav-link" @onclick="_Logout">Logout</a>
             </div>
-            @*<div class="nav-item">
-                <a class="nav-link text-muted" href="#">Settings</a>
-            </div>*@
         </div>
     }
 </nav>
 
 @code {
+    [Inject] IEventAggregator _eventAggregator { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         await _SetUser();
@@ -82,4 +86,23 @@
     }
 
     async Task _SetUser() =>  CurrentUser = await DatabaseProvider.GetUserAsync();
+
+    async Task _CheckForUpdate()
+    {
+        var registration = await _jsRuntime.InvokeAsync<object>("navigator.serviceWorker.getRegistration");
+        if (registration != null)
+        {
+            await _jsRuntime.InvokeVoidAsync("eval", @"
+                navigator.serviceWorker.getRegistration().then(function(reg) {
+                    reg.update().then(function() {
+                        window.location.reload();
+                    });
+                });
+            ");
+        }
+        else
+        {
+            await _eventAggregator.PublishAsync(new Events.SnackbarEvent("Service worker not found. Please refresh the page."));
+        }
+    }
 }

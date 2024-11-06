@@ -1,15 +1,1 @@
-.floating-update-button {
-    position: fixed;
-  
-    right: 2rem;
-    bottom: 2rem;
-  
-    padding: 1rem 1.5rem;
-  
-    animation: fadein 2s ease-out;
-  }
-  
-  @keyframes fadein {
-    from { right: -100%; }
-    to { right: 2rem; }
-  }
+/* Styles removed as we're now using the SnackbarEvent component */
