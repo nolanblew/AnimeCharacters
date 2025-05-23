@@ -64,14 +64,18 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            var vaRoles = new Dictionary<string, AniListClient.Models.Character>();
+            var vaRoles = new Dictionary<string, List<AniListClient.Models.Character>>();
 
             foreach(var person in CurrentPerson.Characters.Where(role => role.Media != null))
             {
                 foreach(var mediaItem in person.Media)
                 {
-                    // TODO: Allow VAs to have multiple roles in the same anime
-                    vaRoles.TryAdd(mediaItem.Id.ToString(), person);
+                    if (!vaRoles.TryGetValue(mediaItem.Id.ToString(), out var charactersInMedia))
+                    {
+                        charactersInMedia = new List<AniListClient.Models.Character>();
+                        vaRoles.Add(mediaItem.Id.ToString(), charactersInMedia);
+                    }
+                    charactersInMedia.Add(person);
                 }
             }
 
@@ -79,13 +83,13 @@ namespace AnimeCharacters.Pages
 
             MyCharactersList =
                 libraryEntries.Where(libraryEntry => !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) && vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
-                              .Select(libraryEntry => new CharacterAnimeModel
+                              .SelectMany(libraryEntry => vaRoles[libraryEntry.Anime.AnilistId].Select(character => new CharacterAnimeModel
                               {
                                   KitsuId = libraryEntry.Anime.KitsuId,
                                   AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
                                   LastProgressedAt = libraryEntry.ProgressedAt,
-                                  VoiceActingRole = vaRoles[libraryEntry.Anime.AnilistId],
-                              })
+                                  VoiceActingRole = character, // Use the specific character from the list
+                              }))
                               .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
                               .ToList();
 
