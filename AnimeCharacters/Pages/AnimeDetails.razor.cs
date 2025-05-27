@@ -69,7 +69,13 @@ namespace AnimeCharacters.Pages
         async Task _LoadCharacters()
         {
             var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
-            CharactersList = media.Characters.OrderByDescending(c => c, CharacterByRoleComparer.Instance).ToList();
+            CharactersList = media.Characters
+                .SelectMany(character =>
+                    (character.VoiceActors != null && character.VoiceActors.Any())
+                        ? character.VoiceActors.Select(va => character with { VoiceActors = new List<AniListClient.Models.VoiceActorSlim> { va } })
+                        : new[] { character }
+                )
+                .ToList();
         }
     }
 }
