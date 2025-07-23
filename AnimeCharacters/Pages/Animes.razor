@@ -69,7 +69,7 @@
                     <div class="row">
                         @foreach (var libraryEntry in header.Content ?? new List<LibraryEntry>())
                         {
-                            <div class="col">
+                            <div class="col-auto">
                                 <div class="item-container" @onclick="() => _Anime_OnClicked(libraryEntry)">
                                     <AnimeCharacters.Components.AnimeTile Anime="@libraryEntry.Anime" />
                                 </div>
