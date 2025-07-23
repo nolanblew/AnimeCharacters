@@ -24,7 +24,7 @@
 <div class="row">
     @foreach (var character in CharactersList)
     {
-<div class="col">
+<div class="col-auto">
     <div class="item-container" @onclick="() => _Character_OnClicked(character)">
         <AnimeCharacters.Components.CharacterTile Character="@character" Language="@Language" />
     </div>

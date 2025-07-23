@@ -86,6 +86,10 @@ a, .btn-link {
     padding-left: 8px;
     padding-right: 8px;
 }
+.col-auto {
+    padding-left: 8px;
+    padding-right: 8px;
+}
 
 .item {
     flex-grow: 1;

@@ -78,13 +78,11 @@
                             <button class="btn btn-link p-0 mt-2 va-show-more-btn" @onclick="ToggleMobileDetails">
                                 @if (_showMobileDetails)
                                 {
-                                    <span>Show Less</span>
-                                    <i class="oi oi-chevron-top ms-1"></i>
+                                    <span>Show Less</span> <i class="oi oi-chevron-top ms-1"></i>
                                 }
                                 else
                                 {
-                                    <span>Show More</span>
-                                    <i class="oi oi-chevron-bottom ms-1"></i>
+                                    <span>Show More</span> <i class="oi oi-chevron-bottom ms-1"></i>
                                 }
                             </button>
                         </div>
@@ -147,7 +145,7 @@
         <div class="row">
             @foreach (var characterAnime in MyCharactersList)
             {
-                <div class="col">
+                <div class="col-auto">
                     <div class="item-container">
                         <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
                     </div>
@@ -161,7 +159,7 @@
         <div class="row">
             @foreach (var characterAnime in NotMyCharactersList)
             {
-                <div class="col">
+                <div class="col-auto">
                     <div class="item-container">
                         <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
                     </div>
