@@ -88,7 +88,9 @@ namespace AnimeCharacters.Pages
                 }
             }
 
-            CharactersList = characters;
+            CharactersList = characters
+                .OrderByDescending(c => c, CharacterByRoleComparer.Instance)
+                .ToList();
         }
     }
 }

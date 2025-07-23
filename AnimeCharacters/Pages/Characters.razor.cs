@@ -90,14 +90,20 @@ namespace AnimeCharacters.Pages
             var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
 
             MyCharactersList =
-                libraryEntries.Where(libraryEntry => !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) && vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
-                              .SelectMany(libraryEntry => vaRoles[libraryEntry.Anime.AnilistId].Select(character => new CharacterAnimeModel
+                libraryEntries.Where(libraryEntry =>
+                                              !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) &&
+                                              vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
+                              .SelectMany(libraryEntry =>
                               {
-                                  KitsuId = libraryEntry.Anime.KitsuId,
-                                  AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
-                                  LastProgressedAt = libraryEntry.ProgressedAt,
-                                  VoiceActingRole = character,
-                              }))
+                                  var characters = vaRoles[libraryEntry.Anime.AnilistId];
+                                  return characters.Select(character => new CharacterAnimeModel
+                                  {
+                                      KitsuId = libraryEntry.Anime.KitsuId,
+                                      AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
+                                      LastProgressedAt = libraryEntry.ProgressedAt,
+                                      VoiceActingRole = character,
+                                  });
+                              })
                               .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
                               .ToList();
 
