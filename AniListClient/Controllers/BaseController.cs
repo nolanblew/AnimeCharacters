@@ -31,7 +31,7 @@ namespace AniListClient.Controllers
         /// <param name="conversionSelector">How to convert from <typeparamref name="TBase"/> to <typeparamref name="TResult"/></param>
         /// <param name="hasMorePagesFunc">The property or func that tells us when we have more items to page through</param>
         /// <returns></returns>
-        internal async Task<TResult> GetPaginatedList<TBase,TResult,TListType>(
+        internal async Task<TResult> GetPaginatedList<TBase, TResult, TListType>(
             string query,
             string operationName,
             IHasPage variables,
@@ -41,7 +41,7 @@ namespace AniListClient.Controllers
         {
             // Assign the getter/setter
             var selector = selectorExpression.Compile();
-            
+
             var prop = (PropertyInfo)((MemberExpression)selectorExpression.Body).Member;
 
             void assigner(TResult model, List<TListType> list) => prop.SetValue(model, list);

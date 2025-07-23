@@ -26,8 +26,32 @@ namespace AniListClient.Responses
                 [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
                 public string Description { get; set; }
 
+                [JsonProperty("age", NullValueHandling = NullValueHandling.Ignore)]
+                public int? Age { get; set; }
+
+                [JsonProperty("dateOfBirth", NullValueHandling = NullValueHandling.Ignore)]
+                public DateOfBirthResponse DateOfBirth { get; set; }
+
+                [JsonProperty("bloodType", NullValueHandling = NullValueHandling.Ignore)]
+                public string BloodType { get; set; }
+
+                [JsonProperty("siteUrl", NullValueHandling = NullValueHandling.Ignore)]
+                public string SiteUrl { get; set; }
+
                 [JsonProperty("characters", NullValueHandling = NullValueHandling.Ignore)]
                 public CharactersResponse Characters { get; set; }
+            }
+
+            internal class DateOfBirthResponse
+            {
+                [JsonProperty("year", NullValueHandling = NullValueHandling.Ignore)]
+                public int? Year { get; set; }
+
+                [JsonProperty("month", NullValueHandling = NullValueHandling.Ignore)]
+                public int? Month { get; set; }
+
+                [JsonProperty("day", NullValueHandling = NullValueHandling.Ignore)]
+                public int? Day { get; set; }
             }
 
             internal class CharactersResponse : IHasPageInfo

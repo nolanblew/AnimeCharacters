@@ -19,7 +19,7 @@ namespace AnimeCharacters.Comparers
             };
         }
     }
-    
+
     public class CharacterByRoleComparer : IComparer<Character>
     {
         public static CharacterByRoleComparer Instance { get; } = new();

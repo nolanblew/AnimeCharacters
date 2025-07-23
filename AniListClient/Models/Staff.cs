@@ -8,7 +8,16 @@ namespace AniListClient.Models
         Language Language,
         Images Images,
         string Description,
+        int? Age,
+        DateOfBirth DateOfBirth,
+        string BloodType,
+        string SiteUrl,
         List<Character> Characters);
+
+    public record DateOfBirth(
+        int? Year,
+        int? Month,
+        int? Day);
 
     public enum Language
     {

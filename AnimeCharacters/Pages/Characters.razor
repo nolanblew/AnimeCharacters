@@ -2,20 +2,143 @@
 @inherits BasePage
 
 <div class="content">
-    <div class="row">
-        <div class="col text-center">
-            <div class="item-container center-image">
-                <img src="@CurrentPerson?.Images?.GetOptimalImage()" />
+    <!-- Voice Actor Profile Section -->
+    <div class="row mb-4">
+        <!-- VA Photo Column -->
+        <div class="col-md-4 col-lg-3 text-center">
+            <div class="va-photo-container">
+                <img src="@CurrentPerson?.Images?.GetOptimalImage()" class="va-photo" />
+            </div>
+        </div>
+        
+        <!-- VA Details Column -->
+        <div class="col-md-8 col-lg-9">
+            <div class="va-details">
+                <h2 class="va-name">@(CurrentPerson?.Name?.Full ?? "Loading...")</h2>
+                
+                <!-- Desktop Details - Always Visible -->
+                @{
+                    var parsedBio = ParseBiographyToHtml();
+                    var socialLinks = ExtractSocialMediaLinks();
+                }
+                <div class="d-none d-md-block va-info-desktop">
+                    @if (CurrentPerson != null)
+                    {
+                        <div class="va-detail-grid">
+                            @if (CurrentPerson.Age.HasValue)
+                            {
+                                <div class="va-detail-item">
+                                    <strong>Age:</strong> @CurrentPerson.Age
+                                </div>
+                            }
+                            @if (CurrentPerson.DateOfBirth != null && (CurrentPerson.DateOfBirth.Year.HasValue || CurrentPerson.DateOfBirth.Month.HasValue))
+                            {
+                                <div class="va-detail-item">
+                                    <strong>Birth Date:</strong> @GetFormattedBirthDate()
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(CurrentPerson.BloodType))
+                            {
+                                <div class="va-detail-item">
+                                    <strong>Blood Type:</strong> @CurrentPerson.BloodType
+                                </div>
+                            }
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(parsedBio))
+                        {
+                            <div class="va-bio mt-3">
+                                <strong>Biography:</strong>
+                                <p class="mt-2">@((MarkupString)parsedBio)</p>
+                            </div>
+                        }
+                        @if (socialLinks.Any())
+                        {
+                            <div class="va-links mt-3">
+                                <strong>Links:</strong>
+                                <div class="va-links-container mt-2">
+                                    @foreach (var link in socialLinks)
+                                    {
+                                        <a href="@link.Url" target="_blank" rel="noopener noreferrer" class="va-link">
+                                            <img src="@link.IconPath" alt="@link.Platform" class="va-link-icon" />
+                                            <span class="va-link-text">@link.DisplayText</span>
+                                            <i class="oi oi-external-link va-external-icon"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                
+                <!-- Mobile Details - Collapsible -->
+                <div class="d-block d-md-none va-info-mobile">
+                    @if (CurrentPerson != null && HasVADetails())
+                    {
+                        <div class="text-center">
+                            <button class="btn btn-link p-0 mt-2 va-show-more-btn" @onclick="ToggleMobileDetails">
+                                @if (_showMobileDetails)
+                                {
+                                    <span>Show Less</span>
+                                    <i class="oi oi-chevron-top ms-1"></i>
+                                }
+                                else
+                                {
+                                    <span>Show More</span>
+                                    <i class="oi oi-chevron-bottom ms-1"></i>
+                                }
+                            </button>
+                        </div>
+                        
+                        <div class="va-mobile-details @(_showMobileDetails ? "expanded" : "collapsed")">
+                            <div class="va-detail-grid">
+                                @if (CurrentPerson.Age.HasValue)
+                                {
+                                    <div class="va-detail-item">
+                                        <strong>Age:</strong> @CurrentPerson.Age
+                                    </div>
+                                }
+                                @if (CurrentPerson.DateOfBirth != null && (CurrentPerson.DateOfBirth.Year.HasValue || CurrentPerson.DateOfBirth.Month.HasValue))
+                                {
+                                    <div class="va-detail-item">
+                                        <strong>Birth Date:</strong> @GetFormattedBirthDate()
+                                    </div>
+                                }
+                                @if (!string.IsNullOrWhiteSpace(CurrentPerson.BloodType))
+                                {
+                                    <div class="va-detail-item">
+                                        <strong>Blood Type:</strong> @CurrentPerson.BloodType
+                                    </div>
+                                }
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(parsedBio))
+                            {
+                                <div class="va-bio mt-3">
+                                    <strong>Biography:</strong>
+                                    <p class="mt-2">@((MarkupString)parsedBio)</p>
+                                </div>
+                            }
+                            @if (socialLinks.Any())
+                            {
+                                <div class="va-links mt-3">
+                                    <strong>Links:</strong>
+                                    <div class="va-links-container mt-2">
+                                        @foreach (var link in socialLinks)
+                                        {
+                                            <a href="@link.Url" target="_blank" rel="noopener noreferrer" class="va-link">
+                                                <img src="@link.IconPath" alt="@link.Platform" class="va-link-icon" />
+                                                <span class="va-link-text">@link.DisplayText</span>
+                                                <i class="oi oi-external-link va-external-icon"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col text-center text-secondary">
-            @(CurrentPerson?.Name?.Full ?? "Loading...")
-        </div>
-    </div>
-
-    <br /><br /><br />
     <h3>Characters from My Anime</h3>
     <hr />
 
