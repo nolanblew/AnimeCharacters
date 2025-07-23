@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Text;
 using System;
+using Markdig;
 
 namespace AnimeCharacters.Pages
 {
@@ -290,34 +291,26 @@ namespace AnimeCharacters.Pages
 
             var content = CurrentPerson.Description;
 
-            // Convert markdown links to HTML links, but exclude social media links that we've moved to the Links section
+            // Remove social media links that will be shown separately
             var markdownLinkPattern = @"\[([^\]]+)\]\(([^)]+)\)";
             content = Regex.Replace(content, markdownLinkPattern, match =>
             {
                 var text = match.Groups[1].Value;
                 var url = match.Groups[2].Value;
 
-                // Skip social media links as they're now in the Links section
-                if (IsSocialMediaLink(text, url))
-                {
-                    return ""; // Remove from biography
-                }
-
-                // Convert other links to HTML
-                return $"<a href=\"{url}\" target=\"_blank\" rel=\"noopener noreferrer\">{text}</a>";
+                return IsSocialMediaLink(text, url) ? string.Empty : match.Value;
             });
 
-            // Clean up extra spaces and separators left by removed links
-            content = Regex.Replace(content, @"\s*\|\s*$", ""); // Remove trailing |
-            content = Regex.Replace(content, @"^\s*\|\s*", ""); // Remove leading |
-            content = Regex.Replace(content, @"\s*\|\s*\|\s*", " | "); // Clean up double |
-            content = Regex.Replace(content, @"\s+", " "); // Clean up multiple spaces
-            content = content.Trim();
+            // Parse remaining markdown into HTML
+            var pipeline = new Markdig.MarkdownPipelineBuilder()
+                                .UseAdvancedExtensions()
+                                .Build();
+            var html = Markdig.Markdown.ToHtml(content, pipeline);
 
-            // Convert line breaks to HTML
-            content = content.Replace("\n", "<br>");
+            // Ensure links open in a new tab
+            html = Regex.Replace(html, "<a href=\"([^\"]+)\"", "<a href=\"$1\" target=\"_blank\" rel=\"noopener noreferrer\"");
 
-            return content;
+            return html.Trim();
         }
 
         private bool IsSocialMediaLink(string text, string url)
