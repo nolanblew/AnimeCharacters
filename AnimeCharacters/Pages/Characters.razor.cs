@@ -69,27 +69,40 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            var vaRoles = new Dictionary<string, AniListClient.Models.Character>();
+            // Key by AniList anime id -> list of characters this VA voiced in that anime
+            var vaRoles = new Dictionary<string, List<AniListClient.Models.Character>>();
 
-            foreach (var person in CurrentPerson.Characters.Where(role => role.Media != null))
+            foreach (var character in CurrentPerson.Characters.Where(role => role.Media != null))
             {
-                foreach (var mediaItem in person.Media)
+                foreach (var mediaItem in character.Media)
                 {
-                    // TODO: Allow VAs to have multiple roles in the same anime
-                    vaRoles.TryAdd(mediaItem.Id.ToString(), person);
+                    if (!vaRoles.TryGetValue(mediaItem.Id.ToString(), out var list))
+                    {
+                        list = new List<AniListClient.Models.Character>();
+                        vaRoles[mediaItem.Id.ToString()] = list;
+                    }
+
+                    // Preserve order of characters as returned from the API
+                    list.Add(character);
                 }
             }
 
             var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
 
             MyCharactersList =
-                libraryEntries.Where(libraryEntry => !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) && vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
-                              .Select(libraryEntry => new CharacterAnimeModel
+                libraryEntries.Where(libraryEntry =>
+                                              !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) &&
+                                              vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
+                              .SelectMany(libraryEntry =>
                               {
-                                  KitsuId = libraryEntry.Anime.KitsuId,
-                                  AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
-                                  LastProgressedAt = libraryEntry.ProgressedAt,
-                                  VoiceActingRole = vaRoles[libraryEntry.Anime.AnilistId],
+                                  var characters = vaRoles[libraryEntry.Anime.AnilistId];
+                                  return characters.Select(character => new CharacterAnimeModel
+                                  {
+                                      KitsuId = libraryEntry.Anime.KitsuId,
+                                      AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
+                                      LastProgressedAt = libraryEntry.ProgressedAt,
+                                      VoiceActingRole = character,
+                                  });
                               })
                               .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
                               .ToList();

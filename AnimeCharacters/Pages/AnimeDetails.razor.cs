@@ -69,7 +69,28 @@ namespace AnimeCharacters.Pages
         async Task _LoadCharacters()
         {
             var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
-            CharactersList = media.Characters.OrderByDescending(c => c, CharacterByRoleComparer.Instance).ToList();
+
+            var characters = new List<AniListClient.Models.Character>();
+
+            foreach (var character in media.Characters)
+            {
+                if (character.VoiceActors?.Any() == true)
+                {
+                    foreach (var va in character.VoiceActors)
+                    {
+                        // clone character but only include the current voice actor
+                        characters.Add(character with { VoiceActors = new List<AniListClient.Models.VoiceActorSlim> { va } });
+                    }
+                }
+                else
+                {
+                    characters.Add(character);
+                }
+            }
+
+            CharactersList = characters
+                .OrderByDescending(c => c, CharacterByRoleComparer.Instance)
+                .ToList();
         }
     }
 }
