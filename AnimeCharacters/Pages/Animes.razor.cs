@@ -266,17 +266,17 @@ namespace AnimeCharacters.Pages
                     .Select(le => le.Value)
                     .GetDelta(updatedLibraries, l => l.Id, LibraryComparer.Default);
 
-                foreach(var newItem in libraryDeltas.Added)
+                foreach (var newItem in libraryDeltas.Added)
                 {
                     _LibraryEntries.Add(newItem.Id, newItem);
                 }
 
-                foreach(var oldItem in libraryDeltas.Deleted)
+                foreach (var oldItem in libraryDeltas.Deleted)
                 {
                     _LibraryEntries.Remove(oldItem.Id);
                 }
 
-                foreach(var updatedItem in libraryDeltas.Updated)
+                foreach (var updatedItem in libraryDeltas.Updated)
                 {
                     _LibraryEntries[updatedItem.Id] = updatedItem;
                 }
@@ -399,14 +399,14 @@ namespace AnimeCharacters.Pages
             }
 
             // Check Romanji title
-            if (!string.IsNullOrWhiteSpace(anime.RomanjiTitle) && 
+            if (!string.IsNullOrWhiteSpace(anime.RomanjiTitle) &&
                 anime.RomanjiTitle.ToLower().Contains(lowerFilter))
             {
                 return true;
             }
 
             // Check English title
-            if (!string.IsNullOrWhiteSpace(anime.EnglishTitle) && 
+            if (!string.IsNullOrWhiteSpace(anime.EnglishTitle) &&
                 anime.EnglishTitle.ToLower().Contains(lowerFilter))
             {
                 return true;

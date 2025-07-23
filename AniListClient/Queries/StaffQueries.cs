@@ -25,6 +25,14 @@ query getStaffByAnime($staff_id: Int, $page:Int=1) {
       medium
     }
     description
+    age
+    dateOfBirth {
+      year
+      month
+      day
+    }
+    bloodType
+    siteUrl
     characters(page: $page) {
       edges {
         id

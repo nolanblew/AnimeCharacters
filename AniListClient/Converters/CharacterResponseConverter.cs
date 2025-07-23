@@ -52,7 +52,17 @@ namespace AniListClient.Converters
                 Language: staff.LanguageV2,
                 Images: staff.Image.ToImage(),
                 Description: staff.Description,
+                Age: staff.Age,
+                DateOfBirth: staff.DateOfBirth?.ToDateOfBirth(),
+                BloodType: staff.BloodType,
+                SiteUrl: staff.SiteUrl,
                 Characters: staff.Characters.Edges.Select(c => c.ToCharacter()).ToList());
+
+        internal static Models.DateOfBirth ToDateOfBirth(this StaffQueryResponse.DateOfBirthResponse dateOfBirth) =>
+            new(
+                Year: dateOfBirth.Year,
+                Month: dateOfBirth.Month,
+                Day: dateOfBirth.Day);
 
         internal static Models.Images ToImage(this Image image) =>
             new(

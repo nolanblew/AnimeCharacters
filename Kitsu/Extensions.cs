@@ -49,7 +49,8 @@ namespace Kitsu
             if (currentUri.Contains("?"))
             {
                 currentUri = $"{currentUri}&{name}={value}";
-            } else
+            }
+            else
             {
                 currentUri = $"{currentUri}?{name}={value}";
             }
