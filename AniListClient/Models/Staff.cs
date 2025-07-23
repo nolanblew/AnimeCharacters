@@ -7,6 +7,9 @@ namespace AniListClient.Models
         Names Name,
         Language Language,
         Images Images,
+        int? Age,
+        FuzzyDate DateOfBirth,
+        string BloodType,
         string Description,
         List<Character> Characters);
 

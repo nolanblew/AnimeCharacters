@@ -1,6 +1,7 @@
 ﻿using AniListClient.Responses;
 using AniListClient.Responses.AniListClient.Responses;
 using System.Linq;
+using Models = AniListClient.Models;
 
 namespace AniListClient.Converters
 {
@@ -51,8 +52,17 @@ namespace AniListClient.Converters
                 Name: staff.Name.ToCharacterName(),
                 Language: staff.LanguageV2,
                 Images: staff.Image.ToImage(),
+                Age: staff.Age,
+                DateOfBirth: staff.DateOfBirth?.ToFuzzyDate(),
+                BloodType: staff.BloodType,
                 Description: staff.Description,
                 Characters: staff.Characters.Edges.Select(c => c.ToCharacter()).ToList());
+
+        internal static Models.FuzzyDate ToFuzzyDate(this Responses.FuzzyDate date) =>
+            new(
+                Year: date.Year,
+                Month: date.Month,
+                Day: date.Day);
 
         internal static Models.Images ToImage(this Image image) =>
             new(

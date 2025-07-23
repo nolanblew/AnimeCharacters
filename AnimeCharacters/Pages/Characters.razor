@@ -1,17 +1,34 @@
 ﻿@page "/characters/{id}"
 @inherits BasePage
+<link href="css/characters.css" rel="stylesheet" />
 
 <div class="content">
-    <div class="row">
-        <div class="col text-center">
-            <div class="item-container center-image">
-                <img src="@CurrentPerson?.Images?.GetOptimalImage()" />
+    <div class="va-header">
+        <img class="va-photo" src="@CurrentPerson?.Images?.GetOptimalImage()" />
+        <div>
+            <h4 class="text-secondary mb-1">@(CurrentPerson?.Name?.Full ?? "Loading...")</h4>
+            <button class="btn btn-link show-more-btn" @onclick="ToggleDetails">@(_showDetails ? "Show Less" : "Show More")</button>
+            <div class="va-details @(!_showDetails ? "collapsed" : string.Empty)">
+                @if (CurrentPerson != null)
+                {
+                    @if (CurrentPerson.Age.HasValue)
+                    {
+                        <p class="mb-1">Age: @CurrentPerson.Age</p>
+                    }
+                    @if (CurrentPerson.DateOfBirth != null && !string.IsNullOrWhiteSpace(CurrentPerson.DateOfBirth.ToString()))
+                    {
+                        <p class="mb-1">Birth Date: @CurrentPerson.DateOfBirth</p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(CurrentPerson.BloodType))
+                    {
+                        <p class="mb-1">Blood Type: @CurrentPerson.BloodType</p>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(CurrentPerson.Description))
+                    {
+                        <div class="mb-2">@((MarkupString)CurrentPerson.Description)</div>
+                    }
+                }
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col text-center text-secondary">
-            @(CurrentPerson?.Name?.Full ?? "Loading...")
         </div>
     </div>
 

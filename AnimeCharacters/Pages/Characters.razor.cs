@@ -17,6 +17,8 @@ namespace AnimeCharacters.Pages
 
         public AniListClient.Models.Staff CurrentPerson { get; set; }
 
+        bool _showDetails;
+
         public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
         public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
 
@@ -60,6 +62,11 @@ namespace AnimeCharacters.Pages
 
         protected void _OnCharacterClicked(CharacterAnimeModel model)
         {
+        }
+
+        void ToggleDetails()
+        {
+            _showDetails = !_showDetails;
         }
 
         async Task _LoadCharacters()

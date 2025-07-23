@@ -74,4 +74,16 @@ namespace AniListClient.Responses
         [JsonProperty("userPreferred", NullValueHandling = NullValueHandling.Ignore)]
         public string UserPreferred { get; set; }
     }
+
+    internal class FuzzyDate
+    {
+        [JsonProperty("year", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Year { get; set; }
+
+        [JsonProperty("month", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Month { get; set; }
+
+        [JsonProperty("day", NullValueHandling = NullValueHandling.Ignore)]
+        public int? Day { get; set; }
+    }
 }

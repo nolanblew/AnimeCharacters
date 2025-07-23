@@ -1,0 +1,24 @@
+.va-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.va-photo {
+    width: 120px;
+    border-radius: 6px;
+}
+.va-details.collapsed {
+    display: none;
+}
+.show-more-btn {
+    margin-top: 8px;
+}
+@media (min-width: 768px) {
+    .va-details.collapsed {
+        display: block;
+    }
+    .show-more-btn {
+        display: none;
+    }
+}

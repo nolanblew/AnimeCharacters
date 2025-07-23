@@ -18,4 +18,15 @@
             !string.IsNullOrWhiteSpace(Medium) ? Medium :
             null;
     }
+
+    public record FuzzyDate(
+        int? Year,
+        int? Month,
+        int? Day)
+    {
+        public override string ToString() =>
+            Month.HasValue && Day.HasValue
+                ? $"{Month.Value:D2}/{Day.Value:D2}{(Year.HasValue ? $"/{Year.Value}" : string.Empty)}"
+                : Year?.ToString() ?? string.Empty;
+    }
 }

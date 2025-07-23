@@ -23,6 +23,15 @@ namespace AniListClient.Responses
                 [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
                 public Image Image { get; set; }
 
+                [JsonProperty("age", NullValueHandling = NullValueHandling.Ignore)]
+                public int? Age { get; set; }
+
+                [JsonProperty("dateOfBirth", NullValueHandling = NullValueHandling.Ignore)]
+                public FuzzyDate DateOfBirth { get; set; }
+
+                [JsonProperty("bloodType", NullValueHandling = NullValueHandling.Ignore)]
+                public string BloodType { get; set; }
+
                 [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
                 public string Description { get; set; }
 
