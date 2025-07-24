@@ -2,6 +2,10 @@ using Blazored.LocalStorage;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using AnimeCharacters.Data;
+using AnimeCharacters.Data.Services;
+using Kitsu;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -21,12 +25,46 @@ namespace AnimeCharacters
             builder.Services.AddMatBlazor();
             builder.Services.AddEventAggregator();
 
-            builder.Services.AddSingleton<IPageStateManager, PageStateManager>();
+            // Register Entity Framework with SQLite for WASM
+            builder.Services.AddDbContextFactory<AnimeCharactersDbContext>(options =>
+                options.UseSqlite("Data Source=animecharacters.sqlite3"));
 
-            builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
+            // Register database services
+            builder.Services.AddScoped<SqliteDatabaseProvider>();
+            builder.Services.AddScoped<IDatabaseInitializationService, DatabaseInitializationService>();
+            
+            // Register sync and cache services
+            builder.Services.AddScoped<ISyncService, SyncService>();
+            builder.Services.AddScoped<ICharacterCacheService, CharacterCacheService>();
+            
+            // Register Kitsu client
+            builder.Services.AddScoped(_ => new KitsuClient());
+            
+            // Register the LocalStorage-based provider for migration purposes
+            builder.Services.AddScoped<DatabaseProvider>();
+            
+            // Use a factory to decide which provider to use
+            builder.Services.AddScoped<IDatabaseProvider>(serviceProvider =>
+            {
+                // For now, return the SQLite provider
+                // In the future, this could be configurable or based on feature flags
+                return serviceProvider.GetRequiredService<SqliteDatabaseProvider>();
+            });
+
+            builder.Services.AddSingleton<IPageStateManager, PageStateManager>();
             builder.Services.AddScoped(_ => new AniListClient.AniListClient());
 
-            await builder.Build().RunAsync();
+            var app = builder.Build();
+
+            // Initialize the database
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbInit = scope.ServiceProvider.GetRequiredService<IDatabaseInitializationService>();
+                await dbInit.InitializeDatabaseAsync();
+                await dbInit.MigrateFromLocalStorageAsync();
+            }
+
+            await app.RunAsync();
         }
     }
 }
