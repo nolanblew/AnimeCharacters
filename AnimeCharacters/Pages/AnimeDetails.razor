@@ -1,5 +1,6 @@
 ﻿@page "/animes/{id}"
 @inherits BasePage
+@implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
 
 <div class="content">
     <div class="row">
@@ -11,7 +12,7 @@
     </div>
     <div class="row">
         <div class="col text-center text-secondary">
-            @CurrentAnime?.Title
+            @GetAnimeTitle()
         </div>
     </div>
 

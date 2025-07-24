@@ -1,4 +1,5 @@
 ﻿using AnimeCharacters.Events;
+using AnimeCharacters.Models;
 using Blazored.LocalStorage;
 using EventAggregator.Blazor;
 using Kitsu.Models;
@@ -25,6 +26,9 @@ namespace AnimeCharacters
         ValueTask<int?> GetMigrationVersionAsnyc();
         ValueTask SetMigrationVersionAsync(int value);
 
+        ValueTask<UserSettings> GetUserSettingsAsync();
+        ValueTask SetUserSettingsAsync(UserSettings value);
+
         ValueTask ClearAsync();
     }
 
@@ -35,6 +39,7 @@ namespace AnimeCharacters
         const string _LAST_FETCHED_DATE_STORE = "last_fetched_date";
         const string _LIBRARIES_STORE = "libraries";
         const string _MIGRATION_VERSION = "migration_version";
+        const string _USER_SETTINGS = "user_settings";
 
         public DatabaseProvider(
             ILocalStorageService localStorageService,
@@ -65,6 +70,10 @@ namespace AnimeCharacters
         // Migration Version
         public ValueTask<int?> GetMigrationVersionAsnyc() => _localStorageService.GetItemAsync<int?>(_MIGRATION_VERSION);
         public ValueTask SetMigrationVersionAsync(int value) => _TriggerEvent(() => _localStorageService.SetItemAsync(_MIGRATION_VERSION, value));
+
+        // User Settings
+        public ValueTask<UserSettings> GetUserSettingsAsync() => _localStorageService.GetItemAsync<UserSettings>(_USER_SETTINGS);
+        public ValueTask SetUserSettingsAsync(UserSettings value) => _TriggerEvent(() => _localStorageService.SetItemAsync(_USER_SETTINGS, value));
 
         public ValueTask ClearAsync() => _TriggerEvent(() => _localStorageService.ClearAsync());
 
