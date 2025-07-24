@@ -32,7 +32,7 @@
                 </li>
             </ul>
             <span class="navbar-text">
-                Hello, @CurrentUser?.Name!
+                Hello, <a href="/profile-settings" class="username-link">@CurrentUser?.Name</a>!
             </span>
             <div class="nav-item">
                 <a class="nav-link" @onclick="_Logout">Logout</a>

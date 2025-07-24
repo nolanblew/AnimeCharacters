@@ -427,6 +427,12 @@ namespace AnimeCharacters.Pages
             }
         }
 
+        public Task HandleAsync(Events.DatabaseEvent arg)
+        {
+            StateHasChanged();
+            return Task.CompletedTask;
+        }
+
         // Enhanced HeaderState class with filter condition
         public class HeaderState
         {

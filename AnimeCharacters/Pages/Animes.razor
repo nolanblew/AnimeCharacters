@@ -1,5 +1,6 @@
 ﻿@page "/animes"
 @inherits BasePage
+@implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
 @using Kitsu.Models
 
 <link href="css/animes.css" rel="stylesheet" />

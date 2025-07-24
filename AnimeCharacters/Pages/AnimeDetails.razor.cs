@@ -1,4 +1,6 @@
 ﻿using AnimeCharacters.Comparers;
+using AnimeCharacters.Helpers;
+using AnimeCharacters.Models;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
@@ -20,6 +22,8 @@ namespace AnimeCharacters.Pages
 
         public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
 
+        public UserSettings UserSettings { get; set; } = new UserSettings();
+
         [Parameter]
         public string Id { get; set; }
 
@@ -36,6 +40,7 @@ namespace AnimeCharacters.Pages
             }
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
+            UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
             CurrentAnime = (await DatabaseProvider.GetLibrariesAsync()).FirstOrDefault(libray => libray.Anime?.KitsuId == Id).Anime;
 
             if (CurrentAnime == null)
@@ -91,6 +96,17 @@ namespace AnimeCharacters.Pages
             CharactersList = characters
                 .OrderByDescending(c => c, CharacterByRoleComparer.Instance)
                 .ToList();
+        }
+
+        public string GetAnimeTitle()
+        {
+            return TitleHelper.GetPreferredTitle(CurrentAnime, UserSettings.PreferredTitleType);
+        }
+
+        public async Task HandleAsync(Events.DatabaseEvent arg)
+        {
+            UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+            StateHasChanged();
         }
     }
 }

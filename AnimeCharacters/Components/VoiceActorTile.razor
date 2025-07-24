@@ -1,4 +1,9 @@
-﻿<div class="item">
+﻿@using AnimeCharacters.Helpers
+@using AnimeCharacters.Models
+@inherits AnimeCharacters.Pages.BasePage
+@implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
+
+<div class="item">
     <div class="row">
         <div class="col" @onclick="_OnAnimeClicked">
             <img src="@(CharacterAnime?.AnimeImageUrl ?? "#")" />
@@ -11,7 +16,7 @@
     </div>
     <div class="row">
         <div class="col" @onclick="_OnAnimeClicked">
-            <div class="text-md-center text-primary">@(CharacterAnime?.VoiceActingRole?.Media?.FirstOrDefault()?.Title?.UserPreferred ?? "Loading...")</div>
+            <div class="text-md-center text-primary">@GetDisplayTitle()</div>
         </div>
     </div>
     <div class="row">
@@ -32,6 +37,21 @@
     [Parameter]
     public EventCallback OnCharacterClicked { get; set; }
 
+    private UserSettings _userSettings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+        await base.OnInitializedAsync();
+    }
+
+    private string GetDisplayTitle()
+    {
+        if (_userSettings == null) return CharacterAnime?.VoiceActingRole?.Media?.FirstOrDefault()?.Title?.UserPreferred ?? "Loading...";
+        var media = CharacterAnime?.VoiceActingRole?.Media?.FirstOrDefault();
+        return TitleHelper.GetPreferredTitle(media, _userSettings.PreferredTitleType);
+    }
+
     void _OnAnimeClicked()
     {
         OnAnimeClicked.InvokeAsync();
@@ -40,5 +60,11 @@
     void _OnCharacterClicked()
     {
         OnCharacterClicked.InvokeAsync();
+    }
+
+    public async Task HandleAsync(Events.DatabaseEvent arg)
+    {
+        _userSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+        StateHasChanged();
     }
 }

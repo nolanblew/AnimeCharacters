@@ -1,0 +1,82 @@
+@page "/profile-settings"
+@using AnimeCharacters.Models
+@inherits BasePage
+@implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
+@inject IJSRuntime JSRuntime
+
+<div class="flex-container">
+    <div class="control">
+        <h1>Profile Settings</h1>
+    </div>
+
+    <div class="main-content profile-settings-content">
+        @if (CurrentUser != null)
+        {
+            <div class="profile-section">
+                <h3>Profile Information</h3>
+                
+                <div class="profile-info">
+                    @if (!string.IsNullOrWhiteSpace(CurrentUser.AvatarUrl))
+                    {
+                        <img src="@CurrentUser.AvatarUrl" class="profile-avatar" alt="Profile Avatar" />
+                    }
+                    
+                    <div class="profile-details">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" value="@CurrentUser.Name" readonly />
+                        </div>
+                        
+                        @if (!string.IsNullOrWhiteSpace(CurrentUser.Username) && CurrentUser.Username != CurrentUser.Name)
+                        {
+                            <div class="form-group">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" value="@CurrentUser.Username" readonly />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>App Settings</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Preferred Title Type</label>
+                    <select class="form-control" @bind="SelectedTitleType" @bind:after="OnTitleTypeChanged">
+                        <option value="@TitleType.UserPreferred">Default (User Preferred)</option>
+                        <option value="@TitleType.Romaji">Romaji</option>
+                        <option value="@TitleType.English">English</option>
+                        <option value="@TitleType.Native">Native (Japanese)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="app-info-section">
+                <h3>App Information</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">App Version</label>
+                    <div class="version-info">
+                        <span class="version-text">@AppVersion</span>
+                        @if (UpdateAvailable)
+                        {
+                            <button type="button" class="btn btn-primary btn-sm ml-2" @onclick="UpdateApp">
+                                Update Available
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="logout-section">
+                <button type="button" class="btn btn-danger" @onclick="LogoutAsync">
+                    Logout
+                </button>
+                <div class="logout-description">
+                    This will delete your user token, clear all cached data, and return you to the login screen.
+                </div>
+            </div>
+        }
+    </div>
+</div>
