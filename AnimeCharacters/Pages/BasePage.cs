@@ -1,4 +1,5 @@
-﻿using EventAggregator.Blazor;
+﻿using AnimeCharacters.Services;
+using EventAggregator.Blazor;
 using Microsoft.AspNetCore.Components;
 
 namespace AnimeCharacters.Pages
@@ -19,6 +20,18 @@ namespace AnimeCharacters.Pages
 
         [Inject]
         protected IEventAggregator _EventAggregator { get; set; }
+
+        /// <summary>
+        /// New service provider system for future extensibility
+        /// </summary>
+        [Inject]
+        protected IDataProviderService DataProviderService { get; set; }
+
+        /// <summary>
+        /// Legacy compatibility service for existing functionality
+        /// </summary>
+        [Inject]
+        protected ILegacyDataService LegacyDataService { get; set; }
 
         protected override void OnInitialized()
         {

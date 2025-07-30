@@ -1,3 +1,5 @@
+using AnimeCharacters.Services;
+using AnimeCharacters.Services.Providers;
 using Blazored.LocalStorage;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -26,7 +28,23 @@ namespace AnimeCharacters
             builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
             builder.Services.AddScoped(_ => new AniListClient.AniListClient());
 
-            await builder.Build().RunAsync();
+            // Register data provider service and providers
+            builder.Services.AddSingleton<IDataProviderService, DataProviderService>();
+            builder.Services.AddScoped<ILegacyDataService, LegacyDataService>();
+            
+            // Register providers
+            builder.Services.AddTransient<KitsuLibraryProvider>();
+            builder.Services.AddTransient<AniListCharacterProvider>();
+
+            // Configure providers
+            var app = builder.Build();
+            
+            // Register providers with the service
+            var providerService = app.Services.GetRequiredService<IDataProviderService>();
+            providerService.RegisterProvider(app.Services.GetRequiredService<KitsuLibraryProvider>());
+            providerService.RegisterProvider(app.Services.GetRequiredService<AniListCharacterProvider>());
+
+            await app.RunAsync();
         }
     }
 }
