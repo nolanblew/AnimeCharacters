@@ -25,6 +25,7 @@ namespace AnimeCharacters.Pages
         public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
 
         private bool _showMobileDetails = false;
+        private bool _isLoading = true;
 
         [Parameter]
         public string Id { get; set; }
@@ -42,7 +43,9 @@ namespace AnimeCharacters.Pages
             }
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
-            CurrentPerson = await _anilistClient.Staff.GetStaffById(int.Parse(Id));
+            CurrentPerson = await SyncService.RequestVoiceActorSyncAsync(
+                int.Parse(Id), 
+                Data.Services.PrioritySyncPriority.Urgent); // User is actively waiting
 
             if (CurrentPerson == null)
             {
@@ -54,6 +57,7 @@ namespace AnimeCharacters.Pages
 
             await _LoadCharacters();
 
+            _isLoading = false;
             StateHasChanged();
         }
 
@@ -70,44 +74,15 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            // Key by AniList anime id -> list of characters this VA voiced in that anime
-            var vaRoles = new Dictionary<string, List<AniListClient.Models.Character>>();
-
-            foreach (var character in CurrentPerson.Characters.Where(role => role.Media != null))
-            {
-                foreach (var mediaItem in character.Media)
-                {
-                    if (!vaRoles.TryGetValue(mediaItem.Id.ToString(), out var list))
-                    {
-                        list = new List<AniListClient.Models.Character>();
-                        vaRoles[mediaItem.Id.ToString()] = list;
-                    }
-
-                    // Preserve order of characters as returned from the API
-                    list.Add(character);
-                }
-            }
-
             var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
+            
+            // Use the character cache service to get shared anime for this voice actor
+            var userAnimeKitsuIds = libraryEntries.Select(le => le.Anime.KitsuId).ToList();
+            var sharedAnimes = await CharacterCacheService.GetSharedCharacterAnimesAsync(int.Parse(Id), userAnimeKitsuIds);
 
-            MyCharactersList =
-                libraryEntries.Where(libraryEntry =>
-                                              !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) &&
-                                              vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
-                              .SelectMany(libraryEntry =>
-                              {
-                                  var characters = vaRoles[libraryEntry.Anime.AnilistId];
-                                  return characters.Select(character => new CharacterAnimeModel
-                                  {
-                                      KitsuId = libraryEntry.Anime.KitsuId,
-                                      AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
-                                      LastProgressedAt = libraryEntry.ProgressedAt,
-                                      VoiceActingRole = character,
-                                  });
-                              })
-                              .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
-                              .ToList();
-
+            MyCharactersList = sharedAnimes
+                .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
+                .ToList();
         }
 
         private void ToggleMobileDetails()

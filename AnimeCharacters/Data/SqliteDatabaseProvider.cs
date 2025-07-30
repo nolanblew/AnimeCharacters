@@ -42,8 +42,8 @@ namespace AnimeCharacters.Data
             var existingUser = await context.Users.FirstOrDefaultAsync(u => u.Id == value.Id);
             if (existingUser != null)
             {
-                existingUser.Name = value.Name;
-                existingUser.Username = value.Username;
+                existingUser.Name = value.Name ?? "Unknown User";
+                existingUser.Username = value.Username ?? $"user_{value.Id}";
                 existingUser.AvatarUrl = value.AvatarUrl;
                 existingUser.UpdatedAt = DateTime.UtcNow;
             }

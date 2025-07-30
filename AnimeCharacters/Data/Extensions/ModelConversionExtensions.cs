@@ -16,8 +16,8 @@ namespace AnimeCharacters.Data.Extensions
             return new DbUser
             {
                 Id = user.Id,
-                Name = user.Name,
-                Username = user.Username,
+                Name = user.Name ?? "Unknown User",
+                Username = user.Username ?? $"user_{user.Id}",
                 AvatarUrl = user.AvatarUrl,
                 UpdatedAt = DateTime.UtcNow
             };

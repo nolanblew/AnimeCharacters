@@ -16,7 +16,26 @@
             <div class="alert alert-info" role="alert">
                 <div class="row">
                     <div class="col" style="min-width: 0px;">
-                        @if (_LibraryEntries?.Any() != true)
+                        @if (IsBusy && !string.IsNullOrEmpty(SyncStatusMessage))
+                        {
+                            <div class="d-flex flex-column">
+                                <div>@SyncStatusMessage</div>
+                                @if (SyncProgressPercentage > 0)
+                                {
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                             role="progressbar" 
+                                             style="width: @(SyncProgressPercentage)%" 
+                                             aria-valuenow="@SyncProgressPercentage" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">@(SyncProgressPercentage.ToString("F1"))%</small>
+                                }
+                            </div>
+                        }
+                        else if (_LibraryEntries?.Any() != true)
                         {
                             @:Please wait as we load your library...
                         }
@@ -33,7 +52,7 @@
                         }
                         else
                         {
-                            <div style="margin-top: 2px;" @onclick="() => _FetchLibraries(true)">
+                            <div style="margin-top: 2px; cursor: pointer;" @onclick="() => _FetchLibraries(true)" title="Refresh library">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z" />
                                     <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z" />

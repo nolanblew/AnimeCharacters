@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AnimeCharacters.Data.Services
@@ -135,19 +136,23 @@ namespace AnimeCharacters.Data.Services
             var cachedVoiceActor = await context.VoiceActors
                 .FirstOrDefaultAsync(va => va.Id == voiceActorId);
 
-            if (cachedVoiceActor != null)
+            // If we have cached data with full details (recent fetch), return it
+            if (cachedVoiceActor != null && !string.IsNullOrEmpty(cachedVoiceActor.Description) && 
+                cachedVoiceActor.UpdatedAt > DateTime.UtcNow.AddDays(-30))
             {
                 return cachedVoiceActor.ToStaff();
             }
 
-            // If not in cache, try to fetch from AniList
+            // If not in cache or incomplete data, try to fetch full details from AniList
             try
             {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
                 var staff = await _aniListClient.Staff.GetStaffById(voiceActorId);
+                
                 if (staff != null)
                 {
-                    // Cache the voice actor
-                    context.VoiceActors.Add(staff.ToDbVoiceActor());
+                    // Upsert voice actor with full data
+                    await UpsertFullVoiceActorAsync(context, staff);
                     await context.SaveChangesAsync();
                     return staff;
                 }
@@ -157,35 +162,82 @@ namespace AnimeCharacters.Data.Services
                 Console.WriteLine($"Failed to fetch voice actor {voiceActorId}: {ex.Message}");
             }
 
+            // Return cached data even if incomplete, if available
+            if (cachedVoiceActor != null)
+            {
+                return cachedVoiceActor.ToStaff();
+            }
+
             return null;
+        }
+
+        private async Task UpsertFullVoiceActorAsync(AnimeCharactersDbContext context, Staff staff)
+        {
+            var existingVA = await context.VoiceActors.FirstOrDefaultAsync(va => va.Id == staff.Id);
+            if (existingVA == null)
+            {
+                // Create new voice actor with full data
+                context.VoiceActors.Add(staff.ToDbVoiceActor());
+            }
+            else
+            {
+                // Update existing voice actor with full data from Staff object
+                existingVA.NameRomaji = staff.Name.Romaji ?? existingVA.NameRomaji;
+                existingVA.NameFirst = staff.Name.First ?? existingVA.NameFirst;
+                existingVA.NameLast = staff.Name.Last ?? existingVA.NameLast;
+                existingVA.NameFull = staff.Name.Full ?? existingVA.NameFull;
+                existingVA.NameNative = staff.Name.Native ?? existingVA.NameNative;
+                existingVA.NameAlternative = staff.Name.Alternative ?? existingVA.NameAlternative;
+                existingVA.NameAlternativeSpoiler = staff.Name.AlternativeSpoiler ?? existingVA.NameAlternativeSpoiler;
+                existingVA.Language = staff.Language != default ? staff.Language : existingVA.Language;
+                existingVA.ImageMedium = staff.Images.Medium ?? existingVA.ImageMedium;
+                existingVA.ImageLarge = staff.Images.Large ?? existingVA.ImageLarge;
+                existingVA.ImageExtraLarge = staff.Images.ExtraLarge ?? existingVA.ImageExtraLarge;
+                existingVA.ImageColor = staff.Images.Color ?? existingVA.ImageColor;
+                existingVA.Description = staff.Description ?? existingVA.Description;
+                existingVA.Age = staff.Age ?? existingVA.Age;
+                existingVA.BirthYear = staff.DateOfBirth.Year ?? existingVA.BirthYear;
+                existingVA.BirthMonth = staff.DateOfBirth.Month ?? existingVA.BirthMonth;
+                existingVA.BirthDay = staff.DateOfBirth.Day ?? existingVA.BirthDay;
+                existingVA.BloodType = staff.BloodType ?? existingVA.BloodType;
+                existingVA.SiteUrl = staff.SiteUrl ?? existingVA.SiteUrl;
+                existingVA.UpdatedAt = DateTime.UtcNow;
+            }
         }
 
         public async Task<List<CharacterAnimeModel>> GetSharedCharacterAnimesAsync(int voiceActorId, List<string> userAnimeKitsuIds)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
 
-            var sharedAnimes = await context.CharacterVoiceActors
-                .Where(cva => cva.VoiceActorId == voiceActorId)
-                .Join(context.AnimeCharacters,
-                    cva => cva.CharacterId,
-                    ac => ac.CharacterId,
-                    (cva, ac) => new { cva, ac })
-                .Where(joined => userAnimeKitsuIds.Contains(joined.ac.AnimeKitsuId))
-                .Include(joined => joined.cva.Character)
-                .Include(joined => joined.ac.Anime)
-                .Select(joined => new CharacterAnimeModel
-                {
-                    KitsuId = joined.ac.AnimeKitsuId,
-                    AnimeImageUrl = joined.ac.Anime.PosterImageUrl,
-                    LastProgressedAt = context.LibraryEntries
-                        .Where(le => le.AnimeKitsuId == joined.ac.AnimeKitsuId)
-                        .Select(le => le.ProgressedAt)
-                        .FirstOrDefault(),
-                    VoiceActingRole = joined.cva.Character.ToCharacter()
-                })
-                .ToListAsync();
+            try
+            {
+                var sharedAnimes = await context.CharacterVoiceActors
+                    .Include(cva => cva.Character)
+                    .Where(cva => cva.VoiceActorId == voiceActorId)
+                    .Join(context.AnimeCharacters.Include(ac => ac.Anime),
+                        cva => cva.CharacterId,
+                        ac => ac.CharacterId,
+                        (cva, ac) => new { cva, ac })
+                    .Where(joined => userAnimeKitsuIds.Contains(joined.ac.AnimeKitsuId))
+                    .Select(joined => new CharacterAnimeModel
+                    {
+                        KitsuId = joined.ac.AnimeKitsuId,
+                        AnimeImageUrl = joined.ac.Anime.PosterImageUrl,
+                        LastProgressedAt = context.LibraryEntries
+                            .Where(le => le.AnimeKitsuId == joined.ac.AnimeKitsuId)
+                            .Select(le => le.ProgressedAt)
+                            .FirstOrDefault(),
+                        VoiceActingRole = joined.cva.Character.ToCharacter()
+                    })
+                    .ToListAsync();
 
-            return sharedAnimes;
+                return sharedAnimes;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting shared animes for voice actor {voiceActorId}: {ex.Message}");
+                return new List<CharacterAnimeModel>();
+            }
         }
 
         public async Task PreCacheUserAnimeCharactersAsync(List<string> animeKitsuIds)
@@ -264,12 +316,8 @@ namespace AnimeCharacters.Data.Services
 
             foreach (var character in characters)
             {
-                // Cache character if not exists
-                var existingChar = await context.Characters.FirstOrDefaultAsync(c => c.Id == character.Id);
-                if (existingChar == null)
-                {
-                    context.Characters.Add(character.ToDbCharacter());
-                }
+                // Cache character (upsert with latest data)
+                await UpsertCharacterAsync(context, character);
 
                 // Cache anime-character relationship
                 var existingAnimeChar = await context.AnimeCharacters
@@ -284,25 +332,12 @@ namespace AnimeCharacters.Data.Services
                     });
                 }
 
-                // Cache voice actors and relationships
+                // Cache voice actors with full data and relationships
                 foreach (var voiceActor in character.VoiceActors)
                 {
-                    var existingVA = await context.VoiceActors.FirstOrDefaultAsync(va => va.Id == voiceActor.Id);
-                    if (existingVA == null)
-                    {
-                        context.VoiceActors.Add(new DbVoiceActor
-                        {
-                            Id = voiceActor.Id,
-                            NameRomaji = voiceActor.Name.Romaji,
-                            NameFirst = voiceActor.Name.First,
-                            NameLast = voiceActor.Name.Last,
-                            NameFull = voiceActor.Name.Full,
-                            NameNative = voiceActor.Name.Native,
-                            NameAlternative = voiceActor.Name.Alternative,
-                            NameAlternativeSpoiler = voiceActor.Name.AlternativeSpoiler
-                        });
-                    }
+                    await UpsertVoiceActorAsync(context, voiceActor);
 
+                    // Cache character-voice actor relationship
                     var existingCharVA = await context.CharacterVoiceActors
                         .FirstOrDefaultAsync(cva => cva.CharacterId == character.Id && cva.VoiceActorId == voiceActor.Id);
                     if (existingCharVA == null)
@@ -317,6 +352,69 @@ namespace AnimeCharacters.Data.Services
             }
 
             await context.SaveChangesAsync();
+        }
+
+        private async Task UpsertCharacterAsync(AnimeCharactersDbContext context, Character character)
+        {
+            var existingChar = await context.Characters.FirstOrDefaultAsync(c => c.Id == character.Id);
+            if (existingChar == null)
+            {
+                context.Characters.Add(character.ToDbCharacter());
+            }
+            else
+            {
+                // Update existing character with newer data
+                existingChar.NameRomaji = character.Name.Romaji;
+                existingChar.NameFirst = character.Name.First;
+                existingChar.NameLast = character.Name.Last;
+                existingChar.NameFull = character.Name.Full;
+                existingChar.NameNative = character.Name.Native;
+                existingChar.NameAlternative = character.Name.Alternative;
+                existingChar.NameAlternativeSpoiler = character.Name.AlternativeSpoiler;
+                existingChar.ImageMedium = character.Image.Medium;
+                existingChar.ImageLarge = character.Image.Large;
+                existingChar.ImageExtraLarge = character.Image.ExtraLarge;
+                existingChar.ImageColor = character.Image.Color;
+                existingChar.Description = character.Description;
+                existingChar.Role = character.Role;
+                existingChar.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+        private async Task UpsertVoiceActorAsync(AnimeCharactersDbContext context, VoiceActorSlim voiceActor)
+        {
+            var existingVA = await context.VoiceActors.FirstOrDefaultAsync(va => va.Id == voiceActor.Id);
+            if (existingVA == null)
+            {
+                // Create new voice actor with basic data from VoiceActorSlim
+                context.VoiceActors.Add(new DbVoiceActor
+                {
+                    Id = voiceActor.Id,
+                    NameRomaji = voiceActor.Name.Romaji,
+                    NameFirst = voiceActor.Name.First,
+                    NameLast = voiceActor.Name.Last,
+                    NameFull = voiceActor.Name.Full,
+                    NameNative = voiceActor.Name.Native,
+                    NameAlternative = voiceActor.Name.Alternative,
+                    NameAlternativeSpoiler = voiceActor.Name.AlternativeSpoiler,
+                    UpdatedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                // Update existing voice actor with newer name data (preserve full data if already exists)
+                if (string.IsNullOrEmpty(existingVA.NameFull) || existingVA.UpdatedAt < DateTime.UtcNow.AddDays(-7))
+                {
+                    existingVA.NameRomaji = voiceActor.Name.Romaji ?? existingVA.NameRomaji;
+                    existingVA.NameFirst = voiceActor.Name.First ?? existingVA.NameFirst;
+                    existingVA.NameLast = voiceActor.Name.Last ?? existingVA.NameLast;
+                    existingVA.NameFull = voiceActor.Name.Full ?? existingVA.NameFull;
+                    existingVA.NameNative = voiceActor.Name.Native ?? existingVA.NameNative;
+                    existingVA.NameAlternative = voiceActor.Name.Alternative ?? existingVA.NameAlternative;
+                    existingVA.NameAlternativeSpoiler = voiceActor.Name.AlternativeSpoiler ?? existingVA.NameAlternativeSpoiler;
+                    existingVA.UpdatedAt = DateTime.UtcNow;
+                }
+            }
         }
     }
 }

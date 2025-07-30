@@ -41,7 +41,8 @@ namespace AnimeCharacters.Pages
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
             UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
-            CurrentAnime = (await DatabaseProvider.GetLibrariesAsync()).FirstOrDefault(libray => libray.Anime?.KitsuId == Id).Anime;
+            var libraryEntry = (await DatabaseProvider.GetLibrariesAsync()).FirstOrDefault(libray => libray.Anime?.KitsuId == Id);
+            CurrentAnime = libraryEntry?.Anime;
 
             if (CurrentAnime == null)
             {
@@ -73,27 +74,30 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
+            // Use the priority sync service to get characters (immediate return if cached, or priority sync if not)
+            var characters = await SyncService.RequestAnimeCharactersSyncAsync(
+                CurrentAnime.KitsuId, 
+                Data.Services.PrioritySyncPriority.Urgent); // User is actively waiting
 
-            var characters = new List<AniListClient.Models.Character>();
+            var expandedCharacters = new List<AniListClient.Models.Character>();
 
-            foreach (var character in media.Characters)
+            foreach (var character in characters)
             {
                 if (character.VoiceActors?.Any() == true)
                 {
                     foreach (var va in character.VoiceActors)
                     {
                         // clone character but only include the current voice actor
-                        characters.Add(character with { VoiceActors = new List<AniListClient.Models.VoiceActorSlim> { va } });
+                        expandedCharacters.Add(character with { VoiceActors = new List<AniListClient.Models.VoiceActorSlim> { va } });
                     }
                 }
                 else
                 {
-                    characters.Add(character);
+                    expandedCharacters.Add(character);
                 }
             }
 
-            CharactersList = characters
+            CharactersList = expandedCharacters
                 .OrderByDescending(c => c, CharacterByRoleComparer.Instance)
                 .ToList();
         }

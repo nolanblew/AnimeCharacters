@@ -1,0 +1,230 @@
+@inherits Pages.BasePage
+@inject IPrioritySyncService PrioritySyncService
+@implements IDisposable
+@using System.Threading
+@using AnimeCharacters.Data.Services
+
+@if (_syncStatus?.IsRunning == true || _syncStatus?.QueueSize > 0)
+{
+    <div class="background-sync-indicator" @onclick="ToggleDetails">
+        <div class="sync-icon @(_syncStatus.IsRunning ? "spinning" : "")">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1Z"/>
+                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466Z"/>
+            </svg>
+        </div>
+        @if (_syncStatus.QueueSize > 0)
+        {
+            <span class="queue-count">@_syncStatus.QueueSize</span>
+        }
+    </div>
+
+    @if (_showDetails)
+    {
+        <div class="sync-details-popup">
+            <div class="sync-details-header">
+                <strong>Background Sync</strong>
+                <button class="close-btn" @onclick="HideDetails">&times;</button>
+            </div>
+            <div class="sync-details-content">
+                <div class="sync-stat">
+                    <span class="label">Status:</span>
+                    <span class="value">@(_syncStatus.IsRunning ? "Running" : "Idle")</span>
+                </div>
+                <div class="sync-stat">
+                    <span class="label">Queue:</span>
+                    <span class="value">@_syncStatus.QueueSize items</span>
+                </div>
+                <div class="sync-stat">
+                    <span class="label">Processed Today:</span>
+                    <span class="value">@_syncStatus.ProcessedToday</span>
+                </div>
+                @if (_syncStatus.RateLimitStatus?.IsRateLimited == true)
+                {
+                    <div class="sync-stat rate-limited">
+                        <span class="label">Rate Limited:</span>
+                        <span class="value">
+                            @if (_syncStatus.RateLimitStatus.BackoffDelay.HasValue)
+                            {
+                                @($"Wait {_syncStatus.RateLimitStatus.BackoffDelay.Value.TotalSeconds:F0}s")
+                            }
+                            else
+                            {
+                                @("Yes")
+                            }
+                        </span>
+                    </div>
+                }
+                @if (_syncStatus.FailedRequestsToday > 0)
+                {
+                    <div class="sync-stat">
+                        <span class="label">Failed Today:</span>
+                        <span class="value error">@_syncStatus.FailedRequestsToday</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}
+
+<style>
+    .background-sync-indicator {
+        position: relative;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 12px;
+        background-color: rgba(0, 123, 255, 0.1);
+        margin: 0 8px;
+        transition: background-color 0.2s;
+    }
+
+    .background-sync-indicator:hover {
+        background-color: rgba(0, 123, 255, 0.2);
+    }
+
+    .sync-icon {
+        color: #007bff;
+        display: flex;
+        align-items: center;
+    }
+
+    .sync-icon.spinning svg {
+        animation: spin 2s linear infinite;
+    }
+
+    .queue-count {
+        background: #dc3545;
+        color: white;
+        border-radius: 10px;
+        padding: 2px 6px;
+        font-size: 0.75rem;
+        margin-left: 6px;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    .sync-details-popup {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        min-width: 250px;
+        margin-top: 8px;
+    }
+
+    .sync-details-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 16px;
+        border-bottom: 1px solid #dee2e6;
+        background-color: #f8f9fa;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: #6c757d;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .close-btn:hover {
+        color: #495057;
+    }
+
+    .sync-details-content {
+        padding: 12px 16px;
+    }
+
+    .sync-stat {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .sync-stat:last-child {
+        margin-bottom: 0;
+    }
+
+    .sync-stat .label {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .sync-stat .value {
+        color: #212529;
+    }
+
+    .sync-stat .value.error {
+        color: #dc3545;
+    }
+
+    .sync-stat.rate-limited .value {
+        color: #fd7e14;
+    }
+
+    @@keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+</style>
+
+@code {
+    private PrioritySyncStatus _syncStatus;
+    private bool _showDetails = false;
+    private Timer _refreshTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshStatus();
+        
+        // Refresh status every 3 seconds
+        _refreshTimer = new Timer(async _ =>
+        {
+            await InvokeAsync(async () =>
+            {
+                await RefreshStatus();
+                StateHasChanged();
+            });
+        }, null, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(3));
+        
+        await base.OnInitializedAsync();
+    }
+
+    private async Task RefreshStatus()
+    {
+        try
+        {
+            _syncStatus = await PrioritySyncService.GetPrioritySyncStatusAsync();
+        }
+        catch
+        {
+            // Ignore errors - status will remain null/empty
+        }
+    }
+
+    private void ToggleDetails()
+    {
+        _showDetails = !_showDetails;
+    }
+
+    private void HideDetails()
+    {
+        _showDetails = false;
+    }
+
+    public void Dispose()
+    {
+        _refreshTimer?.Dispose();
+    }
+}

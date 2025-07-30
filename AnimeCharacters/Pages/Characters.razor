@@ -168,11 +168,20 @@
         </div>
     }
 
-    @if (MyCharactersList?.Any() != true && NotMyCharactersList?.Any() != true)
+    @if (_isLoading)
     {
         <div class="d-flex justify-content-center">
             <div class="control">
                 <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
+            </div>
+        </div>
+    }
+    else if (MyCharactersList?.Any() != true && NotMyCharactersList?.Any() != true)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="alert alert-info" role="alert">
+                <h5 class="text-muted">No shared characters found</h5>
+                <p class="mb-0">This voice actor doesn't appear in any anime from your library, or character data hasn't been synced yet.</p>
             </div>
         </div>
     }

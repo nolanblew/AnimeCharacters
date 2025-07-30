@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,6 +20,8 @@ namespace AnimeCharacters.Data.Services
         private readonly IDbContextFactory<AnimeCharactersDbContext> _contextFactory;
         private readonly KitsuClient _kitsuClient;
         private readonly AniListClient.AniListClient _aniListClient;
+        private readonly IPrioritySyncService _prioritySyncService;
+        private readonly ICharacterCacheService _characterCacheService;
         private readonly SemaphoreSlim _syncSemaphore = new(1, 1);
         private CancellationTokenSource _currentSyncCancellation;
 
@@ -28,11 +31,15 @@ namespace AnimeCharacters.Data.Services
         public SyncService(
             IDbContextFactory<AnimeCharactersDbContext> contextFactory,
             KitsuClient kitsuClient,
-            AniListClient.AniListClient aniListClient)
+            AniListClient.AniListClient aniListClient,
+            IPrioritySyncService prioritySyncService,
+            ICharacterCacheService characterCacheService)
         {
             _contextFactory = contextFactory;
             _kitsuClient = kitsuClient;
             _aniListClient = aniListClient;
+            _prioritySyncService = prioritySyncService;
+            _characterCacheService = characterCacheService;
         }
 
         public async Task<SyncResult> PerformFullSyncAsync(SyncProgressCallback progressCallback = null, CancellationToken cancellationToken = default)
@@ -42,7 +49,18 @@ namespace AnimeCharacters.Data.Services
 
             if (!await _syncSemaphore.WaitAsync(0, cancellationToken))
             {
-                return new SyncResult { IsSuccess = false, ErrorMessage = "Sync already in progress" };
+                // Check if it's just background sync running - allow full sync to proceed by stopping background sync
+                var syncStatus = await GetSyncStatusAsync();
+                if (syncStatus.IsSyncInProgress && syncStatus.CurrentStage == null)
+                {
+                    // This is likely just background priority sync - stop it and proceed
+                    await StopBackgroundSyncAsync();
+                    await _syncSemaphore.WaitAsync(cancellationToken);
+                }
+                else
+                {
+                    return new SyncResult { IsSuccess = false, ErrorMessage = "Full sync already in progress" };
+                }
             }
 
             try
@@ -183,7 +201,18 @@ namespace AnimeCharacters.Data.Services
 
             if (!await _syncSemaphore.WaitAsync(0, cancellationToken))
             {
-                return new SyncResult { IsSuccess = false, ErrorMessage = "Sync already in progress" };
+                // Check if it's just background sync running - allow delta sync to proceed by stopping background sync
+                var syncStatus = await GetSyncStatusAsync();
+                if (syncStatus.IsSyncInProgress && syncStatus.CurrentStage == null)
+                {
+                    // This is likely just background priority sync - stop it and proceed
+                    await StopBackgroundSyncAsync();
+                    await _syncSemaphore.WaitAsync(cancellationToken);
+                }
+                else
+                {
+                    return new SyncResult { IsSuccess = false, ErrorMessage = "Delta sync already in progress" };
+                }
             }
 
             try
@@ -475,27 +504,23 @@ namespace AnimeCharacters.Data.Services
             var processedCount = 0;
             var totalAnime = libraryEntries.Count;
 
+            // During full sync, only queue anime for background processing instead of processing all immediately
+            var animeToQueue = new List<string>();
+
             foreach (var entry in libraryEntries)
             {
                 if (cancellationToken.IsCancellationRequested) break;
 
                 if (!string.IsNullOrEmpty(entry.Anime?.AnilistId))
                 {
-                    try
+                    // Check if already cached
+                    using var context = await _contextFactory.CreateDbContextAsync();
+                    var hasCharacters = await context.AnimeCharacters
+                        .AnyAsync(ac => ac.AnimeKitsuId == entry.Anime.KitsuId, cancellationToken);
+
+                    if (!hasCharacters)
                     {
-                        var anilistId = int.Parse(entry.Anime.AnilistId);
-                        var media = await _aniListClient.Characters.GetMediaWithCharactersById(anilistId);
-                        
-                        if (media?.Characters != null)
-                        {
-                            await CacheCharacterDataAsync(entry.Anime.KitsuId, media.Characters);
-                            charactersCount += media.Characters.Count;
-                            voiceActorsCount += media.Characters.SelectMany(c => c.VoiceActors).Count();
-                        }
-                    }
-                    catch
-                    {
-                        // Skip failed requests
+                        animeToQueue.Add(entry.Anime.KitsuId);
                     }
                 }
 
@@ -505,12 +530,51 @@ namespace AnimeCharacters.Data.Services
                 await progressCallback?.Invoke(new SyncProgress
                 {
                     Stage = SyncStage.FetchingCharacters,
-                    StageName = "Fetching Characters",
+                    StageName = "Queuing Characters for Background Sync",
                     CurrentStep = progress,
                     TotalSteps = 100,
-                    CurrentOperation = $"Processing characters for {entry.Anime?.Title ?? "anime"} ({processedCount}/{totalAnime})",
+                    CurrentOperation = $"Queuing characters for {entry.Anime?.Title ?? "anime"} ({processedCount}/{totalAnime})",
                     StartTime = DateTime.UtcNow
                 });
+            }
+
+            // Save queue state for resumption
+            await SavePendingSyncStateAsync(animeToQueue);
+
+            // Start background processing
+            await _prioritySyncService.StartPrioritySyncAsync(cancellationToken);
+
+            // Process a few high-priority anime immediately (recently watched)
+            var recentAnime = libraryEntries
+                .Where(le => le.ProgressedAt > DateTime.UtcNow.AddDays(-30) && !string.IsNullOrEmpty(le.Anime?.AnilistId))
+                .OrderByDescending(le => le.ProgressedAt)
+                .Take(5)
+                .ToList();
+
+            foreach (var entry in recentAnime)
+            {
+                if (cancellationToken.IsCancellationRequested) break;
+
+                try
+                {
+                    var characters = await _prioritySyncService.RequestPrioritySyncAsync<List<AniListClient.Models.Character>>(
+                        new PrioritySyncRequest
+                        {
+                            Type = PrioritySyncType.AnimeCharacters,
+                            ResourceId = entry.Anime.KitsuId,
+                            Priority = PrioritySyncPriority.High
+                        }, cancellationToken);
+
+                    if (characters != null)
+                    {
+                        charactersCount += characters.Count;
+                        voiceActorsCount += characters.SelectMany(c => c.VoiceActors).Count();
+                    }
+                }
+                catch
+                {
+                    // Skip failed immediate requests - they'll be retried in background
+                }
             }
 
             return (charactersCount, voiceActorsCount);
@@ -522,12 +586,8 @@ namespace AnimeCharacters.Data.Services
 
             foreach (var character in characters)
             {
-                // Cache character
-                var existingChar = await context.Characters.FirstOrDefaultAsync(c => c.Id == character.Id);
-                if (existingChar == null)
-                {
-                    context.Characters.Add(character.ToDbCharacter());
-                }
+                // Cache character (upsert with latest data)
+                await UpsertCharacterAsync(context, character);
 
                 // Cache anime-character relationship
                 var existingAnimeChar = await context.AnimeCharacters
@@ -542,24 +602,10 @@ namespace AnimeCharacters.Data.Services
                     });
                 }
 
-                // Cache voice actors
+                // Cache voice actors with full data and relationships
                 foreach (var voiceActor in character.VoiceActors)
                 {
-                    var existingVA = await context.VoiceActors.FirstOrDefaultAsync(va => va.Id == voiceActor.Id);
-                    if (existingVA == null)
-                    {
-                        context.VoiceActors.Add(new DbVoiceActor
-                        {
-                            Id = voiceActor.Id,
-                            NameRomaji = voiceActor.Name.Romaji,
-                            NameFirst = voiceActor.Name.First,
-                            NameLast = voiceActor.Name.Last,
-                            NameFull = voiceActor.Name.Full,
-                            NameNative = voiceActor.Name.Native,
-                            NameAlternative = voiceActor.Name.Alternative,
-                            NameAlternativeSpoiler = voiceActor.Name.AlternativeSpoiler
-                        });
-                    }
+                    await UpsertVoiceActorAsync(context, voiceActor);
 
                     // Cache character-voice actor relationship
                     var existingCharVA = await context.CharacterVoiceActors
@@ -576,6 +622,69 @@ namespace AnimeCharacters.Data.Services
             }
 
             await context.SaveChangesAsync();
+        }
+
+        private async Task UpsertCharacterAsync(AnimeCharactersDbContext context, Character character)
+        {
+            var existingChar = await context.Characters.FirstOrDefaultAsync(c => c.Id == character.Id);
+            if (existingChar == null)
+            {
+                context.Characters.Add(character.ToDbCharacter());
+            }
+            else
+            {
+                // Update existing character with newer data
+                existingChar.NameRomaji = character.Name.Romaji;
+                existingChar.NameFirst = character.Name.First;
+                existingChar.NameLast = character.Name.Last;
+                existingChar.NameFull = character.Name.Full;
+                existingChar.NameNative = character.Name.Native;
+                existingChar.NameAlternative = character.Name.Alternative;
+                existingChar.NameAlternativeSpoiler = character.Name.AlternativeSpoiler;
+                existingChar.ImageMedium = character.Image.Medium;
+                existingChar.ImageLarge = character.Image.Large;
+                existingChar.ImageExtraLarge = character.Image.ExtraLarge;
+                existingChar.ImageColor = character.Image.Color;
+                existingChar.Description = character.Description;
+                existingChar.Role = character.Role;
+                existingChar.UpdatedAt = DateTime.UtcNow;
+            }
+        }
+
+        private async Task UpsertVoiceActorAsync(AnimeCharactersDbContext context, VoiceActorSlim voiceActor)
+        {
+            var existingVA = await context.VoiceActors.FirstOrDefaultAsync(va => va.Id == voiceActor.Id);
+            if (existingVA == null)
+            {
+                // Create new voice actor with basic data from VoiceActorSlim
+                context.VoiceActors.Add(new DbVoiceActor
+                {
+                    Id = voiceActor.Id,
+                    NameRomaji = voiceActor.Name.Romaji,
+                    NameFirst = voiceActor.Name.First,
+                    NameLast = voiceActor.Name.Last,
+                    NameFull = voiceActor.Name.Full,
+                    NameNative = voiceActor.Name.Native,
+                    NameAlternative = voiceActor.Name.Alternative,
+                    NameAlternativeSpoiler = voiceActor.Name.AlternativeSpoiler,
+                    UpdatedAt = DateTime.UtcNow
+                });
+            }
+            else
+            {
+                // Update existing voice actor with newer name data (preserve full data if already exists)
+                if (string.IsNullOrEmpty(existingVA.NameFull) || existingVA.UpdatedAt < DateTime.UtcNow.AddDays(-7))
+                {
+                    existingVA.NameRomaji = voiceActor.Name.Romaji ?? existingVA.NameRomaji;
+                    existingVA.NameFirst = voiceActor.Name.First ?? existingVA.NameFirst;
+                    existingVA.NameLast = voiceActor.Name.Last ?? existingVA.NameLast;
+                    existingVA.NameFull = voiceActor.Name.Full ?? existingVA.NameFull;
+                    existingVA.NameNative = voiceActor.Name.Native ?? existingVA.NameNative;
+                    existingVA.NameAlternative = voiceActor.Name.Alternative ?? existingVA.NameAlternative;
+                    existingVA.NameAlternativeSpoiler = voiceActor.Name.AlternativeSpoiler ?? existingVA.NameAlternativeSpoiler;
+                    existingVA.UpdatedAt = DateTime.UtcNow;
+                }
+            }
         }
 
         private async Task<(int UpdatedEntries, int NewEntries)> ProcessDeltaEventsAsync(
@@ -621,5 +730,85 @@ namespace AnimeCharacters.Data.Services
             await context.SaveChangesAsync(cancellationToken);
             return (updatedCount, newCount);
         }
+
+        #region Priority Sync Methods
+
+        public async Task<List<AniListClient.Models.Character>> RequestAnimeCharactersSyncAsync(
+            string animeKitsuId, 
+            PrioritySyncPriority priority = PrioritySyncPriority.Normal, 
+            CancellationToken cancellationToken = default)
+        {
+            // First try to get from cache
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var anime = await context.Anime.FirstOrDefaultAsync(a => a.KitsuId == animeKitsuId, cancellationToken);
+            
+            if (anime != null)
+            {
+                var cachedCharacters = await _characterCacheService.GetCharactersForAnimeAsync(animeKitsuId, anime.AnilistId);
+                if (cachedCharacters.Any())
+                {
+                    return cachedCharacters;
+                }
+            }
+
+            // If not cached, request priority sync
+            return await _prioritySyncService.RequestPrioritySyncAsync<List<AniListClient.Models.Character>>(
+                new PrioritySyncRequest
+                {
+                    Type = PrioritySyncType.AnimeCharacters,
+                    ResourceId = animeKitsuId,
+                    Priority = priority
+                }, cancellationToken);
+        }
+
+        public async Task<AniListClient.Models.Staff> RequestVoiceActorSyncAsync(
+            int voiceActorId, 
+            PrioritySyncPriority priority = PrioritySyncPriority.Normal, 
+            CancellationToken cancellationToken = default)
+        {
+            // First try to get from cache
+            var cachedVoiceActor = await _characterCacheService.GetVoiceActorAsync(voiceActorId);
+            if (cachedVoiceActor != null)
+            {
+                return cachedVoiceActor;
+            }
+
+            // If not cached, request priority sync
+            return await _prioritySyncService.RequestPrioritySyncAsync<AniListClient.Models.Staff>(
+                new PrioritySyncRequest
+                {
+                    Type = PrioritySyncType.VoiceActorDetails,
+                    ResourceId = voiceActorId.ToString(),
+                    Priority = priority
+                }, cancellationToken);
+        }
+
+        public async Task StartBackgroundSyncAsync(CancellationToken cancellationToken = default)
+        {
+            await _prioritySyncService.StartPrioritySyncAsync(cancellationToken);
+        }
+
+        public async Task StopBackgroundSyncAsync()
+        {
+            await _prioritySyncService.StopPrioritySyncAsync();
+        }
+
+        private async Task SavePendingSyncStateAsync(List<string> animeToQueue)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            
+            var queueState = new SyncQueueState
+            {
+                PendingAnimeIds = animeToQueue,
+                CurrentSyncId = Guid.NewGuid().ToString(),
+                SyncStartTime = DateTime.UtcNow
+            };
+
+            var queueStateJson = JsonSerializer.Serialize(queueState);
+            await SetSyncMetadataAsync(context, SyncMetadataKeys.PrioritySyncQueueState, queueStateJson);
+            await context.SaveChangesAsync();
+        }
+
+        #endregion
     }
 }

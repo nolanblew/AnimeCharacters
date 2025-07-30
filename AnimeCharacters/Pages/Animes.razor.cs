@@ -1,3 +1,4 @@
+using AnimeCharacters.Data.Services;
 using AnimeCharacters.Helpers;
 using Kitsu;
 using Kitsu.Comparers;
@@ -5,6 +6,7 @@ using Kitsu.Controllers;
 using Kitsu.Helpers;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +50,9 @@ namespace AnimeCharacters.Pages
         }
 
         public bool IsBusy { get; set; } = true;
+        
+        public string SyncStatusMessage { get; set; } = "";
+        public double SyncProgressPercentage { get; set; } = 0;
 
         public List<LibraryEntry> FilteredLibraryEntries
         {
@@ -175,26 +180,43 @@ namespace AnimeCharacters.Pages
             {
                 IsBusy = true;
 
-                var forceFullRefresh = false;
+                // Check if we need to migrate
+                _isMigrating = !MigrationHelper.IsOnLatestVersion(await DatabaseProvider.GetMigrationVersionAsnyc());
 
-                if (_isMigrating) { forceFullRefresh = true; }
-
-                if (isManualRefresh && _lastShallowRefresh.HasValue && _lastShallowRefresh.Value.AddSeconds(45) > DateTime.Now)
+                // Determine sync strategy
+                var strategy = await SyncService.DetermineSyncStrategyAsync();
+                
+                // Force full sync for manual refresh with double-click or migration
+                if (_isMigrating || 
+                    (isManualRefresh && _lastShallowRefresh.HasValue && _lastShallowRefresh.Value.AddSeconds(45) > DateTime.Now))
                 {
-                    // If we have a manual refresh that was clicked twice in the last 45 seconds then do a full refresh
-                    forceFullRefresh = true;
+                    strategy = SyncStrategy.FullSync;
                 }
 
-                var lastFetchedDate = await DatabaseProvider.GetLastFetchedDateAsnyc();
-
-                if (forceFullRefresh
-                    || lastFetchedDate == null
-                    || DateTimeOffset.Now.Subtract(TimeSpan.FromDays(_CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS)) > lastFetchedDate
-                    || !_LibraryEntries.Any())
+                SyncResult result;
+                if (strategy == SyncStrategy.FullSync)
                 {
-                    Console.WriteLine($"PATH: Fetching full list from the start.");
+                    Console.WriteLine($"PATH: Performing full sync");
                     _lastShallowRefresh = null;
-                    await _FetchAllUserAnime();
+                    result = await SyncService.PerformFullSyncAsync(OnSyncProgress);
+                }
+                else if (strategy == SyncStrategy.DeltaSync)
+                {
+                    Console.WriteLine($"PATH: Performing delta sync");
+                    result = await SyncService.PerformDeltaSyncAsync(OnSyncProgress);
+                    _lastShallowRefresh = DateTime.Now;
+                }
+                else
+                {
+                    // Data is up to date, just refresh the UI
+                    Console.WriteLine($"PATH: Data is up to date");
+                    result = new SyncResult { IsSuccess = true };
+                }
+
+                if (result.IsSuccess)
+                {
+                    // Refresh the library entries from database
+                    await RefreshLibraryEntriesFromDatabase();
 
                     if (_isMigrating)
                     {
@@ -203,18 +225,11 @@ namespace AnimeCharacters.Pages
 
                         await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Updated to the latest version."));
                     }
-
-                    return;
                 }
-
-                if (DateTimeOffset.Now.Subtract(TimeSpan.FromSeconds(_CACHE_UPDATE_TIME_SECONDS)) > lastFetchedDate)
+                else
                 {
-                    Console.WriteLine($"PATH: Fetching only updates from the start.");
-                    await _UpdateUserAnime();
-
-                    _lastShallowRefresh = DateTime.Now;
-
-                    return;
+                    Console.WriteLine($"ERROR in sync: {result.ErrorMessage}");
+                    await _EventAggregator.PublishAsync(new Events.SnackbarEvent($"Sync error: {result.ErrorMessage}"));
                 }
             }
             finally
@@ -424,6 +439,27 @@ namespace AnimeCharacters.Pages
                 var lastEventId = await _kitsuClient.UserLibraryEvents.GetLatestLibraryEventId(CurrentUser.Id);
                 await DatabaseProvider.SetLastFetchedIdAsync(lastEventId);
                 await DatabaseProvider.SetLastFetchedDateAsync(DateTimeOffset.Now);
+            }
+        }
+
+        private async Task OnSyncProgress(SyncProgress progress)
+        {
+            SyncStatusMessage = progress.CurrentOperation ?? progress.StageName;
+            SyncProgressPercentage = progress.ProgressPercentage;
+            await InvokeAsync(StateHasChanged);
+        }
+
+        private async Task RefreshLibraryEntriesFromDatabase()
+        {
+            try
+            {
+                var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
+                _LibraryEntries = (libraryEntries ?? new List<LibraryEntry>()).ToDictionary(lib => lib.Id);
+                UpdateHeaderContents();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR refreshing library entries from database: {ex.Message}");
             }
         }
 

@@ -34,6 +34,7 @@ namespace AnimeCharacters
             builder.Services.AddScoped<IDatabaseInitializationService, DatabaseInitializationService>();
             
             // Register sync and cache services
+            builder.Services.AddScoped<IPrioritySyncService, PrioritySyncService>();
             builder.Services.AddScoped<ISyncService, SyncService>();
             builder.Services.AddScoped<ICharacterCacheService, CharacterCacheService>();
             

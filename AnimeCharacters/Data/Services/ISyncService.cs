@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +36,26 @@ namespace AnimeCharacters.Data.Services
         /// Determines the appropriate sync strategy based on current state
         /// </summary>
         Task<SyncStrategy> DetermineSyncStrategyAsync();
+
+        /// <summary>
+        /// Requests priority sync for specific anime characters (returns immediately with cached data if available)
+        /// </summary>
+        Task<List<AniListClient.Models.Character>> RequestAnimeCharactersSyncAsync(string animeKitsuId, PrioritySyncPriority priority = PrioritySyncPriority.Normal, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Requests priority sync for voice actor details (returns immediately with cached data if available)
+        /// </summary>
+        Task<AniListClient.Models.Staff> RequestVoiceActorSyncAsync(int voiceActorId, PrioritySyncPriority priority = PrioritySyncPriority.Normal, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Starts background priority sync processing
+        /// </summary>
+        Task StartBackgroundSyncAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Stops background priority sync processing
+        /// </summary>
+        Task StopBackgroundSyncAsync();
     }
 
     public delegate Task SyncProgressCallback(SyncProgress progress);
