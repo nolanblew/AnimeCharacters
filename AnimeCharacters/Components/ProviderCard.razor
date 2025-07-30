@@ -1,0 +1,111 @@
+@using AnimeCharacters.Services
+
+<div class="provider-card @(Provider.IsInstalled ? "installed" : "available") @(Provider.IsEnabled ? "enabled" : "disabled")">
+    <div class="provider-header">
+        <img src="@Provider.LogoUrl" alt="@Provider.Name Logo" class="provider-logo" />
+        <div class="provider-info">
+            <h4 class="provider-name">@Provider.Name</h4>
+            <span class="provider-category">@Provider.Category</span>
+            @if (!string.IsNullOrEmpty(Provider.Version))
+            {
+                <span class="provider-version">v@Provider.Version</span>
+            }
+        </div>
+        <div class="provider-actions">
+            @if (Provider.IsInstalled)
+            {
+                @if (CanRemove)
+                {
+                    <button class="btn btn-sm btn-outline-danger" @onclick="OnRemoveClick" title="Remove Provider" disabled="@IsRemoving">
+                        @if (IsRemoving)
+                        {
+                            <span class="spinner-border spinner-border-sm" role="status"></span>
+                        }
+                        else
+                        {
+                            <i class="oi oi-trash"></i>
+                        }
+                    </button>
+                }
+                else if (Provider.IsRemovable)
+                {
+                    <span class="text-muted" title="Cannot remove the last active provider">
+                        <i class="oi oi-lock-locked"></i>
+                    </span>
+                }
+            }
+            else
+            {
+                <button class="btn btn-sm btn-primary" @onclick="OnInstallClick" disabled="@IsInstalling">
+                    @if (IsInstalling)
+                    {
+                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                        <span>Installing...</span>
+                    }
+                    else
+                    {
+                        <i class="oi oi-plus"></i>
+                        <span>Add</span>
+                    }
+                </button>
+            }
+        </div>
+    </div>
+    
+    <div class="provider-description">
+        @Provider.Description
+    </div>
+    
+    @if (Provider.Features.Any())
+    {
+        <div class="provider-features">
+            @foreach (var feature in Provider.Features)
+            {
+                <span class="feature-tag">@feature</span>
+            }
+        </div>
+    }
+    
+</div>
+
+@code {
+    [Parameter] public ManageableProvider Provider { get; set; }
+    [Parameter] public bool CanRemove { get; set; }
+    [Parameter] public EventCallback<ManageableProvider> OnInstall { get; set; }
+    [Parameter] public EventCallback<ManageableProvider> OnRemove { get; set; }
+    
+    private bool IsInstalling { get; set; }
+    private bool IsRemoving { get; set; }
+
+    private async Task OnInstallClick()
+    {
+        IsInstalling = true;
+        StateHasChanged();
+        
+        try
+        {
+            await OnInstall.InvokeAsync(Provider);
+        }
+        finally
+        {
+            IsInstalling = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnRemoveClick()
+    {
+        IsRemoving = true;
+        StateHasChanged();
+        
+        try
+        {
+            await OnRemove.InvokeAsync(Provider);
+        }
+        finally
+        {
+            IsRemoving = false;
+            StateHasChanged();
+        }
+    }
+}

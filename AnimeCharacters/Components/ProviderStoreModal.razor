@@ -1,0 +1,122 @@
+@using AnimeCharacters.Services
+@inject IProviderManagementService ProviderManagementService
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop" @onclick="CloseModal">
+        <div class="modal-content" @onclick:stopPropagation="true">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="oi oi-plus"></i>
+                    Add Providers
+                </h3>
+                <button class="modal-close-btn" @onclick="CloseModal">
+                    <i class="oi oi-x"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                @if (IsLoading)
+                {
+                    <div class="loading-container">
+                        <div class="spinner"></div>
+                        <p>Loading available providers...</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="oi oi-info empty-state-icon"></i>
+                        <h4>No Additional Providers</h4>
+                        <p>There are no additional data providers available at this time. New providers will be added in future updates to expand your anime experience.</p>
+                    </div>
+                }
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="CloseModal">
+                    Close
+                </button>
+                @if (HasInstalledAny)
+                {
+                    <button class="btn btn-primary" @onclick="CloseAndRefresh">
+                        <i class="oi oi-check"></i>
+                        Done
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback OnProvidersChanged { get; set; }
+    
+    private List<ManageableProvider> AvailableProviders { get; set; } = new();
+    private bool IsLoading { get; set; }
+    private bool HasInstalledAny { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsVisible && !AvailableProviders.Any())
+        {
+            await LoadAvailableProviders();
+        }
+    }
+
+    private async Task LoadAvailableProviders()
+    {
+        IsLoading = true;
+        StateHasChanged();
+        
+        try
+        {
+            AvailableProviders = await ProviderManagementService.GetAvailableProvidersAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading providers: {ex.Message}");
+            AvailableProviders = new List<ManageableProvider>();
+        }
+        finally
+        {
+            IsLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleInstallProvider(ManageableProvider provider)
+    {
+        try
+        {
+            var success = await ProviderManagementService.InstallProviderAsync(provider.Id);
+            if (success)
+            {
+                // Remove from available list since it's now installed
+                AvailableProviders.Remove(provider);
+                HasInstalledAny = true;
+                StateHasChanged();
+                
+                // Notify parent that providers changed
+                await OnProvidersChanged.InvokeAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error installing provider {provider.Id}: {ex.Message}");
+        }
+    }
+
+    private async Task CloseModal()
+    {
+        IsVisible = false;
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task CloseAndRefresh()
+    {
+        await CloseModal();
+    }
+}

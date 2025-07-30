@@ -1,19 +1,30 @@
 using AnimeCharacters.Models;
+using AnimeCharacters.Services;
 using EventAggregator.Blazor;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AnimeCharacters.Pages
 {
     public partial class ProfileSettings
     {
+        [Inject]
+        public IProviderManagementService ProviderManagementService { get; set; }
+
         public User CurrentUser { get; set; }
         public UserSettings Settings { get; set; } = new UserSettings();
         public TitleType SelectedTitleType { get; set; } = TitleType.UserPreferred;
         public string AppVersion { get; set; } = "Loading...";
         public bool UpdateAvailable { get; set; }
+        
+        // Provider management properties
+        public List<ManageableProvider> InstalledProviders { get; set; } = new();
+        public Dictionary<string, bool> ProviderCanBeRemoved { get; set; } = new();
+        public bool ShowProviderStore { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -23,6 +34,7 @@ namespace AnimeCharacters.Pages
 
             await GetAppVersionAsync();
             await CheckForUpdatesAsync();
+            await LoadProviders();
 
             await base.OnInitializedAsync();
         }
@@ -93,6 +105,61 @@ namespace AnimeCharacters.Pages
             await DatabaseProvider.ClearAsync();
             PageStateManager.Clear();
             NavigationManager.NavigateTo("/?logout=true");
+        }
+
+        // Provider management methods
+        async Task LoadProviders()
+        {
+            try
+            {
+                InstalledProviders = await ProviderManagementService.GetInstalledProvidersAsync();
+                
+                // Check which providers can be removed
+                ProviderCanBeRemoved.Clear();
+                foreach (var provider in InstalledProviders)
+                {
+                    ProviderCanBeRemoved[provider.Id] = await ProviderManagementService.CanRemoveProviderAsync(provider.Id);
+                }
+                
+                StateHasChanged();
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine($"Error loading providers: {ex.Message}");
+                InstalledProviders = new List<ManageableProvider>();
+                ProviderCanBeRemoved.Clear();
+            }
+        }
+
+        void OpenProviderStore()
+        {
+            ShowProviderStore = true;
+            StateHasChanged();
+        }
+
+        void CloseProviderStore()
+        {
+            ShowProviderStore = false;
+            StateHasChanged();
+        }
+
+        async Task RefreshProviders()
+        {
+            await LoadProviders();
+        }
+
+        async Task HandleRemoveProvider(ManageableProvider provider)
+        {
+            var success = await ProviderManagementService.RemoveProviderAsync(provider.Id);
+            if (success)
+            {
+                await LoadProviders();
+                await _EventAggregator.PublishAsync(new Events.SnackbarEvent($"Removed {provider.Name} provider"));
+            }
+            else
+            {
+                await _EventAggregator.PublishAsync(new Events.SnackbarEvent($"Cannot remove {provider.Name} - it's the last active provider"));
+            }
         }
     }
 }

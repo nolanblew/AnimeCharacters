@@ -1,5 +1,7 @@
 @page "/profile-settings"
 @using AnimeCharacters.Models
+@using AnimeCharacters.Services
+@using AnimeCharacters.Components
 @inherits BasePage
 @implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
 @inject IJSRuntime JSRuntime
@@ -34,6 +36,38 @@
                                 <input type="text" class="form-control" value="@CurrentUser.Username" readonly />
                             </div>
                         }
+                    </div>
+                </div>
+            </div>
+
+            <div class="providers-section">
+                <h3>Data Providers</h3>
+                <p class="section-description">
+                    Manage your data sources. These providers supply information about anime, characters, and voice actors.
+                </p>
+                
+                <div class="providers-grid">
+                    @if (InstalledProviders != null)
+                    {
+                        @foreach (var provider in InstalledProviders)
+                        {
+                            <ProviderCard 
+                                Provider="provider" 
+                                CanRemove="@(ProviderCanBeRemoved.GetValueOrDefault(provider.Id, false))"
+                                OnRemove="HandleRemoveProvider" />
+                        }
+                    }
+                    
+                    <div class="add-provider-card" @onclick="OpenProviderStore">
+                        <div class="add-provider-content">
+                            <div class="add-provider-icon">
+                                <i class="oi oi-plus"></i>
+                            </div>
+                            <h4 class="add-provider-title">Add Provider</h4>
+                            <p class="add-provider-description">
+                                Discover new data sources to enhance your anime experience
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -80,3 +114,8 @@
         }
     </div>
 </div>
+
+<ProviderStoreModal 
+    IsVisible="@ShowProviderStore" 
+    OnClose="CloseProviderStore"
+    OnProvidersChanged="RefreshProviders" />

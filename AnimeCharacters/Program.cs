@@ -31,6 +31,7 @@ namespace AnimeCharacters
             // Register data provider service and providers
             builder.Services.AddSingleton<IDataProviderService, DataProviderService>();
             builder.Services.AddScoped<ILegacyDataService, LegacyDataService>();
+            builder.Services.AddScoped<IProviderManagementService, ProviderManagementService>();
             
             // Register providers
             builder.Services.AddTransient<KitsuLibraryProvider>();

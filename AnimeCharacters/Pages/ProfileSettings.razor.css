@@ -4,7 +4,7 @@
     padding: 0 20px;
 }
 
-.profile-section, .settings-section, .app-info-section, .logout-section {
+.profile-section, .providers-section, .settings-section, .app-info-section, .logout-section {
     background: #f8f9fa;
     border: 1px solid #dee2e6;
     border-radius: 8px;
@@ -12,11 +12,18 @@
     margin-bottom: 20px;
 }
 
-.profile-section h3, .settings-section h3, .app-info-section h3 {
+.profile-section h3, .providers-section h3, .settings-section h3, .app-info-section h3 {
     margin-top: 0;
     margin-bottom: 20px;
     color: #495057;
     font-size: 1.25rem;
+}
+
+.section-description {
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
 }
 
 .profile-info {
@@ -119,6 +126,74 @@
     margin-left: 8px;
 }
 
+/* Provider Management Styles */
+.providers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.add-provider-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px dashed #dee2e6;
+    border-radius: 12px;
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.add-provider-card:hover {
+    border-color: #007bff;
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1);
+}
+
+.add-provider-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.add-provider-icon {
+    width: 60px;
+    height: 60px;
+    background: #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.add-provider-card:hover .add-provider-icon {
+    background: #007bff;
+    color: white;
+}
+
+.add-provider-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.add-provider-description {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.4;
+    max-width: 200px;
+}
+
 @media screen and (max-width: 600px) {
     .profile-settings-content {
         padding: 0 15px;
@@ -135,7 +210,7 @@
         height: 100px;
     }
     
-    .profile-section, .settings-section, .app-info-section, .logout-section {
+    .profile-section, .providers-section, .settings-section, .app-info-section, .logout-section {
         padding: 15px;
     }
     
@@ -143,5 +218,15 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+    }
+    
+    .providers-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .add-provider-card {
+        min-height: 160px;
+        padding: 20px 15px;
     }
 }

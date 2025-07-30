@@ -1,0 +1,221 @@
+.provider-card {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.provider-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.provider-card.installed {
+    border-color: #28a745;
+    background: linear-gradient(135deg, #f8fff9 0%, #ffffff 100%);
+}
+
+.provider-card.installed.enabled {
+    box-shadow: 0 2px 10px rgba(40, 167, 69, 0.1);
+}
+
+.provider-card.installed.disabled {
+    opacity: 0.7;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.provider-card.available {
+    border-color: #6c757d;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.provider-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.provider-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f8f9fa;
+    padding: 4px;
+    flex-shrink: 0;
+}
+
+.provider-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.provider-name {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #212529;
+    line-height: 1.2;
+}
+
+.provider-category {
+    display: inline-block;
+    background: #e9ecef;
+    color: #495057;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.provider-version {
+    display: inline-block;
+    background: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.provider-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.provider-description {
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.provider-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 15px;
+}
+
+.feature-tag {
+    background: #f1f3f4;
+    color: #5f6368;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid #dadce0;
+}
+
+.provider-status-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff3cd;
+    color: #856404;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    border: 1px solid #ffeaa7;
+}
+
+.provider-status-warning i {
+    font-size: 14px;
+}
+
+/* Locked state */
+.text-muted {
+    color: #6c757d !important;
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    font-size: 14px;
+}
+
+/* Button Styles */
+.btn {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.btn-outline-danger {
+    background-color: transparent;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.spinner-border-sm {
+    width: 12px;
+    height: 12px;
+    border: 1px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .provider-card {
+        padding: 15px;
+    }
+    
+    .provider-header {
+        gap: 12px;
+    }
+    
+    .provider-logo {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .provider-name {
+        font-size: 16px;
+    }
+    
+    .provider-actions {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+    }
+}
