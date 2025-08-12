@@ -142,11 +142,13 @@
 
     @if (MyCharactersList?.Any() == true)
     {
-        <div class="tile-container">
+        <div class="row">
             @foreach (var characterAnime in MyCharactersList)
             {
-                <div class="item-container">
-                    <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+                <div class="col-auto">
+                    <div class="item-container">
+                        <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+                    </div>
                 </div>
             }
         </div>
@@ -154,11 +156,13 @@
 
     @if (NotMyCharactersList?.Any() == true)
     {
-        <div class="tile-container">
+        <div class="row">
             @foreach (var characterAnime in NotMyCharactersList)
             {
-                <div class="item-container">
-                    <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+                <div class="col-auto">
+                    <div class="item-container">
+                        <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+                    </div>
                 </div>
             }
         </div>
