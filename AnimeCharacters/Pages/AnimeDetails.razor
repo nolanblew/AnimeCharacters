@@ -22,14 +22,13 @@
 
     @if (CharactersList?.Any() == true)
     {
-<div class="row">
+<div class="tile-container">
     @foreach (var character in CharactersList)
     {
-<div class="col-auto">
-    <div class="item-container" @onclick="() => _Character_OnClicked(character)">
-        <AnimeCharacters.Components.CharacterTile Character="@character" Language="@Language" />
-    </div>
-</div>                }
+        <div class="item-container" @onclick="() => _Character_OnClicked(character)">
+            <AnimeCharacters.Components.CharacterTile Character="@character" Language="@Language" />
+        </div>
+    }
 </div>
 }
 else

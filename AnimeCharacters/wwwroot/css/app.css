@@ -124,3 +124,9 @@ a, .btn-link {
     margin-top: -..px; /* half of the elements height */
     margin-right: -..px; /* half of the elements widht */
 }
+
+.tile-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(131px, 1fr));
+    gap: 12px;
+}
