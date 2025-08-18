@@ -67,13 +67,11 @@
                     </div>
                 </div>
                 <div class="anime-content @(header.IsCollapsed ? "collapsed" : "expanded")">
-                    <div class="row">
+                    <div class="item-grid">
                         @foreach (var libraryEntry in header.Content ?? new List<LibraryEntry>())
                         {
-                            <div class="col-auto">
-                                <div class="item-container" @onclick="() => _Anime_OnClicked(libraryEntry)">
-                                    <AnimeCharacters.Components.AnimeTile Anime="@libraryEntry.Anime" />
-                                </div>
+                            <div class="item-container" @onclick="() => _Anime_OnClicked(libraryEntry)">
+                                <AnimeCharacters.Components.AnimeTile Anime="@libraryEntry.Anime" />
                             </div>
                         }
                     </div>

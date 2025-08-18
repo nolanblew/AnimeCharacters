@@ -70,6 +70,18 @@ a, .btn-link {
     justify-content: safe center;
 }
 
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+    gap: 16px;
+    justify-items: center;
+}
+
+.item-grid .item-container {
+    margin-bottom: 0;
+}
+
 .item-container {
     display: flex;
     flex-flow: column;
@@ -77,8 +89,8 @@ a, .btn-link {
 }
 
 .item-container img {
-    width: 115px;
-    height: 165px;
+    width: 100%;
+    height: auto;
     border-radius: 4px;
 }
 
@@ -93,18 +105,17 @@ a, .btn-link {
 
 .item {
     flex-grow: 1;
-    max-width: 115px;
+    width: 100%;
     text-align: center;
 }
 
 @media screen and (max-width: 600px) {
-    .item-container img {
-        max-width: 90px;
-        height: 129px;
+    .item-grid {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
     }
 
-    .item {
-        width: 90px;
+    .item-container img {
+        max-width: 100%;
     }
 }
 
