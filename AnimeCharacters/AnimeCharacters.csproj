@@ -9,15 +9,20 @@
     <BuildNumberFile>$(BaseIntermediateOutputPath)build.number</BuildNumberFile>
     <GeneratedVersionFile>$(BaseIntermediateOutputPath)VersionInfo.g.cs</GeneratedVersionFile>
   </PropertyGroup>
-
   <Target Name="GenerateVersionInfo" BeforeTargets="CoreCompile">
-    <Exec Command='LC_ALL=C python build_version.py "$(BuildNumberFile)"' WorkingDirectory="$(MSBuildProjectDirectory)" ConsoleToMSBuild="true">
-      <Output TaskParameter="ConsoleOutput" PropertyName="VersionCore" />
-    </Exec>
+    <ReadLinesFromFile File="$(BuildNumberFile)" Condition="Exists('$(BuildNumberFile)')">
+      <Output TaskParameter="Lines" PropertyName="PreviousBuild" />
+    </ReadLinesFromFile>
     <PropertyGroup>
+      <_PrevBuild Condition="'$(PreviousBuild)' != ''">$(PreviousBuild)</_PrevBuild>
+      <_PrevBuild Condition="'$(PreviousBuild)' == ''">0</_PrevBuild>
+      <_BuildNumber>$([MSBuild]::Add($(_PrevBuild), 1))</_BuildNumber>
+      <_Date>$([System.DateTime]::UtcNow.ToString('yyyy-MM'))</_Date>
+      <VersionCore>$(_Date)-$([System.String]::Format('{0:0000}', $(_BuildNumber)))</VersionCore>
       <_VersionPrefix Condition="'$(Configuration)' == 'Debug'">dev-</_VersionPrefix>
       <VersionString>$(_VersionPrefix)$(VersionCore)</VersionString>
     </PropertyGroup>
+    <WriteLinesToFile File="$(BuildNumberFile)" Lines="$(_BuildNumber)" Overwrite="true" />
     <ItemGroup>
       <VersionFileLines Include="namespace AnimeCharacters%3B" />
       <VersionFileLines Include="public static class VersionInfo" />
