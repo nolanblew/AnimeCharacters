@@ -19,6 +19,11 @@ Quickly find the characters that a Seyu (voice actor) has also played in other a
 
 Not much else is needed, and you can build on any platform that supports dotnet.
 
+## Versioning
+
+The application generates a version at build time using the format `yyyy-MM-bbbb` (UTC date and incremental build number).
+Debug builds are prefixed with `dev-`.
+
 # Contributing
 Contributions would be greatly appreciated. Feel free to create issues as well as forking the repo and creating PRs.
 If you wish to make some major contributions please create an issue and we can evauate making you a contributer.

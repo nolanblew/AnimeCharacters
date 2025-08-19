@@ -30,6 +30,11 @@ The solution can be opened in Visual Studio 2022 or VS Code with the C# extensio
 
 Note that merging to `main` will trigger a GitHub Action to build and deploy the application to production.
 
+## Versioning
+
+The build process generates a version string in the format `yyyy-MM-bbbb` based on the current UTC date and an incremental build number.
+Debug builds prepend the version with `dev-`.
+
 ## Architecture
 
 ### Project Structure

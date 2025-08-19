@@ -43,24 +43,10 @@ namespace AnimeCharacters.Pages
             await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Settings saved"));
         }
 
-        async Task GetAppVersionAsync()
+        Task GetAppVersionAsync()
         {
-            try
-            {
-                var registration = await JSRuntime.InvokeAsync<IJSObjectReference>("navigator.serviceWorker.getRegistration");
-                if (registration != null)
-                {
-                    var activeWorker = await registration.InvokeAsync<IJSObjectReference>("active");
-                    if (activeWorker != null)
-                    {
-                        AppVersion = "2.0.0"; // Default version, could be enhanced to get from service worker
-                    }
-                }
-            }
-            catch
-            {
-                AppVersion = "2.0.0";
-            }
+            AppVersion = VersionInfo.Version;
+            return Task.CompletedTask;
         }
 
         async Task CheckForUpdatesAsync()

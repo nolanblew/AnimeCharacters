@@ -1,24 +1,50 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <BuildNumberFile>$(BaseIntermediateOutputPath)build.number</BuildNumberFile>
+    <GeneratedVersionFile>$(BaseIntermediateOutputPath)VersionInfo.g.cs</GeneratedVersionFile>
+  </PropertyGroup>
+
+  <Target Name="GenerateVersionInfo" BeforeTargets="CoreCompile">
+    <Exec Command='LC_ALL=C python build_version.py "$(BuildNumberFile)"' WorkingDirectory="$(MSBuildProjectDirectory)" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="VersionCore" />
+    </Exec>
+    <PropertyGroup>
+      <_VersionPrefix Condition="'$(Configuration)' == 'Debug'">dev-</_VersionPrefix>
+      <VersionString>$(_VersionPrefix)$(VersionCore)</VersionString>
+    </PropertyGroup>
+    <ItemGroup>
+      <VersionFileLines Include="namespace AnimeCharacters%3B" />
+      <VersionFileLines Include="public static class VersionInfo" />
+      <VersionFileLines Include="{" />
+      <VersionFileLines Include="    public const string Version = &quot;$(VersionString)&quot;%3B" />
+      <VersionFileLines Include="}" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(GeneratedVersionFile)" Lines="@(VersionFileLines)" Overwrite="true" />
+    <ItemGroup>
+      <Compile Include="$(GeneratedVersionFile)" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
-	  <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-	  <PackageReference Include="EventAggregator.Blazor" Version="2.0.0" />
-	  <PackageReference Include="Markdig" Version="0.31.0" />
-	  <PackageReference Include="MatBlazor" Version="2.10.0" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.7" PrivateAssets="all" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="Polly" Version="8.4.1" />
-	  <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
+    <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="EventAggregator.Blazor" Version="2.0.0" />
+    <PackageReference Include="Markdig" Version="0.31.0" />
+    <PackageReference Include="MatBlazor" Version="2.10.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.7" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Polly" Version="8.4.1" />
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
