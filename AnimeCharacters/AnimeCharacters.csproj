@@ -11,18 +11,31 @@
   </PropertyGroup>
   <Target Name="GenerateVersionInfo" BeforeTargets="CoreCompile">
     <ReadLinesFromFile File="$(BuildNumberFile)" Condition="Exists('$(BuildNumberFile)')">
-      <Output TaskParameter="Lines" PropertyName="PreviousBuild" />
+      <Output TaskParameter="Lines" PropertyName="PreviousData" />
     </ReadLinesFromFile>
     <PropertyGroup>
-      <_PrevBuild Condition="'$(PreviousBuild)' != ''">$(PreviousBuild)</_PrevBuild>
-      <_PrevBuild Condition="'$(PreviousBuild)' == ''">0</_PrevBuild>
-      <_BuildNumber>$([MSBuild]::Add($(_PrevBuild), 1))</_BuildNumber>
       <_Date>$([System.DateTime]::UtcNow.ToString('yyyy-MM'))</_Date>
-      <VersionCore>$(_Date)-$([System.String]::Format('{0:0000}', $(_BuildNumber)))</VersionCore>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(PreviousData)' != '' and $([System.String]::Copy('$(PreviousData)').Contains('|'))">
+      <_PrevDate>$([System.String]::Copy('$(PreviousData)').Split('|')[0])</_PrevDate>
+      <_PrevBuild>$([System.String]::Copy('$(PreviousData)').Split('|')[1])</_PrevBuild>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(PreviousData)' != '' and !$([System.String]::Copy('$(PreviousData)').Contains('|'))">
+      <_PrevDate>$(_Date)</_PrevDate>
+      <_PrevBuild>$(PreviousData)</_PrevBuild>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(PreviousData)' == ''">
+      <_PrevDate>$(_Date)</_PrevDate>
+      <_PrevBuild>0</_PrevBuild>
+    </PropertyGroup>
+    <PropertyGroup>
+      <_BuildNumber Condition="'$(_Date)' == '$(_PrevDate)'">$([MSBuild]::Add($(_PrevBuild), 1))</_BuildNumber>
+      <_BuildNumber Condition="'$(_Date)' != '$(_PrevDate)'">1</_BuildNumber>
+      <VersionCore>$(_Date)-$([System.String]::Format('{0:0000}', $([System.Int32]::Parse($(_BuildNumber)))))</VersionCore>
       <_VersionPrefix Condition="'$(Configuration)' == 'Debug'">dev-</_VersionPrefix>
       <VersionString>$(_VersionPrefix)$(VersionCore)</VersionString>
     </PropertyGroup>
-    <WriteLinesToFile File="$(BuildNumberFile)" Lines="$(_BuildNumber)" Overwrite="true" />
+    <WriteLinesToFile File="$(BuildNumberFile)" Lines="$(_Date)|$(_BuildNumber)" Overwrite="true" />
     <ItemGroup>
       <VersionFileLines Include="namespace AnimeCharacters%3B" />
       <VersionFileLines Include="public static class VersionInfo" />

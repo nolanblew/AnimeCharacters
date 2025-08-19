@@ -32,7 +32,8 @@ Note that merging to `main` will trigger a GitHub Action to build and deploy the
 
 ## Versioning
 
-The build process generates a version string in the format `yyyy-MM-bbbb` based on the current UTC date and an incremental build number.
+The build process generates a version string in the format `yyyy-MM-bbbb` based on the current UTC date and an incremental build number that resets each month.
+The build number is zero-padded to four digits.
 Debug builds prepend the version with `dev-`.
 
 ## Architecture

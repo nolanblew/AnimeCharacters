@@ -21,7 +21,8 @@ Not much else is needed, and you can build on any platform that supports dotnet.
 
 ## Versioning
 
-The application generates a version at build time using the format `yyyy-MM-bbbb` (UTC date and incremental build number).
+The application generates a version at build time using the format `yyyy-MM-bbbb` (UTC date and an incremental build number that resets each month).
+The build number is zero-padded to four digits.
 Debug builds are prefixed with `dev-`.
 
 # Contributing
