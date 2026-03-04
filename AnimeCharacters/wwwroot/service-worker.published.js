@@ -4,7 +4,11 @@
 self.importScripts('./service-worker-assets.js');
 self.addEventListener('install', event => event.waitUntil(onInstall(event)));
 self.addEventListener('activate', event => event.waitUntil(onActivate(event)));
-self.addEventListener('fetch', event => event.respondWith(onFetch(event)));
+self.addEventListener('fetch', event => {
+    if (event.request.method === 'GET') {
+        event.respondWith(onFetch(event));
+    }
+});
 
 const cacheNamePrefix = 'offline-cache-';
 const cacheName = `${cacheNamePrefix}${self.assetsManifest.version}`;
@@ -36,16 +40,13 @@ async function onActivate(event) {
 }
 
 async function onFetch(event) {
-    let cachedResponse = null;
-    if (event.request.method === 'GET') {
-        // For all navigation requests, try to serve index.html from cache
-        // If you need some URLs to be server-rendered, edit the following check to exclude those URLs
-        const shouldServeIndexHtml = event.request.mode === 'navigate';
+    // For all navigation requests, try to serve index.html from cache
+    // If you need some URLs to be server-rendered, edit the following check to exclude those URLs
+    const shouldServeIndexHtml = event.request.mode === 'navigate';
 
-        const request = shouldServeIndexHtml ? 'index.html' : event.request;
-        const cache = await caches.open(cacheName);
-        cachedResponse = await cache.match(request);
-    }
+    const request = shouldServeIndexHtml ? 'index.html' : event.request;
+    const cache = await caches.open(cacheName);
+    const cachedResponse = await cache.match(request);
 
     return cachedResponse || fetch(event.request);
 }

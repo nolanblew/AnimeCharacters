@@ -4,6 +4,7 @@ using GraphQL.Client.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -57,7 +58,16 @@ namespace AniListClient.Controllers
                 variables.Page = page++;
                 request.Variables = variables;
 
-                var result = await _graphQLHttpClient.SendQueryAsync<TBase>(request);
+                GraphQLResponse<TBase> result;
+                try
+                {
+                    result = await _graphQLHttpClient.SendQueryAsync<TBase>(request);
+                }
+                catch (HttpRequestException)
+                {
+                    return default;
+                }
+
                 var model = conversionSelector(result.Data);
                 returnList.AddRange(selector(model));
 

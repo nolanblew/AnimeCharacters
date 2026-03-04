@@ -13,7 +13,7 @@ namespace AniListClient.Converters
                 Description: media.Description,
                 Image: media.CoverImage.ToImage(),
                 Status: media.Status,
-                Characters: media.Characters.Edges.Select(c => c.ToCharacter()).ToList());
+                Characters: media.Characters?.Edges?.Select(c => c.ToCharacter()).ToList() ?? new());
 
         internal static Models.MediaBase ToMedia(this StaffQueryResponse.MediaResponse media) =>
             new(
@@ -28,7 +28,7 @@ namespace AniListClient.Converters
                 Description: null,
                 Role: characterEdge.Role,
                 Media: null,
-                VoiceActors: characterEdge.VoiceActors.Select(va => va.ToVoiceActor()).ToList());
+                VoiceActors: characterEdge.VoiceActors?.Select(va => va.ToVoiceActor()).ToList() ?? new());
 
         internal static Models.Character ToCharacter(this StaffQueryResponse.CharacterEdgeResponse characterEdge) =>
             new(
@@ -37,7 +37,7 @@ namespace AniListClient.Converters
                 Image: characterEdge.Node.Image?.ToImage(),
                 Description: characterEdge.Node.Description,
                 Role: characterEdge.Role,
-                Media: characterEdge.Media.Select(m => m.ToMedia()).ToList(),
+                Media: characterEdge.Media?.Select(m => m.ToMedia()).ToList() ?? new(),
                 VoiceActors: null);
 
         internal static Models.VoiceActorSlim ToVoiceActor(this CharactersFromAnimeResponse.VoiceActorResponse voiceActor) =>
@@ -56,7 +56,7 @@ namespace AniListClient.Converters
                 DateOfBirth: staff.DateOfBirth?.ToDateOfBirth(),
                 BloodType: staff.BloodType,
                 SiteUrl: staff.SiteUrl,
-                Characters: staff.Characters.Edges.Select(c => c.ToCharacter()).ToList());
+                Characters: staff.Characters?.Edges?.Select(c => c.ToCharacter()).ToList() ?? new());
 
         internal static Models.DateOfBirth ToDateOfBirth(this StaffQueryResponse.DateOfBirthResponse dateOfBirth) =>
             new(
