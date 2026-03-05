@@ -48,6 +48,7 @@ namespace AniListClient.Controllers
             void assigner(TResult model, List<TListType> list) => prop.SetValue(model, list);
 
             var returnList = new List<TListType>();
+            TResult lastModel = default;
             var page = 1;
 
             var request = new GraphQLRequest(query);
@@ -65,17 +66,23 @@ namespace AniListClient.Controllers
                 }
                 catch (HttpRequestException)
                 {
+                    if (lastModel != null)
+                    {
+                        assigner(lastModel, returnList);
+                        return lastModel;
+                    }
+
                     return default;
                 }
 
-                var model = conversionSelector(result.Data);
-                returnList.AddRange(selector(model));
+                lastModel = conversionSelector(result.Data);
+                returnList.AddRange(selector(lastModel));
 
                 if (!hasMorePagesFunc(result.Data))
                 {
-                    assigner(model, returnList);
+                    assigner(lastModel, returnList);
 
-                    return model;
+                    return lastModel;
                 }
             }
         }

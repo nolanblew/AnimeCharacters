@@ -9,9 +9,9 @@ namespace AniListClient.Converters
         internal static Models.Media ToMedia(this CharactersFromAnimeResponse.MediaResponse media) =>
             new(
                 Id: media.Id,
-                Title: media.Title.ToTitle(),
+                Title: media.Title?.ToTitle(),
                 Description: media.Description,
-                Image: media.CoverImage.ToImage(),
+                Image: media.CoverImage?.ToImage(),
                 Status: media.Status,
                 Characters: media.Characters?.Edges?.Select(c => c.ToCharacter()).ToList() ?? new());
 
@@ -48,9 +48,9 @@ namespace AniListClient.Converters
         internal static Models.Staff ToStaff(this StaffQueryResponse.StaffResponse staff) =>
             new(
                 Id: staff.Id,
-                Name: staff.Name.ToCharacterName(),
+                Name: staff.Name?.ToCharacterName(),
                 Language: staff.LanguageV2,
-                Images: staff.Image.ToImage(),
+                Images: staff.Image?.ToImage(),
                 Description: staff.Description,
                 Age: staff.Age,
                 DateOfBirth: staff.DateOfBirth?.ToDateOfBirth(),
