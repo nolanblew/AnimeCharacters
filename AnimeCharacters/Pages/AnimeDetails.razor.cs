@@ -75,6 +75,8 @@ namespace AnimeCharacters.Pages
         {
             var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
 
+            if (media == null) { return; }
+
             var characters = new List<AniListClient.Models.Character>();
 
             foreach (var character in media.Characters)
