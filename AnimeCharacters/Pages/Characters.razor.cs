@@ -24,6 +24,10 @@ namespace AnimeCharacters.Pages
         public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
         public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
 
+        public bool IsLoadingCharacters { get; set; }
+
+        public string CharacterLoadError { get; set; }
+
         private bool _showMobileDetails = false;
 
         [Parameter]
@@ -42,7 +46,20 @@ namespace AnimeCharacters.Pages
             }
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
-            CurrentPerson = await _anilistClient.Staff.GetStaffById(int.Parse(Id));
+            IsLoadingCharacters = true;
+            CharacterLoadError = null;
+
+            try
+            {
+                CurrentPerson = await _anilistClient.Staff.GetStaffById(int.Parse(Id));
+            }
+            catch (Exception ex)
+            {
+                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+                IsLoadingCharacters = false;
+                StateHasChanged();
+                return;
+            }
 
             if (CurrentPerson == null)
             {
@@ -52,7 +69,18 @@ namespace AnimeCharacters.Pages
 
             StateHasChanged();
 
-            await _LoadCharacters();
+            try
+            {
+                await _LoadCharacters();
+            }
+            catch (Exception ex)
+            {
+                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+            }
+            finally
+            {
+                IsLoadingCharacters = false;
+            }
 
             StateHasChanged();
         }
