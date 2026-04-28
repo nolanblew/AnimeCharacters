@@ -3,6 +3,7 @@ using AnimeCharacters.Helpers;
 using AnimeCharacters.Models;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,10 @@ namespace AnimeCharacters.Pages
         public string Language { get; set; } = "Japanese";
 
         public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
+
+        public bool IsLoadingCharacters { get; set; }
+
+        public string CharacterLoadError { get; set; }
 
         public UserSettings UserSettings { get; set; } = new UserSettings();
 
@@ -57,7 +62,20 @@ namespace AnimeCharacters.Pages
 
             StateHasChanged();
 
-            await _LoadCharacters();
+            IsLoadingCharacters = true;
+            CharacterLoadError = null;
+            try
+            {
+                await _LoadCharacters();
+            }
+            catch (Exception ex)
+            {
+                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+            }
+            finally
+            {
+                IsLoadingCharacters = false;
+            }
 
             StateHasChanged();
         }
@@ -75,7 +93,11 @@ namespace AnimeCharacters.Pages
         {
             var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
 
-            if (media == null) { return; }
+            if (media == null)
+            {
+                CharacterLoadError = "AniList did not return character data for this anime.";
+                return;
+            }
 
             var characters = new List<AniListClient.Models.Character>();
 

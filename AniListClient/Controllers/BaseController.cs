@@ -1,6 +1,7 @@
 ﻿using AniListClient.Queries;
 using GraphQL;
 using GraphQL.Client.Http;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -64,7 +65,11 @@ namespace AniListClient.Controllers
                 {
                     result = await _graphQLHttpClient.SendQueryAsync<TBase>(request);
                 }
-                catch (HttpRequestException)
+                catch (GraphQLHttpRequestException ex)
+                {
+                    throw new InvalidOperationException(GetGraphQLHttpErrorMessage(ex), ex);
+                }
+                catch (HttpRequestException ex)
                 {
                     if (lastModel != null)
                     {
@@ -72,7 +77,17 @@ namespace AniListClient.Controllers
                         return lastModel;
                     }
 
-                    return default;
+                    throw new InvalidOperationException("Unable to reach AniList. The API may be unavailable right now.", ex);
+                }
+
+                if (result.Errors?.Length > 0)
+                {
+                    throw new InvalidOperationException(result.Errors[0].Message);
+                }
+
+                if (result.Data == null)
+                {
+                    throw new InvalidOperationException("AniList did not return any data.");
                 }
 
                 lastModel = conversionSelector(result.Data);
@@ -85,6 +100,30 @@ namespace AniListClient.Controllers
                     return lastModel;
                 }
             }
+        }
+
+        private static string GetGraphQLHttpErrorMessage(GraphQLHttpRequestException ex)
+        {
+            if (string.IsNullOrWhiteSpace(ex.Content))
+            {
+                return $"AniList returned HTTP {(int)ex.StatusCode}.";
+            }
+
+            try
+            {
+                var message = JObject.Parse(ex.Content)["errors"]?[0]?["message"]?.Value<string>();
+
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    return message;
+                }
+            }
+            catch
+            {
+                // Fall back to the HTTP status below when the response body is not JSON.
+            }
+
+            return $"AniList returned HTTP {(int)ex.StatusCode}.";
         }
     }
 }

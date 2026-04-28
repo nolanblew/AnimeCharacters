@@ -140,7 +140,21 @@
     <h3>Characters from My Anime</h3>
     <hr />
 
-    @if (MyCharactersList?.Any() == true)
+    @if (IsLoadingCharacters)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="control">
+                <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrWhiteSpace(CharacterLoadError))
+    {
+        <div class="alert alert-warning" role="alert">
+            @CharacterLoadError
+        </div>
+    }
+    else if (MyCharactersList?.Any() == true)
     {
         <div class="item-grid">
             @foreach (var characterAnime in MyCharactersList)
@@ -152,7 +166,7 @@
         </div>
     }
 
-    @if (NotMyCharactersList?.Any() == true)
+    @if (!IsLoadingCharacters && string.IsNullOrWhiteSpace(CharacterLoadError) && NotMyCharactersList?.Any() == true)
     {
         <div class="item-grid">
             @foreach (var characterAnime in NotMyCharactersList)
@@ -164,12 +178,10 @@
         </div>
     }
 
-    @if (MyCharactersList?.Any() != true && NotMyCharactersList?.Any() != true)
+    @if (!IsLoadingCharacters && string.IsNullOrWhiteSpace(CharacterLoadError) && MyCharactersList?.Any() != true && NotMyCharactersList?.Any() != true)
     {
-        <div class="d-flex justify-content-center">
-            <div class="control">
-                <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
-            </div>
+        <div class="alert alert-info" role="alert">
+            No matching characters were found in your anime.
         </div>
     }
 </div>
