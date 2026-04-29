@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace AnimeCharacters.Pages
@@ -46,7 +47,9 @@ namespace AnimeCharacters.Pages
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
             UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
-            CurrentAnime = (await DatabaseProvider.GetLibrariesAsync()).FirstOrDefault(libray => libray.Anime?.KitsuId == Id).Anime;
+            var libraries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
+            var currentLibraryEntry = libraries.FirstOrDefault(library => library.Anime?.KitsuId == Id);
+            CurrentAnime = currentLibraryEntry?.Anime;
 
             if (CurrentAnime == null)
             {
@@ -54,9 +57,10 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
+            if (!await _EnsureAniListId(libraries))
             {
-                NavigationManager.NavigateTo("/animes");
+                CharacterLoadError = "AniList has not linked this anime yet, so characters cannot be loaded.";
+                StateHasChanged();
                 return;
             }
 
@@ -120,6 +124,85 @@ namespace AnimeCharacters.Pages
             CharactersList = characters
                 .OrderByDescending(c => c, CharacterByRoleComparer.Instance)
                 .ToList();
+        }
+
+        async Task<bool> _EnsureAniListId(IList<LibraryEntry> libraries)
+        {
+            if (!string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
+            {
+                return true;
+            }
+
+            var searchTitles = new[]
+            {
+                CurrentAnime.EnglishTitle,
+                CurrentAnime.RomanjiTitle,
+                CurrentAnime.Title,
+                _GetSearchTitleFromSlug(CurrentAnime.KitsuSlug)
+            }
+            .Where(title => !string.IsNullOrWhiteSpace(title))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+            foreach (var title in searchTitles)
+            {
+                var media = await AnilistClient.Characters.SearchMediaByTitle(title);
+
+                if (media == null || !_IsTitleMatch(media.Title, searchTitles))
+                {
+                    continue;
+                }
+
+                CurrentAnime.AnilistId = media.Id.ToString();
+                await DatabaseProvider.SetLibrariesAsync(libraries);
+                return true;
+            }
+
+            return false;
+        }
+
+        static string _GetSearchTitleFromSlug(string slug)
+        {
+            if (string.IsNullOrWhiteSpace(slug))
+            {
+                return null;
+            }
+
+            return Regex.Replace(slug.Replace('-', ' '), @"\s+", " ").Trim();
+        }
+
+        static bool _IsTitleMatch(AniListClient.Models.Titles mediaTitle, IEnumerable<string> searchTitles)
+        {
+            if (mediaTitle == null)
+            {
+                return false;
+            }
+
+            var normalizedSearchTitles = searchTitles
+                .Select(_NormalizeTitle)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var mediaTitles = new[]
+            {
+                mediaTitle.English,
+                mediaTitle.Romaji,
+                mediaTitle.UserPreferred,
+                mediaTitle.Native
+            };
+
+            return mediaTitles
+                .Select(_NormalizeTitle)
+                .Any(title => !string.IsNullOrWhiteSpace(title) && normalizedSearchTitles.Contains(title));
+        }
+
+        static string _NormalizeTitle(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                return null;
+            }
+
+            return Regex.Replace(title, @"[^\p{L}\p{N}]+", " ").Trim();
         }
 
         public string GetAnimeTitle()

@@ -102,7 +102,7 @@ namespace AniListClient.Controllers
             }
         }
 
-        private static string GetGraphQLHttpErrorMessage(GraphQLHttpRequestException ex)
+        protected static string GetGraphQLHttpErrorMessage(GraphQLHttpRequestException ex)
         {
             if (string.IsNullOrWhiteSpace(ex.Content))
             {
