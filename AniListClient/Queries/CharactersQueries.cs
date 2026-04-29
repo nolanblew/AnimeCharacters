@@ -58,6 +58,23 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
     }
   }
 }";
+
+        internal const string SEARCH_ANIME_BY_TITLE_NAME = "searchAnimeByTitle";
+
+        internal const string SEARCH_ANIME_BY_TITLE_QUERY = @"
+query searchAnimeByTitle($search: String) {
+  Page(page: 1, perPage: 1) {
+    media(search: $search, type: ANIME) {
+      id
+      title {
+        romaji
+        english
+        native
+        userPreferred
+      }
+    }
+  }
+}";
     }
 
     internal class CharacterQueryVariable : IHasPage
@@ -74,5 +91,16 @@ query getStaffByAnime($anime_id: Int, $page:Int=1) {
 
         [JsonProperty("anime_id")]
         public int AnimeId { get; set; }
+    }
+
+    internal class SearchAnimeQueryVariable
+    {
+        internal SearchAnimeQueryVariable(string search)
+        {
+            Search = search;
+        }
+
+        [JsonProperty("search")]
+        public string Search { get; set; }
     }
 }

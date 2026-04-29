@@ -20,6 +20,11 @@ namespace AniListClient.Converters
                 Id: media.Id,
                 Title: media.Title.ToTitle());
 
+        internal static Models.MediaBase ToMedia(this SearchMediaResponse.MediaResponse media) =>
+            new(
+                Id: media.Id,
+                Title: media.Title?.ToTitle());
+
         internal static Models.Character ToCharacter(this CharactersFromAnimeResponse.CharacterEdge characterEdge) =>
             new(
                 Id: characterEdge.Node.Id,
