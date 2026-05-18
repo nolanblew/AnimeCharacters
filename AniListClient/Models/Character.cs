@@ -9,7 +9,8 @@ namespace AniListClient.Models
         string Description,
         CharacterRole? Role,
         List<MediaBase> Media,
-        List<VoiceActorSlim> VoiceActors);
+        List<VoiceActorSlim> VoiceActors,
+        string ProviderName = "anilist");
 
     public record Names(
         string Romaji,

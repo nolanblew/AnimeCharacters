@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E90B4538
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AniListClient", "AniListClient\AniListClient.csproj", "{7D06720E-7412-4D05-82E3-D2587BF9D076}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReferenceApis", "ReferenceApis\ReferenceApis.csproj", "{BABE6CEC-2E0B-47CE-B505-4367CD468400}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{7D06720E-7412-4D05-82E3-D2587BF9D076}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D06720E-7412-4D05-82E3-D2587BF9D076}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D06720E-7412-4D05-82E3-D2587BF9D076}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BABE6CEC-2E0B-47CE-B505-4367CD468400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BABE6CEC-2E0B-47CE-B505-4367CD468400}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BABE6CEC-2E0B-47CE-B505-4367CD468400}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BABE6CEC-2E0B-47CE-B505-4367CD468400}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

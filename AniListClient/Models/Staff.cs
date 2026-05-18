@@ -12,7 +12,8 @@ namespace AniListClient.Models
         DateOfBirth DateOfBirth,
         string BloodType,
         string SiteUrl,
-        List<Character> Characters);
+        List<Character> Characters,
+        string ProviderName = "anilist");
 
     public record DateOfBirth(
         int? Year,
