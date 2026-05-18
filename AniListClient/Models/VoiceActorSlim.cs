@@ -2,5 +2,7 @@
 {
     public record VoiceActorSlim(
         int Id,
-        Names Name);
+        Names Name,
+        string ProviderName = "anilist",
+        string SiteUrl = null);
 }

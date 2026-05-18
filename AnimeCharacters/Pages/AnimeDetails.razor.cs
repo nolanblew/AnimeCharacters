@@ -3,6 +3,7 @@ using AnimeCharacters.Helpers;
 using AnimeCharacters.Models;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
+using ReferenceApis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace AnimeCharacters.Pages
     public partial class AnimeDetails
     {
         [Inject]
-        AniListClient.AniListClient AnilistClient { get; set; }
+        IReferenceAnimeService ReferenceAnimeService { get; set; }
 
         public User CurrentUser { get; set; }
 
@@ -57,24 +58,17 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
-            if (!await _EnsureAniListId(libraries))
-            {
-                CharacterLoadError = "AniList has not linked this anime yet, so characters cannot be loaded.";
-                StateHasChanged();
-                return;
-            }
-
             StateHasChanged();
 
             IsLoadingCharacters = true;
             CharacterLoadError = null;
             try
             {
-                await _LoadCharacters();
+                await _LoadCharacters(libraries);
             }
             catch (Exception ex)
             {
-                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+                CharacterLoadError = $"Unable to load characters from the reference APIs. {ex.Message}";
             }
             finally
             {
@@ -90,18 +84,21 @@ namespace AnimeCharacters.Pages
 
             if (voiceActor == null) { return; }
 
-            NavigationManager.NavigateTo($"/characters/{voiceActor.Id}");
+            NavigationManager.NavigateTo($"/characters/{voiceActor.ProviderName}/{voiceActor.Id}");
         }
 
-        async Task _LoadCharacters()
+        async Task _LoadCharacters(IList<LibraryEntry> libraries)
         {
-            var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
+            var result = await ReferenceAnimeService.GetMediaWithCharactersAsync(CurrentAnime, _GetSearchTitles());
+            var media = result.Media;
 
             if (media == null)
             {
-                CharacterLoadError = "AniList did not return character data for this anime.";
+                CharacterLoadError = "The reference APIs did not return character data for this anime.";
                 return;
             }
+
+            await _PersistResolvedReferenceId(result, libraries);
 
             var characters = new List<AniListClient.Models.Character>();
 
@@ -126,39 +123,47 @@ namespace AnimeCharacters.Pages
                 .ToList();
         }
 
-        async Task<bool> _EnsureAniListId(IList<LibraryEntry> libraries)
+        async Task _PersistResolvedReferenceId(ReferenceMediaResult result, IList<LibraryEntry> libraries)
         {
-            if (!string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
+            if (result?.AnimeKey == null)
             {
-                return true;
+                return;
             }
 
-            var searchTitles = new[]
+            var hasChange = false;
+
+            if (ReferenceAnimeKey.MatchesProvider(result.AnimeKey.ProviderName, ReferenceProviderNames.AniList)
+                && string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
             {
-                CurrentAnime.EnglishTitle,
-                CurrentAnime.RomanjiTitle,
-                CurrentAnime.Title,
-                _GetSearchTitleFromSlug(CurrentAnime.KitsuSlug)
+                CurrentAnime.AnilistId = result.AnimeKey.Id;
+                hasChange = true;
+            }
+
+            if (ReferenceAnimeKey.MatchesProvider(result.AnimeKey.ProviderName, ReferenceProviderNames.Jikan)
+                && string.IsNullOrWhiteSpace(CurrentAnime.MyAnimeListId))
+            {
+                CurrentAnime.MyAnimeListId = result.AnimeKey.Id;
+                hasChange = true;
+            }
+
+            if (hasChange)
+            {
+                await DatabaseProvider.SetLibrariesAsync(libraries);
+            }
+        }
+
+        List<string> _GetSearchTitles()
+        {
+            return new[]
+            {
+                CurrentAnime?.EnglishTitle,
+                CurrentAnime?.RomanjiTitle,
+                CurrentAnime?.Title,
+                _GetSearchTitleFromSlug(CurrentAnime?.KitsuSlug)
             }
             .Where(title => !string.IsNullOrWhiteSpace(title))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
-
-            foreach (var title in searchTitles)
-            {
-                var media = await AnilistClient.Characters.SearchMediaByTitle(title);
-
-                if (media == null || !_IsTitleMatch(media.Title, searchTitles))
-                {
-                    continue;
-                }
-
-                CurrentAnime.AnilistId = media.Id.ToString();
-                await DatabaseProvider.SetLibrariesAsync(libraries);
-                return true;
-            }
-
-            return false;
         }
 
         static string _GetSearchTitleFromSlug(string slug)
@@ -169,40 +174,6 @@ namespace AnimeCharacters.Pages
             }
 
             return Regex.Replace(slug.Replace('-', ' '), @"\s+", " ").Trim();
-        }
-
-        static bool _IsTitleMatch(AniListClient.Models.Titles mediaTitle, IEnumerable<string> searchTitles)
-        {
-            if (mediaTitle == null)
-            {
-                return false;
-            }
-
-            var normalizedSearchTitles = searchTitles
-                .Select(_NormalizeTitle)
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            var mediaTitles = new[]
-            {
-                mediaTitle.English,
-                mediaTitle.Romaji,
-                mediaTitle.UserPreferred,
-                mediaTitle.Native
-            };
-
-            return mediaTitles
-                .Select(_NormalizeTitle)
-                .Any(title => !string.IsNullOrWhiteSpace(title) && normalizedSearchTitles.Contains(title));
-        }
-
-        static string _NormalizeTitle(string title)
-        {
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                return null;
-            }
-
-            return Regex.Replace(title, @"[^\p{L}\p{N}]+", " ").Trim();
         }
 
         public string GetAnimeTitle()

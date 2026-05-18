@@ -1,6 +1,7 @@
 ﻿using AnimeCharacters.Models;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
+using ReferenceApis;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace AnimeCharacters.Pages
     public partial class Characters
     {
         [Inject]
-        AniListClient.AniListClient _anilistClient { get; set; }
+        IReferenceAnimeService ReferenceAnimeService { get; set; }
 
         public User CurrentUser { get; set; }
 
@@ -32,6 +33,9 @@ namespace AnimeCharacters.Pages
 
         [Parameter]
         public string Id { get; set; }
+
+        [Parameter]
+        public string Provider { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -51,11 +55,13 @@ namespace AnimeCharacters.Pages
 
             try
             {
-                CurrentPerson = await _anilistClient.Staff.GetStaffById(int.Parse(Id));
+                CurrentPerson = await ReferenceAnimeService.GetStaffByIdAsync(
+                    string.IsNullOrWhiteSpace(Provider) ? ReferenceProviderNames.AniList : Provider,
+                    Id);
             }
             catch (Exception ex)
             {
-                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+                CharacterLoadError = $"Unable to load characters from the reference APIs. {ex.Message}";
                 IsLoadingCharacters = false;
                 StateHasChanged();
                 return;
@@ -75,7 +81,7 @@ namespace AnimeCharacters.Pages
             }
             catch (Exception ex)
             {
-                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+                CharacterLoadError = $"Unable to load characters from the reference APIs. {ex.Message}";
             }
             finally
             {
@@ -98,17 +104,19 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
-            // Key by AniList anime id -> list of characters this VA voiced in that anime
+            // Key by reference API anime id -> list of characters this VA voiced in that anime
             var vaRoles = new Dictionary<string, List<AniListClient.Models.Character>>();
 
-            foreach (var character in CurrentPerson.Characters.Where(role => role.Media != null))
+            foreach (var character in (CurrentPerson.Characters ?? new List<AniListClient.Models.Character>()).Where(role => role.Media != null))
             {
                 foreach (var mediaItem in character.Media)
                 {
-                    if (!vaRoles.TryGetValue(mediaItem.Id.ToString(), out var list))
+                    var animeKey = new ReferenceAnimeKey(mediaItem.ProviderName, mediaItem.Id.ToString()).CacheKey;
+
+                    if (!vaRoles.TryGetValue(animeKey, out var list))
                     {
                         list = new List<AniListClient.Models.Character>();
-                        vaRoles[mediaItem.Id.ToString()] = list;
+                        vaRoles[animeKey] = list;
                     }
 
                     // Preserve order of characters as returned from the API
@@ -116,15 +124,16 @@ namespace AnimeCharacters.Pages
                 }
             }
 
-            var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
+            var libraryEntries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
 
             MyCharactersList =
-                libraryEntries.Where(libraryEntry =>
-                                              !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) &&
-                                              vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
+                libraryEntries.Where(libraryEntry => ReferenceAnimeService.GetKnownAnimeKeys(libraryEntry.Anime)
+                                                                           .Any(key => vaRoles.ContainsKey(key.CacheKey)))
                               .SelectMany(libraryEntry =>
                               {
-                                  var characters = vaRoles[libraryEntry.Anime.AnilistId];
+                                  var characters = ReferenceAnimeService.GetKnownAnimeKeys(libraryEntry.Anime)
+                                                                        .Where(key => vaRoles.ContainsKey(key.CacheKey))
+                                                                        .SelectMany(key => vaRoles[key.CacheKey]);
                                   return characters.Select(character => new CharacterAnimeModel
                                   {
                                       KitsuId = libraryEntry.Anime.KitsuId,
@@ -185,18 +194,18 @@ namespace AnimeCharacters.Pages
             var links = new List<SocialMediaLink>();
 
             if (string.IsNullOrWhiteSpace(CurrentPerson?.Description))
-                return links;
+            {
+                if (!string.IsNullOrWhiteSpace(CurrentPerson?.SiteUrl))
+                {
+                    links.Add(CreateReferenceProviderLink());
+                }
 
-            // Add AniList profile link if available
+                return links;
+            }
+
             if (!string.IsNullOrWhiteSpace(CurrentPerson.SiteUrl))
             {
-                links.Add(new SocialMediaLink
-                {
-                    Platform = "AniList",
-                    Url = CurrentPerson.SiteUrl,
-                    DisplayText = "anilist.co",
-                    IconPath = "/images/anilist-icon.svg"
-                });
+                links.Add(CreateReferenceProviderLink());
             }
 
             // Extract markdown links from biography
@@ -216,6 +225,19 @@ namespace AnimeCharacters.Pages
             }
 
             return links;
+        }
+
+        private SocialMediaLink CreateReferenceProviderLink()
+        {
+            var isAniList = ReferenceAnimeKey.MatchesProvider(CurrentPerson.ProviderName, ReferenceProviderNames.AniList);
+
+            return new SocialMediaLink
+            {
+                Platform = isAniList ? "AniList" : "MyAnimeList",
+                Url = CurrentPerson.SiteUrl,
+                DisplayText = ExtractDomain(CurrentPerson.SiteUrl),
+                IconPath = isAniList ? "/images/anilist-icon.svg" : "/images/website-icon.svg"
+            };
         }
 
         private SocialMediaLink CreateSocialMediaLink(string text, string url)
