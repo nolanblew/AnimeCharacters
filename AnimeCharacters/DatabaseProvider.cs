@@ -23,6 +23,11 @@ namespace AnimeCharacters
         ValueTask<IList<LibraryEntry>> GetLibrariesAsync();
         ValueTask SetLibrariesAsync(IList<LibraryEntry> value);
 
+        ValueTask<Dictionary<string, string>> GetResolvedAniListIdsAsync();
+        ValueTask<string> GetResolvedAniListIdAsync(string kitsuId);
+        ValueTask SetResolvedAniListIdAsync(string kitsuId, string aniListId);
+        ValueTask RemoveResolvedAniListIdAsync(string kitsuId);
+
         ValueTask<int?> GetMigrationVersionAsnyc();
         ValueTask SetMigrationVersionAsync(int value);
 
@@ -38,6 +43,7 @@ namespace AnimeCharacters
         const string _LAST_FETCHED_ID_STORE = "last_fetched_id";
         const string _LAST_FETCHED_DATE_STORE = "last_fetched_date";
         const string _LIBRARIES_STORE = "libraries";
+        const string _RESOLVED_ANILIST_IDS_STORE = "resolved_anilist_ids";
         const string _MIGRATION_VERSION = "migration_version";
         const string _USER_SETTINGS = "user_settings";
 
@@ -66,6 +72,61 @@ namespace AnimeCharacters
         // Libraries
         public ValueTask<IList<LibraryEntry>> GetLibrariesAsync() => _localStorageService.GetItemAsync<IList<LibraryEntry>>(_LIBRARIES_STORE);
         public ValueTask SetLibrariesAsync(IList<LibraryEntry> value) => _TriggerEvent(() => _localStorageService.SetItemAsync(_LIBRARIES_STORE, value));
+
+        // Resolved AniList Ids
+        public async ValueTask<Dictionary<string, string>> GetResolvedAniListIdsAsync() =>
+            await _localStorageService.GetItemAsync<Dictionary<string, string>>(_RESOLVED_ANILIST_IDS_STORE)
+            ?? new Dictionary<string, string>();
+
+        public async ValueTask<string> GetResolvedAniListIdAsync(string kitsuId)
+        {
+            if (string.IsNullOrWhiteSpace(kitsuId))
+            {
+                return null;
+            }
+
+            var resolvedIds = await GetResolvedAniListIdsAsync();
+
+            return resolvedIds.TryGetValue(kitsuId, out var aniListId)
+                ? aniListId
+                : null;
+        }
+
+        public async ValueTask SetResolvedAniListIdAsync(string kitsuId, string aniListId)
+        {
+            if (string.IsNullOrWhiteSpace(kitsuId) || string.IsNullOrWhiteSpace(aniListId))
+            {
+                return;
+            }
+
+            var resolvedIds = await GetResolvedAniListIdsAsync();
+
+            if (resolvedIds.TryGetValue(kitsuId, out var existingAniListId)
+                && existingAniListId == aniListId)
+            {
+                return;
+            }
+
+            resolvedIds[kitsuId] = aniListId;
+            await _localStorageService.SetItemAsync(_RESOLVED_ANILIST_IDS_STORE, resolvedIds);
+        }
+
+        public async ValueTask RemoveResolvedAniListIdAsync(string kitsuId)
+        {
+            if (string.IsNullOrWhiteSpace(kitsuId))
+            {
+                return;
+            }
+
+            var resolvedIds = await GetResolvedAniListIdsAsync();
+
+            if (!resolvedIds.Remove(kitsuId))
+            {
+                return;
+            }
+
+            await _localStorageService.SetItemAsync(_RESOLVED_ANILIST_IDS_STORE, resolvedIds);
+        }
 
         // Migration Version
         public ValueTask<int?> GetMigrationVersionAsnyc() => _localStorageService.GetItemAsync<int?>(_MIGRATION_VERSION);

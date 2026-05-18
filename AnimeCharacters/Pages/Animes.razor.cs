@@ -1,4 +1,4 @@
-using AnimeCharacters.Helpers;
+﻿using AnimeCharacters.Helpers;
 using Kitsu;
 using Kitsu.Comparers;
 using Kitsu.Controllers;
@@ -161,6 +161,7 @@ namespace AnimeCharacters.Pages
         {
             if (libraryEntry?.Anime == null || _LibraryEntries == null) { return; }
 
+            PageStateManager.SetSelectedLibraryEntry(libraryEntry);
             NavigationManager.NavigateTo($"/animes/{libraryEntry.Anime.KitsuId}");
         }
 

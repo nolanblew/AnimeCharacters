@@ -1,5 +1,6 @@
 ﻿using EventAggregator.Blazor;
 using System.Collections.Generic;
+using Kitsu.Models;
 using System.Linq;
 
 namespace AnimeCharacters
@@ -11,8 +12,10 @@ namespace AnimeCharacters
 
         void Add(string url);
         void Clear();
+        LibraryEntry GetSelectedLibraryEntry(string kitsuId);
         string GetLastPage();
         string GoBack();
+        void SetSelectedLibraryEntry(LibraryEntry libraryEntry);
     }
 
     public class PageStateManager : IPageStateManager
@@ -25,6 +28,8 @@ namespace AnimeCharacters
         readonly IEventAggregator _eventAggregator;
 
         readonly Stack<string> _pageHistory = new();
+
+        LibraryEntry _selectedLibraryEntry;
 
         public string CurrentPage { get; private set; }
 
@@ -58,10 +63,27 @@ namespace AnimeCharacters
             return _pageHistory.Peek();
         }
 
+        public void SetSelectedLibraryEntry(LibraryEntry libraryEntry)
+        {
+            _selectedLibraryEntry = libraryEntry;
+        }
+
+        public LibraryEntry GetSelectedLibraryEntry(string kitsuId)
+        {
+            if (string.IsNullOrWhiteSpace(kitsuId)
+                || _selectedLibraryEntry?.Anime?.KitsuId != kitsuId)
+            {
+                return null;
+            }
+
+            return _selectedLibraryEntry;
+        }
+
         public void Clear()
         {
             _pageHistory.Clear();
             CurrentPage = null;
+            _selectedLibraryEntry = null;
             _NotifyPropertyChanges();
         }
 

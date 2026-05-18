@@ -24,14 +24,24 @@ namespace AnimeCharacters.Pages
 
         public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
 
-        public bool IsLoadingCharacters { get; set; }
+        public bool IsLoadingCharacters { get; set; } = true;
 
         public string CharacterLoadError { get; set; }
 
         public UserSettings UserSettings { get; set; } = new UserSettings();
 
+        bool _usingResolvedAniListId;
+
         [Parameter]
         public string Id { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (CurrentAnime == null && !string.IsNullOrWhiteSpace(Id))
+            {
+                CurrentAnime = PageStateManager.GetSelectedLibraryEntry(Id)?.Anime;
+            }
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -47,9 +57,13 @@ namespace AnimeCharacters.Pages
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
             UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
-            var libraries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
-            var currentLibraryEntry = libraries.FirstOrDefault(library => library.Anime?.KitsuId == Id);
-            CurrentAnime = currentLibraryEntry?.Anime;
+
+            if (CurrentAnime == null)
+            {
+                var libraries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
+                var currentLibraryEntry = libraries.FirstOrDefault(library => library.Anime?.KitsuId == Id);
+                CurrentAnime = currentLibraryEntry?.Anime;
+            }
 
             if (CurrentAnime == null)
             {
@@ -57,23 +71,25 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
-            if (!await _EnsureAniListId(libraries))
+            IsLoadingCharacters = true;
+            CharacterLoadError = null;
+            StateHasChanged();
+
+            if (!await _EnsureAniListId())
             {
                 CharacterLoadError = "AniList has not linked this anime yet, so characters cannot be loaded.";
+                IsLoadingCharacters = false;
                 StateHasChanged();
                 return;
             }
 
-            StateHasChanged();
-
-            IsLoadingCharacters = true;
-            CharacterLoadError = null;
             try
             {
                 await _LoadCharacters();
             }
             catch (Exception ex)
             {
+                await _ForgetResolvedAniListIdAsync();
                 CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
             }
             finally
@@ -99,6 +115,7 @@ namespace AnimeCharacters.Pages
 
             if (media == null)
             {
+                await _ForgetResolvedAniListIdAsync();
                 CharacterLoadError = "AniList did not return character data for this anime.";
                 return;
             }
@@ -126,10 +143,20 @@ namespace AnimeCharacters.Pages
                 .ToList();
         }
 
-        async Task<bool> _EnsureAniListId(IList<LibraryEntry> libraries)
+        async Task<bool> _EnsureAniListId()
         {
+            var resolvedAniListId = await DatabaseProvider.GetResolvedAniListIdAsync(CurrentAnime.KitsuId);
+
             if (!string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
             {
+                _usingResolvedAniListId = CurrentAnime.AnilistId == resolvedAniListId;
+                return true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(resolvedAniListId))
+            {
+                CurrentAnime.AnilistId = resolvedAniListId;
+                _usingResolvedAniListId = true;
                 return true;
             }
 
@@ -154,11 +181,24 @@ namespace AnimeCharacters.Pages
                 }
 
                 CurrentAnime.AnilistId = media.Id.ToString();
-                await DatabaseProvider.SetLibrariesAsync(libraries);
+                _usingResolvedAniListId = true;
+                await DatabaseProvider.SetResolvedAniListIdAsync(CurrentAnime.KitsuId, CurrentAnime.AnilistId);
                 return true;
             }
 
             return false;
+        }
+
+        async Task _ForgetResolvedAniListIdAsync()
+        {
+            if (!_usingResolvedAniListId || CurrentAnime == null)
+            {
+                return;
+            }
+
+            await DatabaseProvider.RemoveResolvedAniListIdAsync(CurrentAnime.KitsuId);
+            CurrentAnime.AnilistId = null;
+            _usingResolvedAniListId = false;
         }
 
         static string _GetSearchTitleFromSlug(string slug)

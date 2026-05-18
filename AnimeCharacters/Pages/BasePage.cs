@@ -1,9 +1,10 @@
 ﻿using EventAggregator.Blazor;
 using Microsoft.AspNetCore.Components;
+using System;
 
 namespace AnimeCharacters.Pages
 {
-    public abstract class BasePage : ComponentBase
+    public abstract class BasePage : ComponentBase, IDisposable
     {
         bool _hasInitializedBeenCalled;
         readonly object _initializeLock = new();
@@ -36,6 +37,14 @@ namespace AnimeCharacters.Pages
             }
 
             base.OnInitialized();
+        }
+
+        public virtual void Dispose()
+        {
+            if (_hasInitializedBeenCalled)
+            {
+                _EventAggregator?.Unsubscribe(this);
+            }
         }
     }
 }

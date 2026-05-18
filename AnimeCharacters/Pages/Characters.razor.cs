@@ -116,15 +116,22 @@ namespace AnimeCharacters.Pages
                 }
             }
 
-            var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
+            var libraryEntries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
+            var resolvedAniListIds = await DatabaseProvider.GetResolvedAniListIdsAsync();
 
             MyCharactersList =
-                libraryEntries.Where(libraryEntry =>
-                                              !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) &&
-                                              vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
-                              .SelectMany(libraryEntry =>
+                libraryEntries.Select(libraryEntry => new
                               {
-                                  var characters = vaRoles[libraryEntry.Anime.AnilistId];
+                                  LibraryEntry = libraryEntry,
+                                  AniListId = _GetAniListId(libraryEntry, resolvedAniListIds)
+                              })
+                              .Where(item =>
+                                  !string.IsNullOrWhiteSpace(item.AniListId) &&
+                                  vaRoles.ContainsKey(item.AniListId))
+                              .SelectMany(item =>
+                              {
+                                  var libraryEntry = item.LibraryEntry;
+                                  var characters = vaRoles[item.AniListId];
                                   return characters.Select(character => new CharacterAnimeModel
                                   {
                                       KitsuId = libraryEntry.Anime.KitsuId,
@@ -136,6 +143,27 @@ namespace AnimeCharacters.Pages
                               .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
                               .ToList();
 
+        }
+
+        static string _GetAniListId(LibraryEntry libraryEntry, IReadOnlyDictionary<string, string> resolvedAniListIds)
+        {
+            var aniListId = libraryEntry?.Anime?.AnilistId;
+
+            if (!string.IsNullOrWhiteSpace(aniListId))
+            {
+                return aniListId;
+            }
+
+            var kitsuId = libraryEntry?.Anime?.KitsuId;
+
+            if (string.IsNullOrWhiteSpace(kitsuId))
+            {
+                return null;
+            }
+
+            return resolvedAniListIds.TryGetValue(kitsuId, out var resolvedAniListId)
+                ? resolvedAniListId
+                : null;
         }
 
         private void ToggleMobileDetails()
