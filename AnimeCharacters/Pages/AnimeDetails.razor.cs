@@ -55,6 +55,12 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
+            if (_TryRestorePageState())
+            {
+                StateHasChanged();
+                return;
+            }
+
             CurrentUser = await DatabaseProvider.GetUserAsync();
             UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
 
@@ -79,6 +85,7 @@ namespace AnimeCharacters.Pages
             {
                 CharacterLoadError = "AniList has not linked this anime yet, so characters cannot be loaded.";
                 IsLoadingCharacters = false;
+                _CachePageState();
                 StateHasChanged();
                 return;
             }
@@ -97,6 +104,7 @@ namespace AnimeCharacters.Pages
                 IsLoadingCharacters = false;
             }
 
+            _CachePageState();
             StateHasChanged();
         }
 
@@ -199,6 +207,52 @@ namespace AnimeCharacters.Pages
             await DatabaseProvider.RemoveResolvedAniListIdAsync(CurrentAnime.KitsuId);
             CurrentAnime.AnilistId = null;
             _usingResolvedAniListId = false;
+        }
+
+        bool _TryRestorePageState()
+        {
+            if (!PageStateManager.TryGetPageState<AnimeDetailsPageState>(NavigationManager.Uri, out var state)
+                || state.Id != Id)
+            {
+                return false;
+            }
+
+            CurrentUser = state.CurrentUser;
+            CurrentAnime = state.CurrentAnime;
+            Language = state.Language;
+            CharactersList = state.CharactersList;
+            CharacterLoadError = state.CharacterLoadError;
+            UserSettings = state.UserSettings;
+            _usingResolvedAniListId = state.UsingResolvedAniListId;
+            IsLoadingCharacters = false;
+            return true;
+        }
+
+        void _CachePageState()
+        {
+            PageStateManager.SetPageState(NavigationManager.Uri, new AnimeDetailsPageState
+            {
+                Id = Id,
+                CurrentUser = CurrentUser,
+                CurrentAnime = CurrentAnime,
+                Language = Language,
+                CharactersList = CharactersList,
+                CharacterLoadError = CharacterLoadError,
+                UserSettings = UserSettings,
+                UsingResolvedAniListId = _usingResolvedAniListId
+            });
+        }
+
+        class AnimeDetailsPageState
+        {
+            public string Id { get; set; }
+            public User CurrentUser { get; set; }
+            public Anime CurrentAnime { get; set; }
+            public string Language { get; set; }
+            public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
+            public string CharacterLoadError { get; set; }
+            public UserSettings UserSettings { get; set; } = new();
+            public bool UsingResolvedAniListId { get; set; }
         }
 
         static string _GetSearchTitleFromSlug(string slug)

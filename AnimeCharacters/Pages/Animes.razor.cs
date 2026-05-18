@@ -1,4 +1,4 @@
-﻿using AnimeCharacters.Helpers;
+using AnimeCharacters.Helpers;
 using Kitsu;
 using Kitsu.Comparers;
 using Kitsu.Controllers;
@@ -44,6 +44,7 @@ namespace AnimeCharacters.Pages
             {
                 _searchFilter = value;
                 UpdateHeaderContents();
+                _CachePageState();
             }
         }
 
@@ -127,6 +128,7 @@ namespace AnimeCharacters.Pages
             {
                 header.IsCollapsed = !header.IsCollapsed;
                 StateHasChanged();
+                _CachePageState();
             }
         }
 
@@ -136,6 +138,12 @@ namespace AnimeCharacters.Pages
 
             if (firstRender)
             {
+                if (_TryRestorePageState())
+                {
+                    StateHasChanged();
+                    return;
+                }
+
                 // Check if we need to migrate
                 // TODO: Remove after everyone has updated to latest version
                 _isMigrating = !MigrationHelper.IsOnLatestVersion(await DatabaseProvider.GetMigrationVersionAsnyc());
@@ -223,6 +231,7 @@ namespace AnimeCharacters.Pages
                 IsBusy = false;
                 _refreshLibrariesSemaphoreSlim.Release();
                 UpdateHeaderContents();
+                _CachePageState();
                 StateHasChanged();
             }
         }
@@ -434,6 +443,51 @@ namespace AnimeCharacters.Pages
             return Task.CompletedTask;
         }
 
+        bool _TryRestorePageState()
+        {
+            if (!PageStateManager.TryGetPageState<AnimesPageState>(NavigationManager.Uri, out var state))
+            {
+                return false;
+            }
+
+            CurrentUser = state.CurrentUser;
+            _LibraryEntries = state.LibraryEntries.ToDictionary(libraryEntry => libraryEntry.Id);
+            _searchFilter = state.SearchFilter;
+            _lastShallowRefresh = state.LastShallowRefresh;
+            _isMigrating = false;
+            IsBusy = false;
+
+            InitializeHeaderStates();
+
+            foreach (var header in headerStates)
+            {
+                header.IsCollapsed = state.CollapsedHeaderTitles.Contains(header.Title);
+            }
+
+            UpdateHeaderContents();
+            return true;
+        }
+
+        void _CachePageState()
+        {
+            if (CurrentUser == null || _LibraryEntries?.Any() != true)
+            {
+                return;
+            }
+
+            PageStateManager.SetPageState(NavigationManager.Uri, new AnimesPageState
+            {
+                CurrentUser = CurrentUser,
+                LibraryEntries = _LibraryEntries.Values.ToList(),
+                SearchFilter = SearchFilter,
+                LastShallowRefresh = _lastShallowRefresh,
+                CollapsedHeaderTitles = headerStates
+                    .Where(header => header.IsCollapsed)
+                    .Select(header => header.Title)
+                    .ToHashSet()
+            });
+        }
+
         // Enhanced HeaderState class with filter condition
         public class HeaderState
         {
@@ -441,6 +495,15 @@ namespace AnimeCharacters.Pages
             public bool IsCollapsed { get; set; }
             public List<LibraryEntry> Content { get; set; }
             public Func<LibraryEntry, bool> FilterCondition { get; set; }
+        }
+
+        class AnimesPageState
+        {
+            public User CurrentUser { get; set; }
+            public List<LibraryEntry> LibraryEntries { get; set; } = new();
+            public string SearchFilter { get; set; }
+            public DateTime? LastShallowRefresh { get; set; }
+            public HashSet<string> CollapsedHeaderTitles { get; set; } = new();
         }
     }
 }

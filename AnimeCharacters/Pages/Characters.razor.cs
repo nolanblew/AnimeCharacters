@@ -24,7 +24,7 @@ namespace AnimeCharacters.Pages
         public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
         public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
 
-        public bool IsLoadingCharacters { get; set; }
+        public bool IsLoadingCharacters { get; set; } = true;
 
         public string CharacterLoadError { get; set; }
 
@@ -45,6 +45,12 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
+            if (_TryRestorePageState())
+            {
+                StateHasChanged();
+                return;
+            }
+
             CurrentUser = await DatabaseProvider.GetUserAsync();
             IsLoadingCharacters = true;
             CharacterLoadError = null;
@@ -57,6 +63,7 @@ namespace AnimeCharacters.Pages
             {
                 CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
                 IsLoadingCharacters = false;
+                _CachePageState();
                 StateHasChanged();
                 return;
             }
@@ -82,6 +89,7 @@ namespace AnimeCharacters.Pages
                 IsLoadingCharacters = false;
             }
 
+            _CachePageState();
             StateHasChanged();
         }
 
@@ -164,6 +172,46 @@ namespace AnimeCharacters.Pages
             return resolvedAniListIds.TryGetValue(kitsuId, out var resolvedAniListId)
                 ? resolvedAniListId
                 : null;
+        }
+
+        bool _TryRestorePageState()
+        {
+            if (!PageStateManager.TryGetPageState<CharactersPageState>(NavigationManager.Uri, out var state)
+                || state.Id != Id)
+            {
+                return false;
+            }
+
+            CurrentUser = state.CurrentUser;
+            CurrentPerson = state.CurrentPerson;
+            MyCharactersList = state.MyCharactersList;
+            NotMyCharactersList = state.NotMyCharactersList;
+            CharacterLoadError = state.CharacterLoadError;
+            IsLoadingCharacters = false;
+            return true;
+        }
+
+        void _CachePageState()
+        {
+            PageStateManager.SetPageState(NavigationManager.Uri, new CharactersPageState
+            {
+                Id = Id,
+                CurrentUser = CurrentUser,
+                CurrentPerson = CurrentPerson,
+                MyCharactersList = MyCharactersList,
+                NotMyCharactersList = NotMyCharactersList,
+                CharacterLoadError = CharacterLoadError
+            });
+        }
+
+        class CharactersPageState
+        {
+            public string Id { get; set; }
+            public User CurrentUser { get; set; }
+            public AniListClient.Models.Staff CurrentPerson { get; set; }
+            public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
+            public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
+            public string CharacterLoadError { get; set; }
         }
 
         private void ToggleMobileDetails()
