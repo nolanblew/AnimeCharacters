@@ -90,7 +90,8 @@ def image_url(url):
     if not url or not url.strip():
         return None
 
-    return html.unescape(url)
+    decoded = html.unescape(url)
+    return re.sub(r"/revision/latest/scale-to-width-down/\d+", "/revision/latest/", decoded)
 
 
 def asset_file_name(name):

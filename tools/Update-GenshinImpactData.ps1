@@ -69,7 +69,8 @@ function Convert-WikiImageUrl {
         return $null
     }
 
-    return [System.Net.WebUtility]::HtmlDecode($Url)
+    $decoded = [System.Net.WebUtility]::HtmlDecode($Url)
+    return [regex]::Replace($decoded, "/revision/latest/scale-to-width-down/\d+", "/revision/latest/")
 }
 
 function Convert-AssetFileName {
