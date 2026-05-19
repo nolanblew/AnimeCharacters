@@ -10,7 +10,7 @@
 <div class="content">
     <div class="row align-items-center extension-header">
         <div class="col-auto">
-            <img class="extension-cover" src="@ExtensionDefinition?.CoverImageUrl" alt="Genshin Impact cover" />
+            <img class="extension-cover" src="@ExtensionDefinition?.CoverImageUrl" alt="Genshin Impact cover" referrerpolicy="no-referrer" />
         </div>
         <div class="col">
             <h2>Genshin Impact</h2>
@@ -53,7 +53,7 @@
                             <div class="col">
                                 @if (!string.IsNullOrWhiteSpace(character.ImageUrl))
                                 {
-                                    <img src="@character.ImageUrl" alt="@character.Name" />
+                                    <img src="@character.ImageUrl" alt="@character.Name" referrerpolicy="no-referrer" />
                                 }
                                 else
                                 {

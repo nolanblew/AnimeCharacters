@@ -1,7 +1,10 @@
 param(
     [string] $OutputPath = "$PSScriptRoot\..\AnimeCharacters\wwwroot\data\extensions\genshin-impact-characters.json",
     [switch] $ResolveAniListIds,
-    [int] $RequestDelayMilliseconds = 700
+    [int] $RequestDelayMilliseconds = 700,
+    [string] $ImageOutputDirectory = "$PSScriptRoot\..\AnimeCharacters\wwwroot\images\extensions\genshin-impact",
+    [string] $ImageUrlPrefix = "images/extensions/genshin-impact",
+    [switch] $RefreshImages
 )
 
 $ErrorActionPreference = "Stop"
@@ -66,8 +69,57 @@ function Convert-WikiImageUrl {
         return $null
     }
 
-    $decoded = [System.Net.WebUtility]::HtmlDecode($Url)
-    return ($decoded -split "\?")[0]
+    return [System.Net.WebUtility]::HtmlDecode($Url)
+}
+
+function Convert-AssetFileName {
+    param([string] $Name)
+
+    $normalized = Get-NormalizedName $Name
+    if ([string]::IsNullOrWhiteSpace($normalized)) {
+        return "unknown"
+    }
+
+    return [regex]::Replace($normalized, "\s+", "-")
+}
+
+function Save-RemoteImage {
+    param(
+        [string] $Uri,
+        [string] $OutputPath,
+        [string] $Status
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Uri)) {
+        return
+    }
+
+    if ((Test-Path -LiteralPath $OutputPath) -and !$RefreshImages) {
+        return
+    }
+
+    $directory = Split-Path -Parent $OutputPath
+    if (!(Test-Path -LiteralPath $directory)) {
+        New-Item -ItemType Directory -Path $directory | Out-Null
+    }
+
+    if ($script:LastApiRequestAt -ne $null) {
+        $elapsedMilliseconds = ((Get-Date) - $script:LastApiRequestAt).TotalMilliseconds
+        $remainingDelay = $RequestDelayMilliseconds - $elapsedMilliseconds
+
+        if ($remainingDelay -gt 0) {
+            Start-Sleep -Milliseconds ([int] [Math]::Ceiling($remainingDelay))
+        }
+    }
+
+    Write-Progress -Activity "Updating Genshin Impact data" -Status $Status
+
+    try {
+        Invoke-WebRequest -Uri $Uri -Headers @{ "User-Agent" = "AnimeCharactersDataUpdater/1.0 (https://www.animecharacters.app/)" } -OutFile $OutputPath | Out-Null
+    }
+    finally {
+        $script:LastApiRequestAt = Get-Date
+    }
 }
 
 function Get-NormalizedName {
@@ -225,6 +277,9 @@ query searchStaff(`$search: String) {
 }
 
 $iconUrlsByCharacterName = Get-CharacterIconUrls
+$coverSourceUrl = "https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png/revision/latest/scale-to-width-down/512?cb=20240331104358"
+Save-RemoteImage -Uri $coverSourceUrl -OutputPath (Join-Path $ImageOutputDirectory "cover.png") -Status "Downloading Genshin Impact cover"
+$characterImageDirectory = Join-Path $ImageOutputDirectory "characters"
 
 $voiceActorUri = "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor&prop=text&format=json&formatversion=2"
 $voiceActorResponse = Invoke-JsonApiRequest -Uri $voiceActorUri -Status "Fetching Voice Actor table from Fandom"
@@ -270,9 +325,18 @@ foreach ($row in $rows) {
         continue
     }
 
+    $sourceImageUrl = $iconUrlsByCharacterName[$characterName]
+    $localImageUrl = $null
+
+    if (![string]::IsNullOrWhiteSpace($sourceImageUrl)) {
+        $assetFileName = "$(Convert-AssetFileName $characterName).png"
+        Save-RemoteImage -Uri $sourceImageUrl -OutputPath (Join-Path $characterImageDirectory $assetFileName) -Status "Downloading $characterName icon"
+        $localImageUrl = "$ImageUrlPrefix/characters/$assetFileName"
+    }
+
     [void] $characters.Add([ordered]@{
         Name = $characterName
-        ImageUrl = $iconUrlsByCharacterName[$characterName]
+        ImageUrl = $localImageUrl
         WikiUrl = "https://genshin-impact.fandom.com$($characterLink.Groups["href"].Value)"
         JapaneseVoiceActors = $japaneseVoiceActors
     })

@@ -42,7 +42,7 @@ A deploy is automatically commenced when a pull request is merged to master. A d
 
 ## Extension Data
 
-Genshin Impact character data is checked in under `AnimeCharacters/wwwroot/data/extensions/genshin-impact-characters.json` for low runtime overhead. The updater reads Fandom's `Character/List` page for character icon URLs and the `Voice_Actor` page for Japanese voice actor credits. Refresh it on Windows with:
+Genshin Impact character data is checked in under `AnimeCharacters/wwwroot/data/extensions/genshin-impact-characters.json` for low runtime overhead. Poster and character artwork is cached under `AnimeCharacters/wwwroot/images/extensions/genshin-impact` so the app does not hotlink Fandom images at runtime. The updater reads Fandom's `Character/List` page for character icon URLs and the `Voice_Actor` page for Japanese voice actor credits. Refresh it on Windows with:
 
 ```powershell
 .\tools\Update-GenshinImpactData.ps1

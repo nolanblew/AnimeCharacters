@@ -38,7 +38,7 @@ namespace Kitsu.Tests.AnimeCharacters.Extensions
             var extension = ExtensionCatalog.GetById(BuiltInExtensionIds.GenshinImpact);
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(extension.CoverImageUrl));
-            StringAssert.Contains(extension.CoverImageUrl, "Genshin_Impact.png");
+            Assert.AreEqual("images/extensions/genshin-impact/cover.png", extension.CoverImageUrl);
         }
     }
 }

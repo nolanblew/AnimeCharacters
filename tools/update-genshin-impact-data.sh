@@ -25,11 +25,22 @@ DEFAULT_OUTPUT = os.path.abspath(os.path.join(
     "data",
     "extensions",
     "genshin-impact-characters.json"))
+DEFAULT_IMAGE_OUTPUT_DIR = os.path.abspath(os.path.join(
+    os.environ["SCRIPT_DIR"],
+    "..",
+    "AnimeCharacters",
+    "wwwroot",
+    "images",
+    "extensions",
+    "genshin-impact"))
 
 parser = argparse.ArgumentParser(description="Refresh checked-in Genshin Impact extension data.")
 parser.add_argument("-o", "--output", default=DEFAULT_OUTPUT)
 parser.add_argument("--resolve-anilist-ids", action="store_true")
 parser.add_argument("--request-delay-ms", type=int, default=700)
+parser.add_argument("--image-output-dir", default=DEFAULT_IMAGE_OUTPUT_DIR)
+parser.add_argument("--image-url-prefix", default="images/extensions/genshin-impact")
+parser.add_argument("--refresh-images", action="store_true")
 args = parser.parse_args()
 
 last_request_at = None
@@ -79,7 +90,41 @@ def image_url(url):
     if not url or not url.strip():
         return None
 
-    return html.unescape(url).split("?")[0]
+    return html.unescape(url)
+
+
+def asset_file_name(name):
+    normalized = normalized_name(name)
+    if not normalized:
+        return "unknown"
+
+    return re.sub(r"\s+", "-", normalized)
+
+
+def download_image(url, output_path, status):
+    global last_request_at
+
+    if not url:
+        return
+    if os.path.exists(output_path) and not args.refresh_images:
+        return
+
+    if last_request_at is not None:
+        elapsed_ms = (time.time() - last_request_at) * 1000
+        remaining_ms = args.request_delay_ms - elapsed_ms
+        if remaining_ms > 0:
+            time.sleep(remaining_ms / 1000)
+
+    write_progress(status)
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "AnimeCharactersDataUpdater/1.0 (https://www.animecharacters.app/)"})
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response, open(output_path, "wb") as output:
+            output.write(response.read())
+    finally:
+        last_request_at = time.time()
 
 
 def normalized_name(name):
@@ -198,6 +243,12 @@ query searchStaff($search: String) {
 
 
 icons_by_name = character_icon_urls()
+cover_source_url = "https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png/revision/latest/scale-to-width-down/512?cb=20240331104358"
+download_image(
+    cover_source_url,
+    os.path.join(args.image_output_dir, "cover.png"),
+    "Downloading Genshin Impact cover")
+character_image_dir = os.path.join(args.image_output_dir, "characters")
 
 voice_actor_url = "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor&prop=text&format=json&formatversion=2"
 voice_actor_response = request_json(voice_actor_url, status="Fetching Voice Actor table from Fandom")
@@ -232,9 +283,19 @@ for index, row in enumerate(rows, start=1):
     if not voice_actors:
         continue
 
+    source_image_url = icons_by_name.get(character_name)
+    local_image_url = None
+    if source_image_url:
+        file_name = f"{asset_file_name(character_name)}.png"
+        download_image(
+            source_image_url,
+            os.path.join(character_image_dir, file_name),
+            f"Downloading {character_name} icon")
+        local_image_url = f"{args.image_url_prefix}/characters/{file_name}"
+
     characters.append({
         "Name": character_name,
-        "ImageUrl": icons_by_name.get(character_name),
+        "ImageUrl": local_image_url,
         "WikiUrl": f"https://genshin-impact.fandom.com{character_link.group('href')}",
         "JapaneseVoiceActors": voice_actors,
     })

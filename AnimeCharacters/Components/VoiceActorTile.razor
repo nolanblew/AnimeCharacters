@@ -5,7 +5,7 @@
         <div class="col" @onclick="_OnMediaClicked">
             @if (!string.IsNullOrWhiteSpace(Credit?.MediaImageUrl))
             {
-                <img src="@Credit.MediaImageUrl" alt="@Credit.MediaTitle" />
+                <img src="@Credit.MediaImageUrl" alt="@Credit.MediaTitle" referrerpolicy="no-referrer" />
             }
             else
             {
@@ -17,7 +17,7 @@
         <div class="col" @onclick="_OnCharacterClicked">
             @if (!string.IsNullOrWhiteSpace(Credit?.CharacterImageUrl))
             {
-                <img src="@Credit.CharacterImageUrl" alt="@Credit.CharacterName" />
+                <img src="@Credit.CharacterImageUrl" alt="@Credit.CharacterName" referrerpolicy="no-referrer" />
             }
             else
             {
