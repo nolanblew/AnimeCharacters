@@ -1,14 +1,13 @@
-﻿using AnimeCharacters.Models;
+using AnimeCharacters.Extensions;
+using AnimeCharacters.Models;
 using Kitsu.Models;
-using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using System.Text;
-using System;
 using Markdig;
+using Microsoft.AspNetCore.Components;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace AnimeCharacters.Pages
 {
@@ -17,12 +16,14 @@ namespace AnimeCharacters.Pages
         [Inject]
         AniListClient.AniListClient _anilistClient { get; set; }
 
+        [Inject]
+        IVoiceActorCreditService _voiceActorCreditService { get; set; }
+
         public User CurrentUser { get; set; }
 
         public AniListClient.Models.Staff CurrentPerson { get; set; }
 
-        public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
-        public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
+        public List<VoiceActorCreditSection> CreditSections { get; set; } = new();
 
         public bool IsLoadingCharacters { get; set; }
 
@@ -75,7 +76,7 @@ namespace AnimeCharacters.Pages
             }
             catch (Exception ex)
             {
-                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+                CharacterLoadError = $"Unable to load characters. {ex.Message}";
             }
             finally
             {
@@ -85,57 +86,29 @@ namespace AnimeCharacters.Pages
             StateHasChanged();
         }
 
-        protected void _OnAnimeClicked(CharacterAnimeModel model)
+        protected void _OnMediaClicked(VoiceActorCreditModel model)
         {
             if (model == null) { return; }
 
-            NavigationManager.NavigateTo($"/animes/{model.KitsuId}");
+            if (!string.IsNullOrWhiteSpace(model.MediaRoute))
+            {
+                NavigationManager.NavigateTo(model.MediaRoute);
+            }
         }
 
-        protected void _OnCharacterClicked(CharacterAnimeModel model)
+        protected void _OnCharacterClicked(VoiceActorCreditModel model)
         {
+            if (model == null) { return; }
+
+            if (!string.IsNullOrWhiteSpace(model.CharacterRoute))
+            {
+                NavigationManager.NavigateTo(model.CharacterRoute);
+            }
         }
 
         async Task _LoadCharacters()
         {
-            // Key by AniList anime id -> list of characters this VA voiced in that anime
-            var vaRoles = new Dictionary<string, List<AniListClient.Models.Character>>();
-
-            foreach (var character in CurrentPerson.Characters.Where(role => role.Media != null))
-            {
-                foreach (var mediaItem in character.Media)
-                {
-                    if (!vaRoles.TryGetValue(mediaItem.Id.ToString(), out var list))
-                    {
-                        list = new List<AniListClient.Models.Character>();
-                        vaRoles[mediaItem.Id.ToString()] = list;
-                    }
-
-                    // Preserve order of characters as returned from the API
-                    list.Add(character);
-                }
-            }
-
-            var libraryEntries = await DatabaseProvider.GetLibrariesAsync();
-
-            MyCharactersList =
-                libraryEntries.Where(libraryEntry =>
-                                              !string.IsNullOrWhiteSpace(libraryEntry.Anime.AnilistId) &&
-                                              vaRoles.ContainsKey(libraryEntry.Anime.AnilistId))
-                              .SelectMany(libraryEntry =>
-                              {
-                                  var characters = vaRoles[libraryEntry.Anime.AnilistId];
-                                  return characters.Select(character => new CharacterAnimeModel
-                                  {
-                                      KitsuId = libraryEntry.Anime.KitsuId,
-                                      AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
-                                      LastProgressedAt = libraryEntry.ProgressedAt,
-                                      VoiceActingRole = character,
-                                  });
-                              })
-                              .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
-                              .ToList();
-
+            CreditSections = (await _voiceActorCreditService.GetCreditSectionsAsync(CurrentPerson)).ToList();
         }
 
         private void ToggleMobileDetails()
@@ -187,7 +160,6 @@ namespace AnimeCharacters.Pages
             if (string.IsNullOrWhiteSpace(CurrentPerson?.Description))
                 return links;
 
-            // Add AniList profile link if available
             if (!string.IsNullOrWhiteSpace(CurrentPerson.SiteUrl))
             {
                 links.Add(new SocialMediaLink
@@ -199,7 +171,6 @@ namespace AnimeCharacters.Pages
                 });
             }
 
-            // Extract markdown links from biography
             var markdownLinkPattern = @"\[([^\]]+)\]\(([^)]+)\)";
             var matches = Regex.Matches(CurrentPerson.Description, markdownLinkPattern);
 
@@ -223,7 +194,6 @@ namespace AnimeCharacters.Pages
             var lowerUrl = url.ToLower();
             var lowerText = text.ToLower();
 
-            // Twitter/X
             if (lowerUrl.Contains("twitter.com") || lowerUrl.Contains("x.com") || lowerText.Contains("twitter"))
             {
                 return new SocialMediaLink
@@ -235,7 +205,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // Instagram
             if (lowerUrl.Contains("instagram.com") || lowerText.Contains("instagram"))
             {
                 return new SocialMediaLink
@@ -247,7 +216,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // YouTube
             if (lowerUrl.Contains("youtube.com") || lowerUrl.Contains("youtu.be") || lowerText.Contains("youtube"))
             {
                 return new SocialMediaLink
@@ -259,7 +227,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // TikTok
             if (lowerUrl.Contains("tiktok.com") || lowerText.Contains("tiktok"))
             {
                 return new SocialMediaLink
@@ -271,7 +238,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // Facebook
             if (lowerUrl.Contains("facebook.com") || lowerText.Contains("facebook"))
             {
                 return new SocialMediaLink
@@ -283,7 +249,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // Profile/Personal Website (catch-all for other profile links)
             if (lowerText.Contains("profile") || lowerText.Contains("website") || lowerText.Contains("official"))
             {
                 var domain = ExtractDomain(url);
@@ -296,7 +261,7 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            return null; // Don't include unrecognized links in social media section
+            return null;
         }
 
         private string ExtractDomain(string url)
@@ -318,8 +283,6 @@ namespace AnimeCharacters.Pages
                 return string.Empty;
 
             var content = CurrentPerson.Description;
-
-            // Remove social media links that will be shown separately
             var markdownLinkPattern = @"\[([^\]]+)\]\(([^)]+)\)";
             content = Regex.Replace(content, markdownLinkPattern, match =>
             {
@@ -329,13 +292,11 @@ namespace AnimeCharacters.Pages
                 return IsSocialMediaLink(text, url) ? string.Empty : match.Value;
             });
 
-            // Parse remaining markdown into HTML
-            var pipeline = new Markdig.MarkdownPipelineBuilder()
+            var pipeline = new MarkdownPipelineBuilder()
                                 .UseAdvancedExtensions()
                                 .Build();
-            var html = Markdig.Markdown.ToHtml(content, pipeline);
+            var html = Markdown.ToHtml(content, pipeline);
 
-            // Ensure links open in a new tab
             html = Regex.Replace(html, "<a href=\"([^\"]+)\"", "<a href=\"$1\" target=\"_blank\" rel=\"noopener noreferrer\"");
 
             return html.Trim();

@@ -1,0 +1,171 @@
+@page "/extensions/genshin-impact"
+@using AnimeCharacters.Extensions
+@using AnimeCharacters.Extensions.GenshinImpact
+@using AnimeCharacters.Models
+@inherits BasePage
+@inject IGenshinImpactCharacterRepository GenshinImpactCharacters
+@inject AniListClient.AniListClient AniListClient
+
+<div class="content">
+    <div class="row">
+        <div class="col text-center">
+            <h2>Genshin Impact</h2>
+            <div class="text-secondary">Video Games</div>
+        </div>
+    </div>
+
+    <br />
+
+    @if (IsLoading)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="control">
+                <MatProgressCircle Indeterminate="true" Size="MatProgressCircleSize.Medium" />
+            </div>
+        </div>
+    }
+    else if (!IsEnabled)
+    {
+        <div class="alert alert-info" role="alert">
+            Enable Genshin Impact in Profile Settings to include these characters in voice actor results.
+        </div>
+    }
+    else if (Characters.Any())
+    {
+        <div class="row">
+            <div class="col">
+                <input type="text" class="form-control" placeholder="Search Genshin characters" @bind="SearchFilter" @bind:event="oninput" />
+            </div>
+        </div>
+
+        <br />
+
+        <div class="item-grid">
+            @foreach (var character in FilteredCharacters)
+            {
+                <div class="item-container" @onclick="() => OpenVoiceActorAsync(character)">
+                    <div class="item">
+                        <div class="row">
+                            <div class="col">
+                                @if (!string.IsNullOrWhiteSpace(character.ImageUrl))
+                                {
+                                    <img src="@character.ImageUrl" alt="@character.Name" />
+                                }
+                                else
+                                {
+                                    <div class="tile-image-placeholder">@character.Name</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-md-center text-primary">@character.Name</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="text-md-center text-secondary">@GetJapaneseVoiceActorName(character)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            Genshin Impact character data could not be loaded.
+        </div>
+    }
+</div>
+
+@code {
+    public bool IsLoading { get; set; } = true;
+    public bool IsEnabled { get; set; } = true;
+    public string SearchFilter { get; set; }
+    public IReadOnlyList<GenshinImpactCharacter> Characters { get; set; } = new List<GenshinImpactCharacter>();
+
+    public IEnumerable<GenshinImpactCharacter> FilteredCharacters
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(SearchFilter))
+            {
+                return Characters;
+            }
+
+            return Characters.Where(character =>
+                character.Name.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                GetJapaneseVoiceActorName(character).Contains(SearchFilter, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var settings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+        IsEnabled = settings.IsExtensionEnabled(ExtensionCatalog.GetById(BuiltInExtensionIds.GenshinImpact));
+
+        if (IsEnabled)
+        {
+            Characters = await GenshinImpactCharacters.GetCharactersAsync();
+        }
+
+        IsLoading = false;
+
+        await base.OnInitializedAsync();
+    }
+
+    async Task OpenVoiceActorAsync(GenshinImpactCharacter character)
+    {
+        var voiceActor = character.GetJapaneseVoiceActors().FirstOrDefault(actor => actor.AniListStaffId.HasValue);
+
+        if (voiceActor?.AniListStaffId != null)
+        {
+            NavigationManager.NavigateTo($"/characters/{voiceActor.AniListStaffId.Value}");
+            return;
+        }
+
+        voiceActor = character.GetJapaneseVoiceActors().FirstOrDefault();
+        if (voiceActor == null)
+        {
+            return;
+        }
+
+        var staff = await FindStaffAsync(voiceActor);
+        if (staff != null)
+        {
+            NavigationManager.NavigateTo($"/characters/{staff.Id}");
+        }
+    }
+
+    async Task<AniListClient.Models.Staff> FindStaffAsync(GenshinImpactVoiceActor voiceActor)
+    {
+        var searches = new[] { voiceActor.NativeName, voiceActor.Name }
+            .Where(search => !string.IsNullOrWhiteSpace(search))
+            .Distinct()
+            .ToList();
+
+        foreach (var search in searches)
+        {
+            var staffMatches = await AniListClient.Staff.SearchStaffByName(search);
+            var exactMatch = staffMatches.FirstOrDefault(staff => GenshinImpactCreditMapper.Matches(staff.Name, voiceActor));
+
+            if (exactMatch != null)
+            {
+                return exactMatch;
+            }
+        }
+
+        return null;
+    }
+
+    static string GetJapaneseVoiceActorName(GenshinImpactCharacter character)
+    {
+        var voiceActor = character.GetJapaneseVoiceActors().FirstOrDefault();
+
+        return voiceActor == null
+            ? "Unknown Japanese VA"
+            : voiceActor.Name;
+    }
+}

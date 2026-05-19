@@ -1,4 +1,4 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -107,6 +107,64 @@ a, .btn-link {
     flex-grow: 1;
     width: 100%;
     text-align: center;
+}
+
+.tile-image-placeholder {
+    align-items: center;
+    aspect-ratio: 2 / 3;
+    background: #f0f3f5;
+    border-radius: 4px;
+    color: #5c6873;
+    display: flex;
+    font-size: 0.85rem;
+    justify-content: center;
+    min-height: 110px;
+    padding: 8px;
+    text-align: center;
+}
+
+.credit-section {
+    margin-bottom: 2rem;
+}
+
+.credit-section-heading {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.credit-section-heading h4 {
+    margin-bottom: 0;
+}
+
+.credit-extension-name {
+    color: #5c6873;
+    font-size: 0.95rem;
+}
+
+.extension-setting {
+    align-items: center;
+    border-bottom: 1px solid #e5e8eb;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    padding: 12px 0;
+}
+
+.extension-setting-copy {
+    min-width: 0;
+}
+
+.extension-description {
+    color: #5c6873;
+    font-size: 0.9rem;
+}
+
+.extension-setting-control input {
+    height: 20px;
+    width: 20px;
 }
 
 @media screen and (max-width: 600px) {

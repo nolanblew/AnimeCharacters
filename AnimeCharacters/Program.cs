@@ -1,4 +1,6 @@
 using Blazored.LocalStorage;
+using AnimeCharacters.Extensions;
+using AnimeCharacters.Extensions.GenshinImpact;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +27,10 @@ namespace AnimeCharacters
 
             builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
             builder.Services.AddScoped(_ => new AniListClient.AniListClient());
+            builder.Services.AddScoped<IGenshinImpactCharacterRepository, GenshinImpactCharacterRepository>();
+            builder.Services.AddScoped<IVoiceActorCreditProvider, KitsuLibraryCreditProvider>();
+            builder.Services.AddScoped<IVoiceActorCreditProvider, GenshinImpactCreditProvider>();
+            builder.Services.AddScoped<IVoiceActorCreditService, VoiceActorCreditService>();
 
             await builder.Build().RunAsync();
         }

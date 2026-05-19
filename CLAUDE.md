@@ -50,13 +50,20 @@ Debug builds prepend the version with `dev-`.
 1. Users authenticate with Kitsu.app to access their anime library
 2. Library data is cached in browser LocalStorage via `DatabaseProvider`
 3. Character/voice actor data is fetched from AniList GraphQL API
-4. Results are cross-referenced to find shared voice actors
+4. Enabled extensions contribute voice actor credits
+5. Results are cross-referenced to find shared voice actors
 
 #### Main Services
 - `DatabaseProvider` - LocalStorage wrapper with event notifications
 - `PageStateManager` - Navigation state management
+- `VoiceActorCreditService` - Aggregates enabled extension credits for voice actor pages
 - `KitsuClient` - REST API client for Kitsu.app
 - `AniListClient` - GraphQL client for AniList API
+
+#### Extensions
+- **Kitsu Library** is the core anime extension and remains enabled.
+- **Genshin Impact** is the first Video Games extension. Runtime reads checked-in JSON from `AnimeCharacters/wwwroot/data/extensions/genshin-impact-characters.json`.
+- Refresh Genshin data with `.\tools\Update-GenshinImpactData.ps1`; pass `-ResolveAniListIds` only when you intentionally want the slower AniList staff ID enrichment.
 
 #### Page Architecture
 - All pages inherit from `BasePage` which provides common dependencies

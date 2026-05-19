@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 270" role="img" aria-labelledby="title">
+  <title id="title">Genshin Impact</title>
+  <rect width="180" height="270" rx="8" fill="#f7f3e8"/>
+  <circle cx="90" cy="90" r="38" fill="#5f8fb5"/>
+  <path d="M90 34l9 33 33-9-24 24 24 24-33-9-9 33-9-33-33 9 24-24-24-24 33 9z" fill="#ffffff"/>
+  <path d="M42 178h96v10H42zm12 24h72v10H54zm21 24h30v10H75z" fill="#2f3c4f"/>
+</svg>

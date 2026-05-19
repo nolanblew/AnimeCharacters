@@ -1,4 +1,4 @@
-﻿@inherits Pages.BasePage
+@inherits Pages.BasePage
 @implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
 @implements EventAggregator.Blazor.IHandle<Events.PageStateManagerEvent>
 
@@ -29,6 +29,9 @@
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="/animes">Animes <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/extensions/genshin-impact">Games</a>
                 </li>
             </ul>
             <span class="navbar-text">
