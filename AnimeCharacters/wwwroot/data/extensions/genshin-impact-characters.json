@@ -92,7 +92,14 @@
         "Name": "Yusa Koji",
         "NativeName": "遊佐浩二",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Baizhu (Changsheng)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/baizhu.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Baizhu",
+    "JapaneseVoiceActors": [
       {
         "Name": "Shoji Yui",
         "NativeName": "庄子裕衣",
@@ -329,18 +336,25 @@
     ]
   },
   {
-    "Name": "Durin",
+    "Name": "Durin (Dragon)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/durin.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Durin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hisakawa Aya",
+        "NativeName": "久川 綾",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Durin (Human)",
     "ImageUrl": "images/extensions/genshin-impact/characters/durin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Durin",
     "JapaneseVoiceActors": [
       {
         "Name": "Kobayashi Chiaki",
         "NativeName": "小林 千晃",
-        "AniListStaffId": null
-      },
-      {
-        "Name": "Hisakawa Aya",
-        "NativeName": "久川 綾",
         "AniListStaffId": null
       }
     ]
@@ -402,7 +416,14 @@
         "Name": "Uchida Maaya",
         "NativeName": "内田真礼",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Fischl (Oz)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/fischl.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Fischl",
+    "JapaneseVoiceActors": [
       {
         "Name": "Masutani Yasunori",
         "NativeName": "増谷康紀",
@@ -515,7 +536,14 @@
         "Name": "Terashima Junta",
         "NativeName": "寺島惇太",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Ifa (Cacucu)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/ifa.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ifa",
+    "JapaneseVoiceActors": [
       {
         "Name": "Komatsu Shouhei",
         "NativeName": "小松昌平",
@@ -664,7 +692,14 @@
         "Name": "Sugiyama Noriaki",
         "NativeName": "杉山紀彰",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Kinich (Ajaw)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/kinich.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kinich",
+    "JapaneseVoiceActors": [
       {
         "Name": "Takeuchi Junko",
         "NativeName": "竹内順子",
@@ -1129,18 +1164,25 @@
     ]
   },
   {
-    "Name": "Traveler",
+    "Name": "Traveler (Female)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/traveler.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Traveler",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yuuki Aoi",
+        "NativeName": "悠木碧",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Traveler (Male)",
     "ImageUrl": "images/extensions/genshin-impact/characters/traveler.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Traveler",
     "JapaneseVoiceActors": [
       {
         "Name": "Horie Shun",
         "NativeName": "堀江瞬",
-        "AniListStaffId": null
-      },
-      {
-        "Name": "Yuuki Aoi",
-        "NativeName": "悠木碧",
         "AniListStaffId": null
       }
     ]
@@ -1194,7 +1236,7 @@
     ]
   },
   {
-    "Name": "Wonderland Manekin",
+    "Name": "Wonderland Manekin - Manekin (Voice A)",
     "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
     "JapaneseVoiceActors": [
@@ -1202,27 +1244,62 @@
         "Name": "Matsuoka Yoshitsugu",
         "NativeName": "松岡禎丞",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Wonderland Manekin - Manekin (Voice B)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
+    "JapaneseVoiceActors": [
       {
         "Name": "Uchida Yuma",
         "NativeName": "内田雄馬",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Wonderland Manekin - Manekin (Voice C)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
+    "JapaneseVoiceActors": [
       {
         "Name": "Midorikawa Hikaru",
         "NativeName": "緑川光",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Wonderland Manekin - Manekina (Voice A)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
+    "JapaneseVoiceActors": [
       {
         "Name": "Minase Inori",
         "NativeName": "水瀬いのり",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Wonderland Manekin - Manekina (Voice B)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
+    "JapaneseVoiceActors": [
       {
         "Name": "Kanemoto Hisako",
         "NativeName": "金元寿子",
         "AniListStaffId": null
-      },
+      }
+    ]
+  },
+  {
+    "Name": "Wonderland Manekin - Manekina (Voice C)",
+    "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
+    "JapaneseVoiceActors": [
       {
         "Name": "Horie Yui",
         "NativeName": "堀江由衣",

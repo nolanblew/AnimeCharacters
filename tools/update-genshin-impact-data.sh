@@ -172,6 +172,57 @@ def voice_actor_from_link(link_markup):
     }
 
 
+def voice_actor_variant_label(before_link_markup, after_link_markup):
+    before_text = fragment_to_text(before_link_markup)
+    if before_text:
+        label = before_text.strip().rstrip(":").strip()
+        if label:
+            return label
+
+    after_text = fragment_to_text(after_link_markup)
+    if after_text:
+        match = re.match(r"^\((?P<label>[^()]+)\)", after_text.strip())
+        if match:
+            return match.group("label").strip()
+
+    return None
+
+
+def voice_actor_entries(cell_markup):
+    without_references = re.sub(r"<sup[\s\S]*?</sup>", "", cell_markup)
+    segments = re.split(r"(?i)<br\s*/?>", without_references)
+    voice_actors = []
+
+    for segment in segments:
+        for voice_actor_link in re.finditer(r"<a [^>]*>[\s\S]*?</a>", segment):
+            voice_actor = voice_actor_from_link(voice_actor_link.group(0))
+            if not voice_actor or not voice_actor.get("Name"):
+                continue
+
+            voice_actor["CharacterVariantLabel"] = voice_actor_variant_label(
+                segment[:voice_actor_link.start()],
+                segment[voice_actor_link.end():])
+            voice_actors.append(voice_actor)
+
+    return voice_actors
+
+
+def character_display_name(character_name, variant_label, voice_actor_count):
+    if voice_actor_count <= 1 or not variant_label:
+        return character_name
+
+    if character_name == "Traveler":
+        if variant_label == "Aether":
+            return "Traveler (Male)"
+        if variant_label == "Lumine":
+            return "Traveler (Female)"
+
+    if "(" in variant_label or ")" in variant_label:
+        return f"{character_name} - {variant_label}"
+
+    return f"{character_name} ({variant_label})"
+
+
 def character_icon_urls():
     url = "https://genshin-impact.fandom.com/api.php?action=parse&page=Character/List&prop=text&format=json&formatversion=2"
     response = request_json(url, status="Fetching Character/List icon data from Fandom")
@@ -273,13 +324,7 @@ for index, row in enumerate(rows, start=1):
         continue
 
     character_name = html.unescape(character_link.group("title"))
-    japanese_cell = re.sub(r"<sup[\s\S]*?</sup>", "", cells[3])
-    voice_actors = []
-
-    for voice_actor_link in re.findall(r"<a [^>]*>[\s\S]*?</a>", japanese_cell):
-        voice_actor = voice_actor_from_link(voice_actor_link)
-        if voice_actor and voice_actor.get("Name"):
-            voice_actors.append(voice_actor)
+    voice_actors = voice_actor_entries(cells[3])
 
     if not voice_actors:
         continue
@@ -294,12 +339,14 @@ for index, row in enumerate(rows, start=1):
             f"Downloading {character_name} icon")
         local_image_url = f"{args.image_url_prefix}/characters/{file_name}"
 
-    characters.append({
-        "Name": character_name,
-        "ImageUrl": local_image_url,
-        "WikiUrl": f"https://genshin-impact.fandom.com{character_link.group('href')}",
-        "JapaneseVoiceActors": voice_actors,
-    })
+    for voice_actor in voice_actors:
+        variant_label = voice_actor.pop("CharacterVariantLabel", None)
+        characters.append({
+            "Name": character_display_name(character_name, variant_label, len(voice_actors)),
+            "ImageUrl": local_image_url,
+            "WikiUrl": f"https://genshin-impact.fandom.com{character_link.group('href')}",
+            "JapaneseVoiceActors": [voice_actor],
+        })
 
 if args.resolve_anilist_ids:
     cache = {}

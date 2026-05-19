@@ -193,6 +193,85 @@ function Convert-JapaneseVoiceActorLink {
     }
 }
 
+function Get-VoiceActorVariantLabel {
+    param(
+        [string] $BeforeLinkHtml,
+        [string] $AfterLinkHtml
+    )
+
+    $beforeText = Convert-HtmlFragmentToText $BeforeLinkHtml
+    if (![string]::IsNullOrWhiteSpace($beforeText)) {
+        $label = $beforeText.Trim().TrimEnd(":").Trim()
+        if (![string]::IsNullOrWhiteSpace($label)) {
+            return $label
+        }
+    }
+
+    $afterText = Convert-HtmlFragmentToText $AfterLinkHtml
+    if (![string]::IsNullOrWhiteSpace($afterText)) {
+        $match = [regex]::Match($afterText.Trim(), "^\((?<label>[^()]+)\)")
+        if ($match.Success) {
+            return $match.Groups["label"].Value.Trim()
+        }
+    }
+
+    return $null
+}
+
+function Convert-JapaneseVoiceActorEntries {
+    param([string] $CellHtml)
+
+    $withoutReferences = [regex]::Replace($CellHtml, "<sup[\s\S]*?</sup>", "")
+    $segments = [regex]::Split($withoutReferences, "(?i)<br\s*/?>")
+    $voiceActors = New-Object System.Collections.Generic.List[object]
+
+    foreach ($segment in $segments) {
+        $voiceActorLinks = [regex]::Matches($segment, "<a [^>]*>[\s\S]*?</a>")
+
+        foreach ($voiceActorLink in $voiceActorLinks) {
+            $voiceActor = Convert-JapaneseVoiceActorLink $voiceActorLink.Value
+            if ($null -eq $voiceActor -or [string]::IsNullOrWhiteSpace($voiceActor.Name)) {
+                continue
+            }
+
+            $beforeLinkHtml = $segment.Substring(0, $voiceActorLink.Index)
+            $afterLinkHtml = $segment.Substring($voiceActorLink.Index + $voiceActorLink.Length)
+            $voiceActor.CharacterVariantLabel = Get-VoiceActorVariantLabel $beforeLinkHtml $afterLinkHtml
+            [void] $voiceActors.Add($voiceActor)
+        }
+    }
+
+    return $voiceActors
+}
+
+function Get-CharacterDisplayName {
+    param(
+        [string] $CharacterName,
+        [string] $VariantLabel,
+        [int] $VoiceActorCount
+    )
+
+    if ($VoiceActorCount -le 1 -or [string]::IsNullOrWhiteSpace($VariantLabel)) {
+        return $CharacterName
+    }
+
+    if ($CharacterName -eq "Traveler") {
+        if ($VariantLabel -eq "Aether") {
+            return "Traveler (Male)"
+        }
+
+        if ($VariantLabel -eq "Lumine") {
+            return "Traveler (Female)"
+        }
+    }
+
+    if ($VariantLabel.Contains("(") -or $VariantLabel.Contains(")")) {
+        return "$CharacterName - $VariantLabel"
+    }
+
+    return "$CharacterName ($VariantLabel)"
+}
+
 function Get-CharacterIconUrls {
     $characterListUri = "https://genshin-impact.fandom.com/api.php?action=parse&page=Character/List&prop=text&format=json&formatversion=2"
     $characterListResponse = Invoke-JsonApiRequest -Uri $characterListUri -Status "Fetching Character/List icon data from Fandom"
@@ -311,16 +390,7 @@ foreach ($row in $rows) {
     }
 
     $characterName = [System.Net.WebUtility]::HtmlDecode($characterLink.Groups["title"].Value)
-    $japaneseCell = [regex]::Replace($cells[3].Value, "<sup[\s\S]*?</sup>", "")
-    $voiceActorLinks = [regex]::Matches($japaneseCell, "<a [^>]*>[\s\S]*?</a>")
-    $japaneseVoiceActors = New-Object System.Collections.Generic.List[object]
-
-    foreach ($voiceActorLink in $voiceActorLinks) {
-        $voiceActor = Convert-JapaneseVoiceActorLink $voiceActorLink.Value
-        if ($null -ne $voiceActor -and -not [string]::IsNullOrWhiteSpace($voiceActor.Name)) {
-            [void] $japaneseVoiceActors.Add($voiceActor)
-        }
-    }
+    $japaneseVoiceActors = Convert-JapaneseVoiceActorEntries $cells[3].Value
 
     if ($japaneseVoiceActors.Count -eq 0) {
         continue
@@ -335,12 +405,19 @@ foreach ($row in $rows) {
         $localImageUrl = "$ImageUrlPrefix/characters/$assetFileName"
     }
 
-    [void] $characters.Add([ordered]@{
-        Name = $characterName
-        ImageUrl = $localImageUrl
-        WikiUrl = "https://genshin-impact.fandom.com$($characterLink.Groups["href"].Value)"
-        JapaneseVoiceActors = $japaneseVoiceActors
-    })
+    foreach ($voiceActor in $japaneseVoiceActors) {
+        $variantLabel = $voiceActor.CharacterVariantLabel
+        if ($voiceActor.Contains("CharacterVariantLabel")) {
+            $voiceActor.Remove("CharacterVariantLabel")
+        }
+
+        [void] $characters.Add([ordered]@{
+            Name = Get-CharacterDisplayName $characterName $variantLabel $japaneseVoiceActors.Count
+            ImageUrl = $localImageUrl
+            WikiUrl = "https://genshin-impact.fandom.com$($characterLink.Groups["href"].Value)"
+            JapaneseVoiceActors = @($voiceActor)
+        })
+    }
 }
 
 if ($ResolveAniListIds) {

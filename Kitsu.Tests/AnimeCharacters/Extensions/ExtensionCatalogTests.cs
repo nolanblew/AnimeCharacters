@@ -9,13 +9,24 @@ namespace Kitsu.Tests.AnimeCharacters.Extensions
     public class ExtensionCatalogTests
     {
         [TestMethod]
-        public void GetEnabledExtensions_WhenSettingsAreEmpty_KeepsCoreKitsuAndGenshinEnabled()
+        public void GetEnabledExtensions_WhenSettingsAreEmpty_KeepsCoreKitsuAndGenshinDisabled()
         {
             var settings = new UserSettings();
 
             var enabledExtensions = ExtensionCatalog.GetEnabledExtensions(settings).ToList();
 
             CollectionAssert.Contains(enabledExtensions.Select(extension => extension.Id).ToList(), BuiltInExtensionIds.KitsuLibrary);
+            CollectionAssert.DoesNotContain(enabledExtensions.Select(extension => extension.Id).ToList(), BuiltInExtensionIds.GenshinImpact);
+        }
+
+        [TestMethod]
+        public void GetEnabledExtensions_WhenGenshinIsEnabled_IncludesGenshin()
+        {
+            var settings = new UserSettings();
+            settings.SetExtensionEnabled(BuiltInExtensionIds.GenshinImpact, true);
+
+            var enabledExtensions = ExtensionCatalog.GetEnabledExtensions(settings).ToList();
+
             CollectionAssert.Contains(enabledExtensions.Select(extension => extension.Id).ToList(), BuiltInExtensionIds.GenshinImpact);
         }
 

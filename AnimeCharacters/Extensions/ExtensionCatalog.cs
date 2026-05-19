@@ -28,7 +28,7 @@ namespace AnimeCharacters.Extensions
                 Description = "Add playable Genshin Impact characters to shared voice actor results.",
                 CoverImageUrl = "images/extensions/genshin-impact/cover.png",
                 IsCore = false,
-                EnabledByDefault = true
+                EnabledByDefault = false
             }
         };
 
