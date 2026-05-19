@@ -107,6 +107,8 @@ def download_image(url, output_path, status):
 
     if not url:
         return
+    # Existing assets are reused by default, but missing assets are always downloaded
+    # so newly added characters get images without requiring --refresh-images.
     if os.path.exists(output_path) and not args.refresh_images:
         return
 

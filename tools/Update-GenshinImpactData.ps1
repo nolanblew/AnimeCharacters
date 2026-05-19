@@ -95,6 +95,8 @@ function Save-RemoteImage {
         return
     }
 
+    # Existing assets are reused by default, but missing assets are always downloaded
+    # so newly added characters get images without requiring -RefreshImages.
     if ((Test-Path -LiteralPath $OutputPath) -and !$RefreshImages) {
         return
     }

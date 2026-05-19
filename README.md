@@ -54,4 +54,4 @@ On macOS/Linux, use the bash wrapper:
 ./tools/update-genshin-impact-data.sh
 ```
 
-Both scripts rate-limit API calls. Pass `-ResolveAniListIds` in PowerShell or `--resolve-anilist-ids` in bash only when intentionally enriching staff IDs through the slower AniList lookup path.
+Both scripts rate-limit API calls. Existing cached artwork is reused by default, but missing artwork for new characters is downloaded automatically; use `-RefreshImages` in PowerShell or `--refresh-images` in bash only when you intentionally want to replace already-cached images. Pass `-ResolveAniListIds` in PowerShell or `--resolve-anilist-ids` in bash only when intentionally enriching staff IDs through the slower AniList lookup path.
