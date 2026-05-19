@@ -3,6 +3,7 @@ using AnimeCharacters.Helpers;
 using AnimeCharacters.Models;
 using Kitsu.Models;
 using Microsoft.AspNetCore.Components;
+using ReferenceApis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace AnimeCharacters.Pages
     public partial class AnimeDetails
     {
         [Inject]
-        AniListClient.AniListClient AnilistClient { get; set; }
+        IReferenceAnimeService ReferenceAnimeService { get; set; }
 
         public User CurrentUser { get; set; }
 
@@ -29,8 +30,6 @@ namespace AnimeCharacters.Pages
         public string CharacterLoadError { get; set; }
 
         public UserSettings UserSettings { get; set; } = new UserSettings();
-
-        bool _usingResolvedAniListId;
 
         [Parameter]
         public string Id { get; set; }
@@ -63,13 +62,10 @@ namespace AnimeCharacters.Pages
 
             CurrentUser = await DatabaseProvider.GetUserAsync();
             UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+            var libraries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
+            var currentLibraryEntry = libraries.FirstOrDefault(library => library.Anime?.KitsuId == Id);
 
-            if (CurrentAnime == null)
-            {
-                var libraries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
-                var currentLibraryEntry = libraries.FirstOrDefault(library => library.Anime?.KitsuId == Id);
-                CurrentAnime = currentLibraryEntry?.Anime;
-            }
+            CurrentAnime = currentLibraryEntry?.Anime ?? CurrentAnime;
 
             if (CurrentAnime == null)
             {
@@ -81,23 +77,13 @@ namespace AnimeCharacters.Pages
             CharacterLoadError = null;
             StateHasChanged();
 
-            if (!await _EnsureAniListId())
-            {
-                CharacterLoadError = "AniList has not linked this anime yet, so characters cannot be loaded.";
-                IsLoadingCharacters = false;
-                _CachePageState();
-                StateHasChanged();
-                return;
-            }
-
             try
             {
-                await _LoadCharacters();
+                await _LoadCharacters(libraries);
             }
             catch (Exception ex)
             {
-                await _ForgetResolvedAniListIdAsync();
-                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+                CharacterLoadError = $"Unable to load characters from the reference APIs. {ex.Message}";
             }
             finally
             {
@@ -114,19 +100,21 @@ namespace AnimeCharacters.Pages
 
             if (voiceActor == null) { return; }
 
-            NavigationManager.NavigateTo($"/characters/{voiceActor.Id}");
+            NavigationManager.NavigateTo($"/characters/{voiceActor.ProviderName}/{voiceActor.Id}");
         }
 
-        async Task _LoadCharacters()
+        async Task _LoadCharacters(IList<LibraryEntry> libraries)
         {
-            var media = await AnilistClient.Characters.GetMediaWithCharactersById(int.Parse(CurrentAnime.AnilistId));
+            var result = await ReferenceAnimeService.GetMediaWithCharactersAsync(CurrentAnime, _GetSearchTitles());
+            var media = result.Media;
 
             if (media == null)
             {
-                await _ForgetResolvedAniListIdAsync();
-                CharacterLoadError = "AniList did not return character data for this anime.";
+                CharacterLoadError = "The reference APIs did not return character data for this anime.";
                 return;
             }
+
+            await _PersistResolvedReferenceId(result, libraries);
 
             var characters = new List<AniListClient.Models.Character>();
 
@@ -151,62 +139,47 @@ namespace AnimeCharacters.Pages
                 .ToList();
         }
 
-        async Task<bool> _EnsureAniListId()
+        async Task _PersistResolvedReferenceId(ReferenceMediaResult result, IList<LibraryEntry> libraries)
         {
-            var resolvedAniListId = await DatabaseProvider.GetResolvedAniListIdAsync(CurrentAnime.KitsuId);
-
-            if (!string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
-            {
-                _usingResolvedAniListId = CurrentAnime.AnilistId == resolvedAniListId;
-                return true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(resolvedAniListId))
-            {
-                CurrentAnime.AnilistId = resolvedAniListId;
-                _usingResolvedAniListId = true;
-                return true;
-            }
-
-            var searchTitles = new[]
-            {
-                CurrentAnime.EnglishTitle,
-                CurrentAnime.RomanjiTitle,
-                CurrentAnime.Title,
-                _GetSearchTitleFromSlug(CurrentAnime.KitsuSlug)
-            }
-            .Where(title => !string.IsNullOrWhiteSpace(title))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-            foreach (var title in searchTitles)
-            {
-                var media = await AnilistClient.Characters.SearchMediaByTitle(title);
-
-                if (media == null || !_IsTitleMatch(media.Title, searchTitles))
-                {
-                    continue;
-                }
-
-                CurrentAnime.AnilistId = media.Id.ToString();
-                _usingResolvedAniListId = true;
-                await DatabaseProvider.SetResolvedAniListIdAsync(CurrentAnime.KitsuId, CurrentAnime.AnilistId);
-                return true;
-            }
-
-            return false;
-        }
-
-        async Task _ForgetResolvedAniListIdAsync()
-        {
-            if (!_usingResolvedAniListId || CurrentAnime == null)
+            if (result?.AnimeKey == null)
             {
                 return;
             }
 
-            await DatabaseProvider.RemoveResolvedAniListIdAsync(CurrentAnime.KitsuId);
-            CurrentAnime.AnilistId = null;
-            _usingResolvedAniListId = false;
+            var hasChange = false;
+
+            if (ReferenceAnimeKey.MatchesProvider(result.AnimeKey.ProviderName, ReferenceProviderNames.AniList)
+                && string.IsNullOrWhiteSpace(CurrentAnime.AnilistId))
+            {
+                CurrentAnime.AnilistId = result.AnimeKey.Id;
+                hasChange = true;
+            }
+
+            if (ReferenceAnimeKey.MatchesProvider(result.AnimeKey.ProviderName, ReferenceProviderNames.Jikan)
+                && string.IsNullOrWhiteSpace(CurrentAnime.MyAnimeListId))
+            {
+                CurrentAnime.MyAnimeListId = result.AnimeKey.Id;
+                hasChange = true;
+            }
+
+            if (hasChange)
+            {
+                await DatabaseProvider.SetLibrariesAsync(libraries);
+            }
+        }
+
+        List<string> _GetSearchTitles()
+        {
+            return new[]
+            {
+                CurrentAnime?.EnglishTitle,
+                CurrentAnime?.RomanjiTitle,
+                CurrentAnime?.Title,
+                _GetSearchTitleFromSlug(CurrentAnime?.KitsuSlug)
+            }
+            .Where(title => !string.IsNullOrWhiteSpace(title))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
         }
 
         bool _TryRestorePageState()
@@ -223,7 +196,6 @@ namespace AnimeCharacters.Pages
             CharactersList = state.CharactersList;
             CharacterLoadError = state.CharacterLoadError;
             UserSettings = state.UserSettings;
-            _usingResolvedAniListId = state.UsingResolvedAniListId;
             IsLoadingCharacters = false;
             return true;
         }
@@ -238,8 +210,7 @@ namespace AnimeCharacters.Pages
                 Language = Language,
                 CharactersList = CharactersList,
                 CharacterLoadError = CharacterLoadError,
-                UserSettings = UserSettings,
-                UsingResolvedAniListId = _usingResolvedAniListId
+                UserSettings = UserSettings
             });
         }
 
@@ -252,7 +223,6 @@ namespace AnimeCharacters.Pages
             public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
             public string CharacterLoadError { get; set; }
             public UserSettings UserSettings { get; set; } = new();
-            public bool UsingResolvedAniListId { get; set; }
         }
 
         static string _GetSearchTitleFromSlug(string slug)
@@ -263,40 +233,6 @@ namespace AnimeCharacters.Pages
             }
 
             return Regex.Replace(slug.Replace('-', ' '), @"\s+", " ").Trim();
-        }
-
-        static bool _IsTitleMatch(AniListClient.Models.Titles mediaTitle, IEnumerable<string> searchTitles)
-        {
-            if (mediaTitle == null)
-            {
-                return false;
-            }
-
-            var normalizedSearchTitles = searchTitles
-                .Select(_NormalizeTitle)
-                .ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            var mediaTitles = new[]
-            {
-                mediaTitle.English,
-                mediaTitle.Romaji,
-                mediaTitle.UserPreferred,
-                mediaTitle.Native
-            };
-
-            return mediaTitles
-                .Select(_NormalizeTitle)
-                .Any(title => !string.IsNullOrWhiteSpace(title) && normalizedSearchTitles.Contains(title));
-        }
-
-        static string _NormalizeTitle(string title)
-        {
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                return null;
-            }
-
-            return Regex.Replace(title, @"[^\p{L}\p{N}]+", " ").Trim();
         }
 
         public string GetAnimeTitle()

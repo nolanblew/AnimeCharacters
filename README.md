@@ -25,6 +25,10 @@ The application generates a version at build time using the format `yyyy-MM-bbbb
 The build number is zero-padded to four digits.
 Debug builds are prefixed with `dev-`.
 
+## Reference Data Providers
+
+Kitsu remains the source for user library data. Character, anime reference, and seiyuu data is loaded through the `ReferenceApis` project so providers can be swapped or combined without changing page logic. Jikan/MyAnimeList is currently registered first because it exposes character and Japanese voice actor data by MAL anime id, while AniList remains available as a fallback provider.
+
 # Contributing
 Contributions would be greatly appreciated. Feel free to create issues as well as forking the repo and creating PRs.
 If you wish to make some major contributions please create an issue and we can evauate making you a contributer.

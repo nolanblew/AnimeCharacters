@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using ReferenceApis;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -25,6 +26,9 @@ namespace AnimeCharacters
 
             builder.Services.AddScoped<IDatabaseProvider, DatabaseProvider>();
             builder.Services.AddScoped(_ => new AniListClient.AniListClient());
+            builder.Services.AddScoped<IReferenceAnimeProvider, JikanReferenceAnimeProvider>();
+            builder.Services.AddScoped<IReferenceAnimeProvider, AniListReferenceAnimeProvider>();
+            builder.Services.AddScoped<IReferenceAnimeService, ReferenceAnimeService>();
 
             await builder.Build().RunAsync();
         }
