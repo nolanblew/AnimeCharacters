@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 namespace AniListClient.Queries
 {
     internal static class StaffQueries
     {
-
         internal const string GET_STAFF_BY_ID_NAME = "getStaffByAnime";
+        internal const string SEARCH_STAFF_BY_NAME_NAME = "searchStaffByName";
 
         internal const string GET_STAFF_BY_ID_QUERY = @"
 query getStaffByAnime($staff_id: Int, $page:Int=1) {
@@ -72,6 +72,29 @@ query getStaffByAnime($staff_id: Int, $page:Int=1) {
     }
   }
 }";
+
+        internal const string SEARCH_STAFF_BY_NAME_QUERY = @"
+query searchStaffByName($search: String) {
+  Page(page: 1, perPage: 5) {
+    staff(search: $search, sort: SEARCH_MATCH) {
+      id
+      name {
+        first
+        middle
+        last
+        full
+        native
+        userPreferred
+      }
+      languageV2
+      image {
+        large
+        medium
+      }
+      siteUrl
+    }
+  }
+}";
     }
 
     internal class StaffQueryVariable : IHasPage
@@ -88,5 +111,18 @@ query getStaffByAnime($staff_id: Int, $page:Int=1) {
 
         [JsonProperty("staff_id")]
         public int StaffId { get; set; }
+    }
+
+    internal class StaffSearchVariable
+    {
+        internal StaffSearchVariable() { }
+
+        internal StaffSearchVariable(string search)
+        {
+            Search = search;
+        }
+
+        [JsonProperty("search")]
+        public string Search { get; set; }
     }
 }

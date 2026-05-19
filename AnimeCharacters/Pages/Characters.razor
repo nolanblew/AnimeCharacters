@@ -1,23 +1,19 @@
-﻿@page "/characters/{id}"
+@page "/characters/{id}"
 @page "/characters/{provider}/{id}"
 @inherits BasePage
 
 <div class="content">
-    <!-- Voice Actor Profile Section -->
     <div class="row mb-4">
-        <!-- VA Photo Column -->
         <div class="col-md-4 col-lg-3 text-center">
             <div class="va-photo-container">
                 <img src="@CurrentPerson?.Images?.GetOptimalImage()" class="va-photo" />
             </div>
         </div>
-        
-        <!-- VA Details Column -->
+
         <div class="col-md-8 col-lg-9">
             <div class="va-details">
                 <h2 class="va-name">@(CurrentPerson?.Name?.Full ?? "Loading...")</h2>
-                
-                <!-- Desktop Details - Always Visible -->
+
                 @{
                     var parsedBio = ParseBiographyToHtml();
                     var socialLinks = ExtractSocialMediaLinks();
@@ -70,8 +66,7 @@
                         }
                     }
                 </div>
-                
-                <!-- Mobile Details - Collapsible -->
+
                 <div class="d-block d-md-none va-info-mobile">
                     @if (CurrentPerson != null && HasVADetails())
                     {
@@ -87,7 +82,7 @@
                                 }
                             </button>
                         </div>
-                        
+
                         <div class="va-mobile-details @(_showMobileDetails ? "expanded" : "collapsed")">
                             <div class="va-detail-grid">
                                 @if (CurrentPerson.Age.HasValue)
@@ -138,7 +133,8 @@
             </div>
         </div>
     </div>
-    <h3>Characters from My Anime</h3>
+
+    <h3>Voice Acting Credits</h3>
     <hr />
 
     @if (IsLoadingCharacters)
@@ -155,34 +151,33 @@
             @CharacterLoadError
         </div>
     }
-    else if (MyCharactersList?.Any() == true)
+    else if (CreditSections?.Any(section => section.Credits?.Any() == true) == true)
     {
-        <div class="item-grid">
-            @foreach (var characterAnime in MyCharactersList)
-            {
-                <div class="item-container">
-                    <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+        @foreach (var creditSection in CreditSections)
+        {
+            <div class="credit-section">
+                <div class="credit-section-heading">
+                    <h4>@creditSection.CategoryName</h4>
+                    @if (creditSection.ExtensionName != "Kitsu Library")
+                    {
+                        <span class="credit-extension-name">@creditSection.ExtensionName</span>
+                    }
                 </div>
-            }
-        </div>
-    }
-
-    @if (!IsLoadingCharacters && string.IsNullOrWhiteSpace(CharacterLoadError) && NotMyCharactersList?.Any() == true)
-    {
-        <div class="item-grid">
-            @foreach (var characterAnime in NotMyCharactersList)
-            {
-                <div class="item-container">
-                    <AnimeCharacters.Components.VoiceActorTile CharacterAnime="characterAnime" OnAnimeClicked="() => _OnAnimeClicked(characterAnime)" OnCharacterClicked="() => _OnCharacterClicked(characterAnime)" />
+                <div class="item-grid">
+                    @foreach (var credit in creditSection.Credits)
+                    {
+                        <div class="item-container">
+                            <AnimeCharacters.Components.VoiceActorTile Credit="credit" OnMediaClicked="() => _OnMediaClicked(credit)" OnCharacterClicked="() => _OnCharacterClicked(credit)" />
+                        </div>
+                    }
                 </div>
-            }
-        </div>
+            </div>
+        }
     }
-
-    @if (!IsLoadingCharacters && string.IsNullOrWhiteSpace(CharacterLoadError) && MyCharactersList?.Any() != true && NotMyCharactersList?.Any() != true)
+    else
     {
         <div class="alert alert-info" role="alert">
-            No matching characters were found in your anime.
+            No matching characters were found in your enabled extensions.
         </div>
     }
 </div>

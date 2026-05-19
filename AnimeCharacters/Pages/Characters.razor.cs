@@ -1,15 +1,14 @@
-﻿using AnimeCharacters.Models;
+using AnimeCharacters.Extensions;
+using AnimeCharacters.Models;
 using Kitsu.Models;
+using Markdig;
 using Microsoft.AspNetCore.Components;
 using ReferenceApis;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using System.Text;
 using System;
-using Markdig;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace AnimeCharacters.Pages
 {
@@ -18,18 +17,21 @@ namespace AnimeCharacters.Pages
         [Inject]
         IReferenceAnimeService ReferenceAnimeService { get; set; }
 
+        [Inject]
+        IVoiceActorCreditService _voiceActorCreditService { get; set; }
+
         public User CurrentUser { get; set; }
 
         public AniListClient.Models.Staff CurrentPerson { get; set; }
 
-        public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
-        public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
+        public List<VoiceActorCreditSection> CreditSections { get; set; } = new();
 
         public bool IsLoadingCharacters { get; set; } = true;
 
         public string CharacterLoadError { get; set; }
 
         private bool _showMobileDetails = false;
+        private string _settingsFingerprint;
 
         [Parameter]
         public string Id { get; set; }
@@ -49,7 +51,7 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
-            if (_TryRestorePageState())
+            if (await _TryRestorePageStateAsync())
             {
                 StateHasChanged();
                 return;
@@ -88,7 +90,7 @@ namespace AnimeCharacters.Pages
             }
             catch (Exception ex)
             {
-                CharacterLoadError = $"Unable to load characters from the reference APIs. {ex.Message}";
+                CharacterLoadError = $"Unable to load voice acting credits. {ex.Message}";
             }
             finally
             {
@@ -99,74 +101,50 @@ namespace AnimeCharacters.Pages
             StateHasChanged();
         }
 
-        protected void _OnAnimeClicked(CharacterAnimeModel model)
+        protected void _OnMediaClicked(VoiceActorCreditModel model)
         {
             if (model == null) { return; }
 
-            NavigationManager.NavigateTo($"/animes/{model.KitsuId}");
+            if (!string.IsNullOrWhiteSpace(model.MediaRoute))
+            {
+                NavigationManager.NavigateTo(model.MediaRoute);
+            }
         }
 
-        protected void _OnCharacterClicked(CharacterAnimeModel model)
+        protected void _OnCharacterClicked(VoiceActorCreditModel model)
         {
+            if (model == null) { return; }
+
+            if (!string.IsNullOrWhiteSpace(model.CharacterRoute))
+            {
+                NavigationManager.NavigateTo(model.CharacterRoute);
+            }
         }
 
         async Task _LoadCharacters()
         {
-            // Key by reference API anime id -> list of characters this VA voiced in that anime
-            var vaRoles = new Dictionary<string, List<AniListClient.Models.Character>>();
-
-            foreach (var character in (CurrentPerson.Characters ?? new List<AniListClient.Models.Character>()).Where(role => role.Media != null))
-            {
-                foreach (var mediaItem in character.Media)
-                {
-                    var animeKey = new ReferenceAnimeKey(mediaItem.ProviderName, mediaItem.Id.ToString()).CacheKey;
-
-                    if (!vaRoles.TryGetValue(animeKey, out var list))
-                    {
-                        list = new List<AniListClient.Models.Character>();
-                        vaRoles[animeKey] = list;
-                    }
-
-                    // Preserve order of characters as returned from the API
-                    list.Add(character);
-                }
-            }
-
-            var libraryEntries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
-
-            MyCharactersList =
-                libraryEntries.Where(libraryEntry => ReferenceAnimeService.GetKnownAnimeKeys(libraryEntry.Anime)
-                                                                           .Any(key => vaRoles.ContainsKey(key.CacheKey)))
-                              .SelectMany(libraryEntry =>
-                              {
-                                  var characters = ReferenceAnimeService.GetKnownAnimeKeys(libraryEntry.Anime)
-                                                                        .Where(key => vaRoles.ContainsKey(key.CacheKey))
-                                                                        .SelectMany(key => vaRoles[key.CacheKey]);
-                                  return characters.Select(character => new CharacterAnimeModel
-                                  {
-                                      KitsuId = libraryEntry.Anime.KitsuId,
-                                      AnimeImageUrl = libraryEntry.Anime.PosterImageUrl,
-                                      LastProgressedAt = libraryEntry.ProgressedAt,
-                                      VoiceActingRole = character,
-                                  });
-                              })
-                              .OrderByDescending(item => item.LastProgressedAt ?? System.DateTimeOffset.MinValue)
-                              .ToList();
-
+            var settings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+            _settingsFingerprint = CreateSettingsFingerprint(settings);
+            CreditSections = (await _voiceActorCreditService.GetCreditSectionsAsync(CurrentPerson)).ToList();
         }
 
-        bool _TryRestorePageState()
+        async Task<bool> _TryRestorePageStateAsync()
         {
+            var settings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+            var settingsFingerprint = CreateSettingsFingerprint(settings);
+
             if (!PageStateManager.TryGetPageState<CharactersPageState>(NavigationManager.Uri, out var state)
-                || state.Id != Id)
+                || state.Id != Id
+                || !string.Equals(state.Provider, Provider, StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(state.SettingsFingerprint, settingsFingerprint, StringComparison.Ordinal))
             {
                 return false;
             }
 
             CurrentUser = state.CurrentUser;
             CurrentPerson = state.CurrentPerson;
-            MyCharactersList = state.MyCharactersList;
-            NotMyCharactersList = state.NotMyCharactersList;
+            CreditSections = state.CreditSections ?? new List<VoiceActorCreditSection>();
+            _settingsFingerprint = settingsFingerprint;
             CharacterLoadError = state.CharacterLoadError;
             IsLoadingCharacters = false;
             return true;
@@ -177,10 +155,11 @@ namespace AnimeCharacters.Pages
             PageStateManager.SetPageState(NavigationManager.Uri, new CharactersPageState
             {
                 Id = Id,
+                Provider = Provider,
+                SettingsFingerprint = _settingsFingerprint,
                 CurrentUser = CurrentUser,
                 CurrentPerson = CurrentPerson,
-                MyCharactersList = MyCharactersList,
-                NotMyCharactersList = NotMyCharactersList,
+                CreditSections = CreditSections,
                 CharacterLoadError = CharacterLoadError
             });
         }
@@ -188,11 +167,23 @@ namespace AnimeCharacters.Pages
         class CharactersPageState
         {
             public string Id { get; set; }
+            public string Provider { get; set; }
+            public string SettingsFingerprint { get; set; }
             public User CurrentUser { get; set; }
             public AniListClient.Models.Staff CurrentPerson { get; set; }
-            public List<CharacterAnimeModel> MyCharactersList { get; set; } = new();
-            public List<CharacterAnimeModel> NotMyCharactersList { get; set; } = new();
+            public List<VoiceActorCreditSection> CreditSections { get; set; } = new();
             public string CharacterLoadError { get; set; }
+        }
+
+        static string CreateSettingsFingerprint(UserSettings settings)
+        {
+            settings ??= new UserSettings();
+
+            var extensionState = string.Join(
+                "|",
+                ExtensionCatalog.All.Select(extension => $"{extension.Id}:{settings.IsExtensionEnabled(extension)}"));
+
+            return $"{settings.PreferredTitleType}|{extensionState}";
         }
 
         private void ToggleMobileDetails()
@@ -256,7 +247,6 @@ namespace AnimeCharacters.Pages
                 links.Add(CreateReferenceProviderLink());
             }
 
-            // Extract markdown links from biography
             var markdownLinkPattern = @"\[([^\]]+)\]\(([^)]+)\)";
             var matches = Regex.Matches(CurrentPerson.Description, markdownLinkPattern);
 
@@ -293,7 +283,6 @@ namespace AnimeCharacters.Pages
             var lowerUrl = url.ToLower();
             var lowerText = text.ToLower();
 
-            // Twitter/X
             if (lowerUrl.Contains("twitter.com") || lowerUrl.Contains("x.com") || lowerText.Contains("twitter"))
             {
                 return new SocialMediaLink
@@ -305,7 +294,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // Instagram
             if (lowerUrl.Contains("instagram.com") || lowerText.Contains("instagram"))
             {
                 return new SocialMediaLink
@@ -317,7 +305,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // YouTube
             if (lowerUrl.Contains("youtube.com") || lowerUrl.Contains("youtu.be") || lowerText.Contains("youtube"))
             {
                 return new SocialMediaLink
@@ -329,7 +316,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // TikTok
             if (lowerUrl.Contains("tiktok.com") || lowerText.Contains("tiktok"))
             {
                 return new SocialMediaLink
@@ -341,7 +327,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // Facebook
             if (lowerUrl.Contains("facebook.com") || lowerText.Contains("facebook"))
             {
                 return new SocialMediaLink
@@ -353,7 +338,6 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            // Profile/Personal Website (catch-all for other profile links)
             if (lowerText.Contains("profile") || lowerText.Contains("website") || lowerText.Contains("official"))
             {
                 var domain = ExtractDomain(url);
@@ -366,7 +350,7 @@ namespace AnimeCharacters.Pages
                 };
             }
 
-            return null; // Don't include unrecognized links in social media section
+            return null;
         }
 
         private string ExtractDomain(string url)
@@ -388,8 +372,6 @@ namespace AnimeCharacters.Pages
                 return string.Empty;
 
             var content = CurrentPerson.Description;
-
-            // Remove social media links that will be shown separately
             var markdownLinkPattern = @"\[([^\]]+)\]\(([^)]+)\)";
             content = Regex.Replace(content, markdownLinkPattern, match =>
             {
@@ -399,13 +381,11 @@ namespace AnimeCharacters.Pages
                 return IsSocialMediaLink(text, url) ? string.Empty : match.Value;
             });
 
-            // Parse remaining markdown into HTML
-            var pipeline = new Markdig.MarkdownPipelineBuilder()
+            var pipeline = new MarkdownPipelineBuilder()
                                 .UseAdvancedExtensions()
                                 .Build();
-            var html = Markdig.Markdown.ToHtml(content, pipeline);
+            var html = Markdown.ToHtml(content, pipeline);
 
-            // Ensure links open in a new tab
             html = Regex.Replace(html, "<a href=\"([^\"]+)\"", "<a href=\"$1\" target=\"_blank\" rel=\"noopener noreferrer\"");
 
             return html.Trim();

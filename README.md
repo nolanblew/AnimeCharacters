@@ -2,15 +2,17 @@
 <img src="http://thankful-hill-03c7b7e1e.azurestaticapps.net/icon-512.png" width="90" height="90" />
 Quickly find the characters that a Seyu (voice actor) has also played in other anime you've watched as listed on [Kitsu](https://kitsu.app)
 
+The app supports optional media extensions. The core extension is **Kitsu Library** for anime, and **Genshin Impact** is available under the Video Games category so shared Japanese voice actors can appear alongside anime credits.
+
 **Live site**: https://www.animecharacters.app/
 
 ## Requirements to Use
  - [Kitsu account](https://kitsu.app). If you know your username (slug) you don't have to log in. You may also login with your email address and password
  - Internet connection
  - Modern web browser (cross-platform).
- 
+
  Note that the app can be installed as a Progressive Web App (PWA), though offline capabilities currently do not exist.
- 
+
  ## Building Locally
  - **Framework**: Blazor Web Assembly (WASM) app
  - **IDE**: Visual Studio 2022 (though VSCode should work as well)
@@ -37,3 +39,19 @@ Note that this is a side-project for me so I may not immediately respond.
 
 # Deploying
 A deploy is automatically commenced when a pull request is merged to master. A deploy takes approximately 5 minutes, and can be viewed in the [Actions tab](https://github.com/nolanblew/AnimeCharacters/actions/workflows/azure-static-web-apps-thankful-hill-03c7b7e1e.yml).
+
+## Extension Data
+
+Genshin Impact character data is checked in under `AnimeCharacters/wwwroot/data/extensions/genshin-impact-characters.json` for low runtime overhead. Poster and character artwork is cached under `AnimeCharacters/wwwroot/images/extensions/genshin-impact` so the app does not hotlink Fandom images at runtime. Video game extensions are opt-in by default. The updater reads Fandom's `Character/List` page for character icon URLs and the `Voice_Actor` page for Japanese voice actor credits, splitting multi-voice rows into separate character credits such as Traveler (Male) and Traveler (Female). Refresh it on Windows with:
+
+```powershell
+.\tools\Update-GenshinImpactData.ps1
+```
+
+On macOS/Linux, use the bash wrapper:
+
+```bash
+./tools/update-genshin-impact-data.sh
+```
+
+Both scripts rate-limit API calls. Existing cached artwork is reused by default, but missing artwork for new characters is downloaded automatically; use `-RefreshImages` in PowerShell or `--refresh-images` in bash only when you intentionally want to replace already-cached images. Pass `-ResolveAniListIds` in PowerShell or `--resolve-anilist-ids` in bash only when intentionally enriching staff IDs through the slower AniList lookup path.

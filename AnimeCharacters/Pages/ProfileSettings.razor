@@ -52,6 +52,32 @@
                 </div>
             </div>
 
+            <div class="settings-section">
+                <h3>Extensions</h3>
+
+                @foreach (var extension in Extensions)
+                {
+                    <div class="extension-setting">
+                        @if (!string.IsNullOrWhiteSpace(extension.CoverImageUrl))
+                        {
+                            <img class="extension-setting-cover" src="@extension.CoverImageUrl" alt="@extension.Name" referrerpolicy="no-referrer" />
+                        }
+                        <div class="extension-setting-copy">
+                            <label class="form-label" for="extension-@extension.Id">@extension.Name</label>
+                            <div class="text-secondary">@extension.CategoryName</div>
+                            <div class="extension-description">@extension.Description</div>
+                        </div>
+                        <div class="extension-setting-control">
+                            <input id="extension-@extension.Id"
+                                   type="checkbox"
+                                   checked="@IsExtensionEnabled(extension)"
+                                   disabled="@extension.IsCore"
+                                   @onchange="args => OnExtensionChanged(extension, args)" />
+                        </div>
+                    </div>
+                }
+            </div>
+
             <div class="app-info-section">
                 <h3>App Information</h3>
                 

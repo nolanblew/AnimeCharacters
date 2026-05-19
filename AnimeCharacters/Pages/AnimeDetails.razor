@@ -1,12 +1,12 @@
-﻿@page "/animes/{id}"
+@page "/animes/{id}"
 @inherits BasePage
 @implements EventAggregator.Blazor.IHandle<Events.DatabaseEvent>
 
 <div class="content">
     <div class="row">
         <div class="col text-center">
-            <div class="item-container center-image">
-                <img src="@CurrentAnime?.PosterImageUrl" />
+            <div class="anime-detail-poster-container">
+                <img class="anime-detail-poster" src="@CurrentAnime?.PosterImageUrl" alt="@GetAnimeTitle()" />
             </div>
         </div>
     </div>
