@@ -25,7 +25,7 @@ namespace AnimeCharacters.Pages
 
         public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
 
-        public bool IsLoadingCharacters { get; set; }
+        public bool IsLoadingCharacters { get; set; } = true;
 
         public string CharacterLoadError { get; set; }
 
@@ -33,6 +33,14 @@ namespace AnimeCharacters.Pages
 
         [Parameter]
         public string Id { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (CurrentAnime == null && !string.IsNullOrWhiteSpace(Id))
+            {
+                CurrentAnime = PageStateManager.GetSelectedLibraryEntry(Id)?.Anime;
+            }
+        }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -46,11 +54,18 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
+            if (_TryRestorePageState())
+            {
+                StateHasChanged();
+                return;
+            }
+
             CurrentUser = await DatabaseProvider.GetUserAsync();
             UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
             var libraries = await DatabaseProvider.GetLibrariesAsync() ?? new List<LibraryEntry>();
             var currentLibraryEntry = libraries.FirstOrDefault(library => library.Anime?.KitsuId == Id);
-            CurrentAnime = currentLibraryEntry?.Anime;
+
+            CurrentAnime = currentLibraryEntry?.Anime ?? CurrentAnime;
 
             if (CurrentAnime == null)
             {
@@ -58,10 +73,10 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
-            StateHasChanged();
-
             IsLoadingCharacters = true;
             CharacterLoadError = null;
+            StateHasChanged();
+
             try
             {
                 await _LoadCharacters(libraries);
@@ -75,6 +90,7 @@ namespace AnimeCharacters.Pages
                 IsLoadingCharacters = false;
             }
 
+            _CachePageState();
             StateHasChanged();
         }
 
@@ -164,6 +180,49 @@ namespace AnimeCharacters.Pages
             .Where(title => !string.IsNullOrWhiteSpace(title))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
+        }
+
+        bool _TryRestorePageState()
+        {
+            if (!PageStateManager.TryGetPageState<AnimeDetailsPageState>(NavigationManager.Uri, out var state)
+                || state.Id != Id)
+            {
+                return false;
+            }
+
+            CurrentUser = state.CurrentUser;
+            CurrentAnime = state.CurrentAnime;
+            Language = state.Language;
+            CharactersList = state.CharactersList;
+            CharacterLoadError = state.CharacterLoadError;
+            UserSettings = state.UserSettings;
+            IsLoadingCharacters = false;
+            return true;
+        }
+
+        void _CachePageState()
+        {
+            PageStateManager.SetPageState(NavigationManager.Uri, new AnimeDetailsPageState
+            {
+                Id = Id,
+                CurrentUser = CurrentUser,
+                CurrentAnime = CurrentAnime,
+                Language = Language,
+                CharactersList = CharactersList,
+                CharacterLoadError = CharacterLoadError,
+                UserSettings = UserSettings
+            });
+        }
+
+        class AnimeDetailsPageState
+        {
+            public string Id { get; set; }
+            public User CurrentUser { get; set; }
+            public Anime CurrentAnime { get; set; }
+            public string Language { get; set; }
+            public List<AniListClient.Models.Character> CharactersList { get; set; } = new();
+            public string CharacterLoadError { get; set; }
+            public UserSettings UserSettings { get; set; } = new();
         }
 
         static string _GetSearchTitleFromSlug(string slug)
