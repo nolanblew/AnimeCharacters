@@ -2,6 +2,7 @@
 @using AnimeCharacters.Extensions
 @using AnimeCharacters.Extensions.GenshinImpact
 @using AnimeCharacters.Models
+@using ReferenceApis
 @inherits BasePage
 @inject IGenshinImpactCharacterRepository GenshinImpactCharacters
 @inject AniListClient.AniListClient AniListClient
@@ -122,7 +123,7 @@
 
         if (voiceActor?.AniListStaffId != null)
         {
-            NavigationManager.NavigateTo($"/characters/{voiceActor.AniListStaffId.Value}");
+            NavigationManager.NavigateTo($"/characters/{ReferenceProviderNames.AniList}/{voiceActor.AniListStaffId.Value}");
             return;
         }
 
@@ -135,7 +136,7 @@
         var staff = await FindStaffAsync(voiceActor);
         if (staff != null)
         {
-            NavigationManager.NavigateTo($"/characters/{staff.Id}");
+            NavigationManager.NavigateTo($"/characters/{ReferenceProviderNames.AniList}/{staff.Id}");
         }
     }
 

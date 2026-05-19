@@ -1,5 +1,6 @@
 using AnimeCharacters.Models;
 using AniListClient.Models;
+using ReferenceApis;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -41,7 +42,7 @@ namespace AnimeCharacters.Extensions.GenshinImpact
                 CharacterId = character.Name,
                 CharacterName = character.Name,
                 CharacterImageUrl = character.ImageUrl,
-                CharacterRoute = voiceActor.AniListStaffId.HasValue ? $"/characters/{voiceActor.AniListStaffId.Value}" : null,
+                CharacterRoute = voiceActor.AniListStaffId.HasValue ? $"/characters/{ReferenceProviderNames.AniList}/{voiceActor.AniListStaffId.Value}" : null,
                 ExternalUrl = character.WikiUrl
             };
 

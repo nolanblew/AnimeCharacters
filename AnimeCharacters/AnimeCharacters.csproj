@@ -68,6 +68,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AniListClient\AniListClient.csproj" />
     <ProjectReference Include="..\Kitsu\Kitsu.csproj" />
+    <ProjectReference Include="..\ReferenceApis\ReferenceApis.csproj" />
   </ItemGroup>
 
   <ItemGroup>

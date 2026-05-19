@@ -3,6 +3,7 @@ using AnimeCharacters.Models;
 using Kitsu.Models;
 using Markdig;
 using Microsoft.AspNetCore.Components;
+using ReferenceApis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace AnimeCharacters.Pages
     public partial class Characters
     {
         [Inject]
-        AniListClient.AniListClient _anilistClient { get; set; }
+        IReferenceAnimeService ReferenceAnimeService { get; set; }
 
         [Inject]
         IVoiceActorCreditService _voiceActorCreditService { get; set; }
@@ -25,14 +26,18 @@ namespace AnimeCharacters.Pages
 
         public List<VoiceActorCreditSection> CreditSections { get; set; } = new();
 
-        public bool IsLoadingCharacters { get; set; }
+        public bool IsLoadingCharacters { get; set; } = true;
 
         public string CharacterLoadError { get; set; }
 
         private bool _showMobileDetails = false;
+        private string _settingsFingerprint;
 
         [Parameter]
         public string Id { get; set; }
+
+        [Parameter]
+        public string Provider { get; set; }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -46,18 +51,27 @@ namespace AnimeCharacters.Pages
                 return;
             }
 
+            if (await _TryRestorePageStateAsync())
+            {
+                StateHasChanged();
+                return;
+            }
+
             CurrentUser = await DatabaseProvider.GetUserAsync();
             IsLoadingCharacters = true;
             CharacterLoadError = null;
 
             try
             {
-                CurrentPerson = await _anilistClient.Staff.GetStaffById(int.Parse(Id));
+                CurrentPerson = await ReferenceAnimeService.GetStaffByIdAsync(
+                    string.IsNullOrWhiteSpace(Provider) ? ReferenceProviderNames.AniList : Provider,
+                    Id);
             }
             catch (Exception ex)
             {
-                CharacterLoadError = $"Unable to load characters from AniList. {ex.Message}";
+                CharacterLoadError = $"Unable to load characters from the reference APIs. {ex.Message}";
                 IsLoadingCharacters = false;
+                _CachePageState();
                 StateHasChanged();
                 return;
             }
@@ -76,13 +90,14 @@ namespace AnimeCharacters.Pages
             }
             catch (Exception ex)
             {
-                CharacterLoadError = $"Unable to load characters. {ex.Message}";
+                CharacterLoadError = $"Unable to load voice acting credits. {ex.Message}";
             }
             finally
             {
                 IsLoadingCharacters = false;
             }
 
+            _CachePageState();
             StateHasChanged();
         }
 
@@ -108,7 +123,67 @@ namespace AnimeCharacters.Pages
 
         async Task _LoadCharacters()
         {
+            var settings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+            _settingsFingerprint = CreateSettingsFingerprint(settings);
             CreditSections = (await _voiceActorCreditService.GetCreditSectionsAsync(CurrentPerson)).ToList();
+        }
+
+        async Task<bool> _TryRestorePageStateAsync()
+        {
+            var settings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
+            var settingsFingerprint = CreateSettingsFingerprint(settings);
+
+            if (!PageStateManager.TryGetPageState<CharactersPageState>(NavigationManager.Uri, out var state)
+                || state.Id != Id
+                || !string.Equals(state.Provider, Provider, StringComparison.OrdinalIgnoreCase)
+                || !string.Equals(state.SettingsFingerprint, settingsFingerprint, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            CurrentUser = state.CurrentUser;
+            CurrentPerson = state.CurrentPerson;
+            CreditSections = state.CreditSections ?? new List<VoiceActorCreditSection>();
+            _settingsFingerprint = settingsFingerprint;
+            CharacterLoadError = state.CharacterLoadError;
+            IsLoadingCharacters = false;
+            return true;
+        }
+
+        void _CachePageState()
+        {
+            PageStateManager.SetPageState(NavigationManager.Uri, new CharactersPageState
+            {
+                Id = Id,
+                Provider = Provider,
+                SettingsFingerprint = _settingsFingerprint,
+                CurrentUser = CurrentUser,
+                CurrentPerson = CurrentPerson,
+                CreditSections = CreditSections,
+                CharacterLoadError = CharacterLoadError
+            });
+        }
+
+        class CharactersPageState
+        {
+            public string Id { get; set; }
+            public string Provider { get; set; }
+            public string SettingsFingerprint { get; set; }
+            public User CurrentUser { get; set; }
+            public AniListClient.Models.Staff CurrentPerson { get; set; }
+            public List<VoiceActorCreditSection> CreditSections { get; set; } = new();
+            public string CharacterLoadError { get; set; }
+        }
+
+        static string CreateSettingsFingerprint(UserSettings settings)
+        {
+            settings ??= new UserSettings();
+
+            var extensionState = string.Join(
+                "|",
+                ExtensionCatalog.All.Select(extension => $"{extension.Id}:{settings.IsExtensionEnabled(extension)}"));
+
+            return $"{settings.PreferredTitleType}|{extensionState}";
         }
 
         private void ToggleMobileDetails()
@@ -158,17 +233,18 @@ namespace AnimeCharacters.Pages
             var links = new List<SocialMediaLink>();
 
             if (string.IsNullOrWhiteSpace(CurrentPerson?.Description))
+            {
+                if (!string.IsNullOrWhiteSpace(CurrentPerson?.SiteUrl))
+                {
+                    links.Add(CreateReferenceProviderLink());
+                }
+
                 return links;
+            }
 
             if (!string.IsNullOrWhiteSpace(CurrentPerson.SiteUrl))
             {
-                links.Add(new SocialMediaLink
-                {
-                    Platform = "AniList",
-                    Url = CurrentPerson.SiteUrl,
-                    DisplayText = "anilist.co",
-                    IconPath = "/images/anilist-icon.svg"
-                });
+                links.Add(CreateReferenceProviderLink());
             }
 
             var markdownLinkPattern = @"\[([^\]]+)\]\(([^)]+)\)";
@@ -187,6 +263,19 @@ namespace AnimeCharacters.Pages
             }
 
             return links;
+        }
+
+        private SocialMediaLink CreateReferenceProviderLink()
+        {
+            var isAniList = ReferenceAnimeKey.MatchesProvider(CurrentPerson.ProviderName, ReferenceProviderNames.AniList);
+
+            return new SocialMediaLink
+            {
+                Platform = isAniList ? "AniList" : "MyAnimeList",
+                Url = CurrentPerson.SiteUrl,
+                DisplayText = ExtractDomain(CurrentPerson.SiteUrl),
+                IconPath = isAniList ? "/images/anilist-icon.svg" : "/images/website-icon.svg"
+            };
         }
 
         private SocialMediaLink CreateSocialMediaLink(string text, string url)

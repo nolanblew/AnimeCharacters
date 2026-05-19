@@ -4,7 +4,8 @@ namespace AniListClient.Models
 {
     public record MediaBase(
         int Id,
-        Titles Title);
+        Titles Title,
+        string ProviderName = "anilist");
 
     public record Media(
         int Id,
@@ -12,8 +13,9 @@ namespace AniListClient.Models
         string Description,
         Images Image,
         MediaStatus Status,
-        List<Character> Characters
-    ) : MediaBase(Id, Title);
+        List<Character> Characters,
+        string ProviderName = "anilist"
+    ) : MediaBase(Id, Title, ProviderName);
 
     public enum MediaStatus
     {

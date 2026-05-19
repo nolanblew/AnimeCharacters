@@ -4,6 +4,7 @@ using AnimeCharacters.Extensions.GenshinImpact;
 using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using ReferenceApis;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -31,6 +32,9 @@ namespace AnimeCharacters
             builder.Services.AddScoped<IVoiceActorCreditProvider, KitsuLibraryCreditProvider>();
             builder.Services.AddScoped<IVoiceActorCreditProvider, GenshinImpactCreditProvider>();
             builder.Services.AddScoped<IVoiceActorCreditService, VoiceActorCreditService>();
+            builder.Services.AddScoped<IReferenceAnimeProvider, JikanReferenceAnimeProvider>();
+            builder.Services.AddScoped<IReferenceAnimeProvider, AniListReferenceAnimeProvider>();
+            builder.Services.AddScoped<IReferenceAnimeService, ReferenceAnimeService>();
 
             await builder.Build().RunAsync();
         }
