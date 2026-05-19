@@ -31,6 +31,27 @@ namespace Kitsu.Tests.AnimeCharacters.Extensions
         }
 
         [TestMethod]
+        public void HasEnabledCategory_WhenGenshinIsNotEnabled_ReturnsFalseForVideoGames()
+        {
+            var settings = new UserSettings();
+
+            var hasVideoGames = ExtensionCatalog.HasEnabledCategory(settings, BuiltInExtensionCategories.VideoGames);
+
+            Assert.IsFalse(hasVideoGames);
+        }
+
+        [TestMethod]
+        public void HasEnabledCategory_WhenGenshinIsEnabled_ReturnsTrueForVideoGames()
+        {
+            var settings = new UserSettings();
+            settings.SetExtensionEnabled(BuiltInExtensionIds.GenshinImpact, true);
+
+            var hasVideoGames = ExtensionCatalog.HasEnabledCategory(settings, BuiltInExtensionCategories.VideoGames);
+
+            Assert.IsTrue(hasVideoGames);
+        }
+
+        [TestMethod]
         public void GetEnabledExtensions_WhenGenshinIsDisabled_RemovesGenshinButKeepsCoreKitsu()
         {
             var settings = new UserSettings();

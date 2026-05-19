@@ -30,9 +30,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/animes">Animes <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/extensions/genshin-impact">Games</a>
-                </li>
+                @if (ShowGames)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" href="/extensions/genshin-impact">Games</a>
+                    </li>
+                }
             </ul>
             <span class="navbar-text">
                 Hello, <a href="/profile-settings" class="username-link">@CurrentUser?.Name</a>!
@@ -55,8 +58,10 @@
     }
 
     public Kitsu.Models.User CurrentUser { get; set; }
+    public AnimeCharacters.Models.UserSettings UserSettings { get; set; } = new();
 
     public bool IsLoggedIn => CurrentUser != null;
+    public bool ShowGames => AnimeCharacters.Extensions.ExtensionCatalog.HasEnabledCategory(UserSettings, AnimeCharacters.Extensions.BuiltInExtensionCategories.VideoGames);
 
     public async Task HandleAsync(Events.DatabaseEvent arg)
     {
@@ -84,5 +89,9 @@
         PageStateManager.Clear();
     }
 
-    async Task _SetUser() =>  CurrentUser = await DatabaseProvider.GetUserAsync();
+    async Task _SetUser()
+    {
+        CurrentUser = await DatabaseProvider.GetUserAsync();
+        UserSettings = await DatabaseProvider.GetUserSettingsAsync() ?? new AnimeCharacters.Models.UserSettings();
+    }
 }

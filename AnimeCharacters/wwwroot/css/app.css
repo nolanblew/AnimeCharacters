@@ -203,6 +203,18 @@ a, .btn-link {
     width: 50%;
 }
 
+.anime-detail-poster-container {
+    display: flex;
+    justify-content: center;
+}
+
+.anime-detail-poster {
+    border-radius: 4px;
+    height: auto;
+    max-width: min(120px, 45vw);
+    width: 100%;
+}
+
 .app-spinner {
     display: block;
     position: fixed;

@@ -15,7 +15,7 @@ namespace AnimeCharacters.Extensions
             {
                 Id = BuiltInExtensionIds.KitsuLibrary,
                 Name = "Kitsu Library",
-                CategoryName = "Anime",
+                CategoryName = BuiltInExtensionCategories.Anime,
                 Description = "Find shared Japanese voice actors across anime in your Kitsu library.",
                 IsCore = true,
                 EnabledByDefault = true
@@ -24,7 +24,7 @@ namespace AnimeCharacters.Extensions
             {
                 Id = BuiltInExtensionIds.GenshinImpact,
                 Name = "Genshin Impact",
-                CategoryName = "Video Games",
+                CategoryName = BuiltInExtensionCategories.VideoGames,
                 Description = "Add playable Genshin Impact characters to shared voice actor results.",
                 CoverImageUrl = "images/extensions/genshin-impact/cover.png",
                 IsCore = false,
@@ -34,6 +34,9 @@ namespace AnimeCharacters.Extensions
 
         public static IReadOnlyList<MediaExtensionDefinition> GetEnabledExtensions(UserSettings settings) =>
             All.Where(extension => settings?.IsExtensionEnabled(extension) ?? extension.EnabledByDefault).ToList();
+
+        public static bool HasEnabledCategory(UserSettings settings, string categoryName) =>
+            GetEnabledExtensions(settings).Any(extension => extension.CategoryName == categoryName);
 
         public static MediaExtensionDefinition GetById(string id) =>
             All.FirstOrDefault(extension => extension.Id == id);
