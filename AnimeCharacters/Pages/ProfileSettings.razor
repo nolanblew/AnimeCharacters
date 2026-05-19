@@ -58,6 +58,10 @@
                 @foreach (var extension in Extensions)
                 {
                     <div class="extension-setting">
+                        @if (!string.IsNullOrWhiteSpace(extension.CoverImageUrl))
+                        {
+                            <img class="extension-setting-cover" src="@extension.CoverImageUrl" alt="@extension.Name" />
+                        }
                         <div class="extension-setting-copy">
                             <label class="form-label" for="extension-@extension.Id">@extension.Name</label>
                             <div class="text-secondary">@extension.CategoryName</div>

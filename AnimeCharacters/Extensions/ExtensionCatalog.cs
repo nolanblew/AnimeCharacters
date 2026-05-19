@@ -26,6 +26,7 @@ namespace AnimeCharacters.Extensions
                 Name = "Genshin Impact",
                 CategoryName = "Video Games",
                 Description = "Add playable Genshin Impact characters to shared voice actor results.",
+                CoverImageUrl = "https://static.wikia.nocookie.net/gensin-impact/images/8/80/Genshin_Impact.png/revision/latest/scale-to-width-down/512",
                 IsCore = false,
                 EnabledByDefault = true
             }

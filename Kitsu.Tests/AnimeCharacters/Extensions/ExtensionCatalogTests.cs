@@ -31,5 +31,14 @@ namespace Kitsu.Tests.AnimeCharacters.Extensions
             CollectionAssert.Contains(enabledExtensions.Select(extension => extension.Id).ToList(), BuiltInExtensionIds.KitsuLibrary);
             CollectionAssert.DoesNotContain(enabledExtensions.Select(extension => extension.Id).ToList(), BuiltInExtensionIds.GenshinImpact);
         }
+
+        [TestMethod]
+        public void GetById_ForGenshinImpact_IncludesCoverArt()
+        {
+            var extension = ExtensionCatalog.GetById(BuiltInExtensionIds.GenshinImpact);
+
+            Assert.IsFalse(string.IsNullOrWhiteSpace(extension.CoverImageUrl));
+            StringAssert.Contains(extension.CoverImageUrl, "Genshin_Impact.png");
+        }
     }
 }

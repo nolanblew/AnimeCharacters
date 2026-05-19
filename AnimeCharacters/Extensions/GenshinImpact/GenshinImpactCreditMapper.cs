@@ -37,7 +37,7 @@ namespace AnimeCharacters.Extensions.GenshinImpact
                 CategoryName = "Video Games",
                 MediaId = BuiltInExtensionIds.GenshinImpact,
                 MediaTitle = "Genshin Impact",
-                MediaImageUrl = "images/extensions/genshin-impact.svg",
+                MediaImageUrl = ExtensionCatalog.GetById(BuiltInExtensionIds.GenshinImpact)?.CoverImageUrl,
                 MediaRoute = "/extensions/genshin-impact",
                 CharacterId = character.Name,
                 CharacterName = character.Name,

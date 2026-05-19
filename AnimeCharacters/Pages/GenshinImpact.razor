@@ -8,8 +8,11 @@
 @inject AniListClient.AniListClient AniListClient
 
 <div class="content">
-    <div class="row">
-        <div class="col text-center">
+    <div class="row align-items-center extension-header">
+        <div class="col-auto">
+            <img class="extension-cover" src="@ExtensionDefinition?.CoverImageUrl" alt="Genshin Impact cover" />
+        </div>
+        <div class="col">
             <h2>Genshin Impact</h2>
             <div class="text-secondary">Video Games</div>
         </div>
@@ -85,6 +88,7 @@
     public bool IsLoading { get; set; } = true;
     public bool IsEnabled { get; set; } = true;
     public string SearchFilter { get; set; }
+    public MediaExtensionDefinition ExtensionDefinition { get; set; } = ExtensionCatalog.GetById(BuiltInExtensionIds.GenshinImpact);
     public IReadOnlyList<GenshinImpactCharacter> Characters { get; set; } = new List<GenshinImpactCharacter>();
 
     public IEnumerable<GenshinImpactCharacter> FilteredCharacters
@@ -105,7 +109,7 @@
     protected override async Task OnInitializedAsync()
     {
         var settings = await DatabaseProvider.GetUserSettingsAsync() ?? new UserSettings();
-        IsEnabled = settings.IsExtensionEnabled(ExtensionCatalog.GetById(BuiltInExtensionIds.GenshinImpact));
+        IsEnabled = settings.IsExtensionEnabled(ExtensionDefinition);
 
         if (IsEnabled)
         {

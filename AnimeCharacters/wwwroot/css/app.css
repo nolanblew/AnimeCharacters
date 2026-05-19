@@ -144,6 +144,17 @@ a, .btn-link {
     font-size: 0.95rem;
 }
 
+.extension-header {
+    margin-bottom: 1rem;
+}
+
+.extension-cover {
+    border-radius: 4px;
+    height: 96px;
+    object-fit: cover;
+    width: 96px;
+}
+
 .extension-setting {
     align-items: center;
     border-bottom: 1px solid #e5e8eb;
@@ -151,6 +162,14 @@ a, .btn-link {
     gap: 16px;
     justify-content: space-between;
     padding: 12px 0;
+}
+
+.extension-setting-cover {
+    border-radius: 4px;
+    flex: 0 0 auto;
+    height: 56px;
+    object-fit: cover;
+    width: 56px;
 }
 
 .extension-setting-copy {

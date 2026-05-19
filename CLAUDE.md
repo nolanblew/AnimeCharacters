@@ -65,7 +65,7 @@ Debug builds prepend the version with `dev-`.
 #### Extensions
 - **Kitsu Library** is the core anime extension and remains enabled.
 - **Genshin Impact** is the first Video Games extension. Runtime reads checked-in JSON from `AnimeCharacters/wwwroot/data/extensions/genshin-impact-characters.json`.
-- Refresh Genshin data with `.\tools\Update-GenshinImpactData.ps1`; pass `-ResolveAniListIds` only when you intentionally want the slower AniList staff ID enrichment.
+- Refresh Genshin data with `.\tools\Update-GenshinImpactData.ps1` on Windows or `./tools/update-genshin-impact-data.sh` on macOS/Linux. Both scripts read Fandom's `Character/List` icon data and rate-limit API calls; pass `-ResolveAniListIds` or `--resolve-anilist-ids` only when you intentionally want the slower AniList staff ID enrichment.
 
 #### Page Architecture
 - All pages inherit from `BasePage` which provides common dependencies
