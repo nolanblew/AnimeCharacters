@@ -936,6 +936,18 @@
     ]
   },
   {
+    "Name": "Nicole",
+    "ImageUrl": "images/extensions/genshin-impact/characters/nicole.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nicole",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Toyoguchi Megumi",
+        "NativeName": "豊口めぐみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Nilou",
     "ImageUrl": "images/extensions/genshin-impact/characters/nilou.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nilou",
@@ -979,6 +991,18 @@
       {
         "Name": "Kondo Takashi",
         "NativeName": "近藤隆",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Prune",
+    "ImageUrl": "images/extensions/genshin-impact/characters/prune.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Prune",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nagatsuki Aoi",
+        "NativeName": "長月 あおい",
         "AniListStaffId": null
       }
     ]
