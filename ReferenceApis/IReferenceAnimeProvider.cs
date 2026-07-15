@@ -17,5 +17,7 @@ namespace ReferenceApis
             IReadOnlyCollection<string> searchTitles);
 
         Task<Staff> GetStaffByIdAsync(string id);
+
+        Task<Staff> FindStaffByNameAsync(string name);
     }
 }

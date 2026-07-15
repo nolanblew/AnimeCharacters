@@ -128,6 +128,19 @@ namespace Kitsu.Tests.ReferenceApis
             Assert.AreEqual(ReferenceProviderNames.Jikan, staff.Characters[0].Media[0].ProviderName);
         }
 
+        [TestMethod]
+        public async Task GetStaffByIdAsync_WhenRequestStalls_UsesProviderTimeout()
+        {
+            var provider = new JikanReferenceAnimeProvider(
+                new HttpClient(new NeverCompletingHttpMessageHandler()),
+                TimeSpan.FromMilliseconds(20));
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetStaffByIdAsync("37562"));
+
+            Assert.AreEqual("Jikan request timed out.", exception.Message);
+        }
+
         static HttpResponseMessage JsonResponse(string json) =>
             new(HttpStatusCode.OK)
             {
@@ -145,6 +158,17 @@ namespace Kitsu.Tests.ReferenceApis
 
             protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
                 Task.FromResult(_responseFactory(request));
+        }
+
+        class NeverCompletingHttpMessageHandler : HttpMessageHandler
+        {
+            protected override async Task<HttpResponseMessage> SendAsync(
+                HttpRequestMessage request,
+                CancellationToken cancellationToken)
+            {
+                await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+                throw new InvalidOperationException("The cancellation token should stop this request.");
+            }
         }
     }
 }

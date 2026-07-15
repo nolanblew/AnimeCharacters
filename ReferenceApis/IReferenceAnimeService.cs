@@ -13,6 +13,6 @@ namespace ReferenceApis
             Anime anime,
             IReadOnlyCollection<string> searchTitles);
 
-        Task<Staff> GetStaffByIdAsync(string providerName, string id);
+        Task<Staff> GetStaffByIdAsync(string providerName, string id, string fallbackName = null);
     }
 }

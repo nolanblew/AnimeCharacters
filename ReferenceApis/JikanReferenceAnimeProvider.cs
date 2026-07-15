@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ReferenceApis
@@ -14,11 +15,14 @@ namespace ReferenceApis
     public class JikanReferenceAnimeProvider : IReferenceAnimeProvider
     {
         const string _BASE_URL = "https://api.jikan.moe/v4/";
+        static readonly TimeSpan _DEFAULT_REQUEST_TIMEOUT = TimeSpan.FromSeconds(15);
         readonly HttpClient _httpClient;
+        readonly TimeSpan _requestTimeout;
 
-        public JikanReferenceAnimeProvider(HttpClient httpClient)
+        public JikanReferenceAnimeProvider(HttpClient httpClient, TimeSpan? requestTimeout = null)
         {
             _httpClient = httpClient;
+            _requestTimeout = requestTimeout ?? _DEFAULT_REQUEST_TIMEOUT;
         }
 
         public string Name => ReferenceProviderNames.Jikan;
@@ -94,6 +98,23 @@ namespace ReferenceApis
                 ProviderName: Name);
         }
 
+        public async Task<Staff> FindStaffByNameAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
+
+            var response = await GetFromJsonAsync<JikanDataResponse<List<JikanPerson>>>(
+                $"people?q={Uri.EscapeDataString(name)}&limit=10");
+            var match = response?.Data?
+                .FirstOrDefault(person => StaffNameMatcher.IsExactMatch(ToNames(person?.Name), name));
+
+            return match == null
+                ? null
+                : await GetStaffByIdAsync(match.MalId.ToString());
+        }
+
         async Task<string> SearchAnimeIdAsync(IReadOnlyCollection<string> searchTitles)
         {
             foreach (var title in searchTitles ?? Array.Empty<string>())
@@ -115,7 +136,10 @@ namespace ReferenceApis
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<T>(new Uri(new Uri(_BASE_URL), relativeUrl));
+                using var cancellation = new CancellationTokenSource(_requestTimeout);
+                return await _httpClient.GetFromJsonAsync<T>(
+                    new Uri(new Uri(_BASE_URL), relativeUrl),
+                    cancellation.Token);
             }
             catch (HttpRequestException ex)
             {
