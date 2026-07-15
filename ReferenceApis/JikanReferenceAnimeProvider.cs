@@ -94,6 +94,23 @@ namespace ReferenceApis
                 ProviderName: Name);
         }
 
+        public async Task<Staff> FindStaffByNameAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
+
+            var response = await GetFromJsonAsync<JikanDataResponse<List<JikanPerson>>>(
+                $"people?q={Uri.EscapeDataString(name)}&limit=10");
+            var match = response?.Data?
+                .FirstOrDefault(person => StaffNameMatcher.IsExactMatch(ToNames(person?.Name), name));
+
+            return match == null
+                ? null
+                : await GetStaffByIdAsync(match.MalId.ToString());
+        }
+
         async Task<string> SearchAnimeIdAsync(IReadOnlyCollection<string> searchTitles)
         {
             foreach (var title in searchTitles ?? Array.Empty<string>())

@@ -39,6 +39,9 @@ namespace AnimeCharacters.Pages
         [Parameter]
         public string Provider { get; set; }
 
+        [SupplyParameterFromQuery(Name = "name")]
+        public string StaffName { get; set; }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -65,7 +68,8 @@ namespace AnimeCharacters.Pages
             {
                 CurrentPerson = await ReferenceAnimeService.GetStaffByIdAsync(
                     string.IsNullOrWhiteSpace(Provider) ? ReferenceProviderNames.AniList : Provider,
-                    Id);
+                    Id,
+                    StaffName);
             }
             catch (Exception ex)
             {

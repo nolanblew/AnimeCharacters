@@ -105,8 +105,9 @@ namespace Kitsu.Tests.ReferenceApis
             public Task<Staff> GetStaffByIdAsync(string id) =>
                 _getStaffById?.Invoke(id) ?? Task.FromResult<Staff>(null);
 
-            public Task<IReadOnlyList<Staff>> SearchStaffByNameAsync(string name) =>
-                _searchStaffByName?.Invoke(name) ?? Task.FromResult<IReadOnlyList<Staff>>(new List<Staff>());
+            public async Task<Staff> FindStaffByNameAsync(string name) =>
+                (await (_searchStaffByName?.Invoke(name) ?? Task.FromResult<IReadOnlyList<Staff>>(new List<Staff>())))
+                    .FirstOrDefault();
         }
     }
 }

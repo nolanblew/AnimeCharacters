@@ -100,7 +100,8 @@ namespace AnimeCharacters.Pages
 
             if (voiceActor == null) { return; }
 
-            NavigationManager.NavigateTo($"/characters/{voiceActor.ProviderName}/{voiceActor.Id}");
+            var name = Uri.EscapeDataString(voiceActor.Name?.Full ?? string.Empty);
+            NavigationManager.NavigateTo($"/characters/{voiceActor.ProviderName}/{voiceActor.Id}?name={name}");
         }
 
         async Task _LoadCharacters(IList<LibraryEntry> libraries)

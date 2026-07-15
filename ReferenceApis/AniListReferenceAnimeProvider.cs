@@ -55,6 +55,16 @@ namespace ReferenceApis
             return await _aniListClient.Staff.GetStaffById(staffId);
         }
 
+        public async Task<Staff> FindStaffByNameAsync(string name)
+        {
+            var matches = await _aniListClient.Staff.SearchStaffByName(name);
+            var match = matches.FirstOrDefault(staff => StaffNameMatcher.IsExactMatch(staff?.Name, name));
+
+            return match == null
+                ? null
+                : await _aniListClient.Staff.GetStaffById(match.Id);
+        }
+
         async Task<string> SearchAnimeIdAsync(IReadOnlyCollection<string> searchTitles)
         {
             foreach (var title in searchTitles ?? Array.Empty<string>())

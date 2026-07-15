@@ -71,7 +71,7 @@ namespace ReferenceApis
             throw new InvalidOperationException($"Unable to load character reference data.{details}");
         }
 
-        public async Task<Staff> GetStaffByIdAsync(string providerName, string id)
+        public async Task<Staff> GetStaffByIdAsync(string providerName, string id, string fallbackName = null)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
@@ -92,9 +92,47 @@ namespace ReferenceApis
                 return cachedStaff;
             }
 
-            var staff = await provider.GetStaffByIdAsync(id);
-            _staffCache[cacheKey] = staff;
-            return staff;
+            try
+            {
+                var staff = await provider.GetStaffByIdAsync(id);
+                _staffCache[cacheKey] = staff;
+                return staff;
+            }
+            catch (Exception primaryException) when (IsProviderFailure(primaryException) && !string.IsNullOrWhiteSpace(fallbackName))
+            {
+                var failures = new List<string> { $"{provider.DisplayName}: {primaryException.Message}" };
+
+                foreach (var fallbackProvider in _providers.Where(candidate => candidate != provider))
+                {
+                    try
+                    {
+                        var staff = await fallbackProvider.FindStaffByNameAsync(fallbackName);
+                        if (staff == null)
+                        {
+                            failures.Add($"{fallbackProvider.DisplayName} did not find an exact staff match.");
+                            continue;
+                        }
+
+                        _staffCache[cacheKey] = staff;
+                        _staffCache[$"{ReferenceAnimeKey.NormalizeProviderName(fallbackProvider.Name)}:{staff.Id}"] = staff;
+                        return staff;
+                    }
+                    catch (Exception fallbackException) when (IsProviderFailure(fallbackException))
+                    {
+                        failures.Add($"{fallbackProvider.DisplayName}: {fallbackException.Message}");
+                    }
+                }
+
+                throw new InvalidOperationException(
+                    $"Unable to load staff reference data. Tried {string.Join(" ", failures)}",
+                    primaryException);
+            }
         }
+
+        static bool IsProviderFailure(Exception exception) =>
+            exception is ReferenceApiProviderException
+            || exception is HttpRequestException
+            || exception is InvalidOperationException
+            || exception is TaskCanceledException;
     }
 }
