@@ -79,6 +79,16 @@ namespace AniListClient.Controllers
 
                     throw new InvalidOperationException("Unable to reach AniList. The API may be unavailable right now.", ex);
                 }
+                catch (TaskCanceledException ex)
+                {
+                    if (lastModel != null)
+                    {
+                        assigner(lastModel, returnList);
+                        return lastModel;
+                    }
+
+                    throw new InvalidOperationException("The AniList request timed out.", ex);
+                }
 
                 if (result.Errors?.Length > 0)
                 {

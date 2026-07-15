@@ -5,11 +5,71 @@ namespace AniListClient.Queries
     internal static class StaffQueries
     {
         internal const string GET_STAFF_BY_ID_NAME = "getStaffByAnime";
+        internal const string GET_STAFF_BY_NAME_NAME = "getStaffByName";
         internal const string SEARCH_STAFF_BY_NAME_NAME = "searchStaffByName";
 
         internal const string GET_STAFF_BY_ID_QUERY = @"
 query getStaffByAnime($staff_id: Int, $page:Int=1) {
 	Staff(id: $staff_id) {
+    id
+    name {
+      first
+      middle
+      last
+      full
+      native
+      userPreferred
+    }
+    languageV2
+    image {
+      large
+      medium
+    }
+    description
+    age
+    dateOfBirth {
+      year
+      month
+      day
+    }
+    bloodType
+    siteUrl
+    characters(page: $page, perPage: 50) {
+      edges {
+        id
+        role
+        node {
+          name {
+            first
+            middle
+            last
+            full
+            native
+            userPreferred
+          }
+          image {
+            large
+            medium
+          }
+        }
+        media {
+          id
+        }
+      }
+      pageInfo {
+        total
+        perPage
+        currentPage
+        lastPage
+        hasNextPage
+      }
+    }
+  }
+}";
+
+        internal const string GET_STAFF_BY_NAME_QUERY = @"
+query getStaffByName($staff_name: String, $page:Int=1) {
+	Staff(search: $staff_name) {
     id
     name {
       first
@@ -117,5 +177,19 @@ query searchStaffByName($search: String) {
 
         [JsonProperty("search")]
         public string Search { get; set; }
+    }
+
+    internal class StaffNameQueryVariable : IHasPage
+    {
+        internal StaffNameQueryVariable(string staffName)
+        {
+            StaffName = staffName;
+        }
+
+        [JsonProperty("page")]
+        public int Page { get; set; }
+
+        [JsonProperty("staff_name")]
+        public string StaffName { get; set; }
     }
 }

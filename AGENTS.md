@@ -59,7 +59,7 @@ Debug builds prepend the version with `dev-`.
 - `PageStateManager` - Navigation state management
 - `VoiceActorCreditService` - Aggregates enabled extension credits for voice actor pages
 - `KitsuClient` - REST API client for Kitsu.app
-- `AniListClient` - GraphQL client for AniList API; staff-history queries keep nested media data ID-only so large voice-actor histories remain responsive
+- `AniListClient` - GraphQL client for AniList API; fallback staff histories resolve by name, keep nested media data ID-only, and preserve completed pages if later pagination times out
 - `ReferenceAnimeService` - Chooses reference API providers, merges provider IDs for matching, and falls back to an exact staff-name match when the routed provider is unavailable or exceeds its provider timeout
 
 #### Extensions

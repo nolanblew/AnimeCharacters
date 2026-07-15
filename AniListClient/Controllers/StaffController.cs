@@ -27,6 +27,15 @@ namespace AniListClient.Controllers
                 q => q.Staff.ToStaff(),
                 q => q.Staff.Characters?.PageInfo?.HasNextPage ?? false);
 
+        public Task<Staff> GetStaffByName(string name) =>
+            GetPaginatedList<StaffQueryResponse, Staff, Character>(
+                StaffQueries.GET_STAFF_BY_NAME_QUERY,
+                StaffQueries.GET_STAFF_BY_NAME_NAME,
+                new StaffNameQueryVariable(name),
+                q => q.Characters,
+                q => q.Staff.ToStaff(),
+                q => q.Staff.Characters?.PageInfo?.HasNextPage ?? false);
+
         public async Task<IReadOnlyList<Staff>> SearchStaffByName(string search)
         {
             if (string.IsNullOrWhiteSpace(search))
