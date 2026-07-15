@@ -33,7 +33,7 @@ query getStaffByAnime($staff_id: Int, $page:Int=1) {
     }
     bloodType
     siteUrl
-    characters(page: $page) {
+    characters(page: $page, perPage: 50) {
       edges {
         id
         role
@@ -50,16 +50,9 @@ query getStaffByAnime($staff_id: Int, $page:Int=1) {
             large
             medium
           }
-          description
         }
         media {
           id
-          title {
-            romaji
-            english
-            native
-            userPreferred
-          }
         }
       }
       pageInfo {

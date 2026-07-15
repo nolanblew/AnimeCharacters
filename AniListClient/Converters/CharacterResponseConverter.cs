@@ -18,7 +18,7 @@ namespace AniListClient.Converters
         internal static Models.MediaBase ToMedia(this StaffQueryResponse.MediaResponse media) =>
             new(
                 Id: media.Id,
-                Title: media.Title.ToTitle());
+                Title: media.Title?.ToTitle());
 
         internal static Models.MediaBase ToMedia(this SearchMediaResponse.MediaResponse media) =>
             new(

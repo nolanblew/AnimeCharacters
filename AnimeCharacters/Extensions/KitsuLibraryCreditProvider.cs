@@ -82,7 +82,7 @@ namespace AnimeCharacters.Extensions
         {
             var media = character.Media?.FirstOrDefault();
 
-            return media != null
+            return media?.Title != null
                 ? TitleHelper.GetPreferredTitle(media, settings.PreferredTitleType)
                 : libraryEntry.Anime.EnglishTitle ?? libraryEntry.Anime.Title;
         }
