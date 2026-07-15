@@ -60,7 +60,7 @@ Debug builds prepend the version with `dev-`.
 - `VoiceActorCreditService` - Aggregates enabled extension credits for voice actor pages
 - `KitsuClient` - REST API client for Kitsu.app
 - `AniListClient` - GraphQL client for AniList API; staff-history queries keep nested media data ID-only so large voice-actor histories remain responsive
-- `ReferenceAnimeService` - Chooses reference API providers, merges provider IDs for matching, and falls back to an exact staff-name match when the routed provider is unavailable
+- `ReferenceAnimeService` - Chooses reference API providers, merges provider IDs for matching, and falls back to an exact staff-name match when the routed provider is unavailable or exceeds its provider timeout
 
 #### Extensions
 - **Kitsu Library** is the core anime extension and remains enabled.

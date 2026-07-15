@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ReferenceApis
@@ -14,11 +15,14 @@ namespace ReferenceApis
     public class JikanReferenceAnimeProvider : IReferenceAnimeProvider
     {
         const string _BASE_URL = "https://api.jikan.moe/v4/";
+        static readonly TimeSpan _DEFAULT_REQUEST_TIMEOUT = TimeSpan.FromSeconds(15);
         readonly HttpClient _httpClient;
+        readonly TimeSpan _requestTimeout;
 
-        public JikanReferenceAnimeProvider(HttpClient httpClient)
+        public JikanReferenceAnimeProvider(HttpClient httpClient, TimeSpan? requestTimeout = null)
         {
             _httpClient = httpClient;
+            _requestTimeout = requestTimeout ?? _DEFAULT_REQUEST_TIMEOUT;
         }
 
         public string Name => ReferenceProviderNames.Jikan;
@@ -132,7 +136,10 @@ namespace ReferenceApis
         {
             try
             {
-                return await _httpClient.GetFromJsonAsync<T>(new Uri(new Uri(_BASE_URL), relativeUrl));
+                using var cancellation = new CancellationTokenSource(_requestTimeout);
+                return await _httpClient.GetFromJsonAsync<T>(
+                    new Uri(new Uri(_BASE_URL), relativeUrl),
+                    cancellation.Token);
             }
             catch (HttpRequestException ex)
             {
