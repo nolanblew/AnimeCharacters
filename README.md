@@ -38,7 +38,7 @@ If you wish to make some major contributions please create an issue and we can e
 Note that this is a side-project for me so I may not immediately respond.
 
 # Deploying
-A deploy is automatically commenced when a pull request is merged to master. A deploy takes approximately 5 minutes, and can be viewed in the [Actions tab](https://github.com/nolanblew/AnimeCharacters/actions/workflows/azure-static-web-apps-thankful-hill-03c7b7e1e.yml).
+A push to `main` builds and deploys the app to Azure Static Web Apps. Deployments can be viewed in the [Actions tab](https://github.com/nolanblew/AnimeCharacters/actions/workflows/azure-static-web-apps-thankful-hill-03c7b7e1e.yml).
 
 ## Extension Data
 
@@ -55,3 +55,7 @@ On macOS/Linux, use the bash wrapper:
 ```
 
 Both scripts rate-limit API calls. Existing cached artwork is reused by default, but missing artwork for new characters is downloaded automatically; use `-RefreshImages` in PowerShell or `--refresh-images` in bash only when you intentionally want to replace already-cached images. Pass `-ResolveAniListIds` in PowerShell or `--resolve-anilist-ids` in bash only when intentionally enriching staff IDs through the slower AniList lookup path.
+
+To refresh every registered extension locally, use `tools/Update-ExtensionData.ps1` on Windows or `tools/update-extension-data.sh` on macOS/Linux. Both currently run the Genshin Impact updater.
+
+Use the **Run workflow** control for the `Azure Static Web Apps CI/CD` GitHub Action to refresh every registered extension updater from `main`. When generated extension data or artwork changes, the workflow commits only those static assets to `main` and deploys the resulting site. When no generated data changes, it does not rebuild or deploy the app.

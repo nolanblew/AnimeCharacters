@@ -4,16 +4,57 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: azure-static-web-app-main
+  cancel-in-progress: false
 
 jobs:
+  refresh_extension_data:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Refresh Extension Data
+    timeout-minutes: 15
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Refresh registered extensions
+        run: ./tools/update-extension-data.sh
+      - name: Commit refreshed extension data
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add AnimeCharacters/wwwroot/data/extensions AnimeCharacters/wwwroot/images/extensions
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "chore(data): refresh extensions"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
   build_and_deploy_job:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    needs: refresh_extension_data
+    if: ${{ always() && (github.event_name == 'push' || (needs.refresh_extension_data.result == 'success' && needs.refresh_extension_data.outputs.changed == 'true')) }}
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
+          ref: main
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1

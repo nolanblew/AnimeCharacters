@@ -816,6 +816,18 @@
     ]
   },
   {
+    "Name": "Lohen",
+    "ImageUrl": "images/extensions/genshin-impact/characters/lohen.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lohen",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amasaki Kōhei",
+        "NativeName": "天﨑 滉平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Lynette",
     "ImageUrl": "images/extensions/genshin-impact/characters/lynette.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lynette",
@@ -1051,6 +1063,18 @@
       {
         "Name": "Kakuma Ai",
         "NativeName": "加隈亜衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sandrone",
+    "ImageUrl": "images/extensions/genshin-impact/characters/sandrone.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sandrone",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Honda Mariko",
+        "NativeName": "本多真梨子",
         "AniListStaffId": null
       }
     ]
