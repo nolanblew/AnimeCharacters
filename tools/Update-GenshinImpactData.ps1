@@ -468,10 +468,11 @@ if (!(Test-Path -LiteralPath $outputDirectory)) {
     New-Item -ItemType Directory -Path $outputDirectory | Out-Null
 }
 
-$characters |
+$json = $characters |
     Sort-Object { $_.Name } |
-    ConvertTo-Json -Depth 12 |
-    Set-Content -Path $OutputPath -Encoding utf8
+    ConvertTo-Json -Depth 12
+$json = $json.Replace("`r`n", "`n") + "`n"
+[System.IO.File]::WriteAllText($OutputPath, $json, [System.Text.UTF8Encoding]::new($false))
 
 Write-Progress -Activity "Updating Genshin Impact data" -Completed
 Write-Output "Wrote $($characters.Count) Genshin Impact characters to $OutputPath"

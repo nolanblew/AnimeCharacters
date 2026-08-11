@@ -1,6 +1,124 @@
 [
   {
+    "Name": "\"Dopey Dazzler\"",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/%22Dopey_Dazzler%22",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nodoka Yukina",
+        "NativeName": "和 ゆきな",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "\"Gyoubu Koban\"",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/%22Gyoubu_Koban%22",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amatsuki Miku",
+        "NativeName": "天月 ミク",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "\"Kichiboushi\"",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/%22Kichiboushi%22",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Iinuma Minami",
+        "NativeName": "飯沼 南実",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "\"Tricky Bulle Fruit\"",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/%22Tricky_Bulle_Fruit%22",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kamiya Naomichi",
+        "NativeName": "神谷 直道",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Aamu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aamu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kimura Akari",
+        "NativeName": "木村 朱里",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Aarav",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aarav",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Hiroshi",
+        "NativeName": "渡辺紘",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Adelinde",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Adelinde",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabata Nene",
+        "NativeName": "田畑 寧々",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Adieta",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Adieta",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kawa Mirika",
+        "NativeName": "河 実里夏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Aeval",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aeval",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ogino Hazuki",
+        "NativeName": "荻野葉月",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Aino",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/aino.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aino",
     "JapaneseVoiceActors": [
@@ -12,7 +130,47 @@
     ]
   },
   {
+    "Name": "Ajaw",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ajaw",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takeuchi Junko",
+        "NativeName": "竹内順子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ajilenakh Dash",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ajilenakh_Dash",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shimizu Seira",
+        "NativeName": "清水星来",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Alain Guillotin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Alain_Guillotin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hayakawa Tsuyoshi",
+        "NativeName": "早川 剛史",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Albedo",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/albedo.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Albedo",
     "JapaneseVoiceActors": [
@@ -24,7 +182,34 @@
     ]
   },
   {
+    "Name": "Albert",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Albert",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kubo Takuma",
+        "NativeName": "久保 拓馬",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Alfry",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Alfry",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Erica Yoshizumi",
+        "NativeName": "吉住 絵里加",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Alhaitham",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/alhaitham.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Alhaitham",
     "JapaneseVoiceActors": [
@@ -36,7 +221,34 @@
     ]
   },
   {
+    "Name": "Alice",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Alice",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Inoue Kikuko",
+        "NativeName": "井上 喜久子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Alkami",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Alkami",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Hiroshi",
+        "NativeName": "渡辺紘",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Aloy",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/aloy.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aloy",
     "JapaneseVoiceActors": [
@@ -48,7 +260,34 @@
     ]
   },
   {
+    "Name": "Alyosha",
+    "IsNpc": false,
+    "ImageUrl": "images/extensions/genshin-impact/characters/alyosha.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Alyosha",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sato Gen",
+        "NativeName": "佐藤 元",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Amauta",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Amauta",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amane Yukari",
+        "NativeName": "天音 ゆかり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Amber",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/amber.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Amber",
     "JapaneseVoiceActors": [
@@ -60,7 +299,99 @@
     ]
   },
   {
+    "Name": "Amenoma Tougo",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Amenoma_Tougo",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Satoshi",
+        "NativeName": "山口 恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Amina",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Amina",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Itou Sayaka",
+        "NativeName": "伊藤さや香",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Andersdotter",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Andersdotter",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kawaragi Shiho",
+        "NativeName": "河原木志穂",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Anfisa",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Anfisa",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nishihata Misako",
+        "NativeName": "西畑 美沙子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Anja",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Anja",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakahara Yuno",
+        "NativeName": "中原 ゆの",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Anna",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Anna",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Akagi Haruna",
+        "NativeName": "赤木 春菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Apep",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Apep",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kinoshita Sayaka",
+        "NativeName": "木下紗華",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Arataki Itto",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/arataki-itto.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Arataki_Itto",
     "JapaneseVoiceActors": [
@@ -72,7 +403,34 @@
     ]
   },
   {
+    "Name": "Arderne",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Arderne",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Furuoka Yuki",
+        "NativeName": "古岡 祐樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Aria",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aria",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fujisaki Momoko",
+        "NativeName": "藤崎 桃子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Arlecchino",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/arlecchino.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Arlecchino",
     "JapaneseVoiceActors": [
@@ -84,7 +442,138 @@
     ]
   },
   {
+    "Name": "Aroni",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aroni",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tsutsui Kanna",
+        "NativeName": "筒井 かんな",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Asmoday",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Asmoday",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kugimiya Rie",
+        "NativeName": "釘宮理恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Atefeh",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Atefeh",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yoshimori Misaki",
+        "NativeName": "吉森 未沙希",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Atossa",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Atossa",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tanaka Takako",
+        "NativeName": "田中 貴子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Aunt Zhang",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Aunt_Zhang",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Manaka Mikumo",
+        "NativeName": "間中 三雲",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Avice",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Avice",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Kurea",
+        "NativeName": "山口 久玲愛",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ayele",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ayele",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nodoka Yukina",
+        "NativeName": "和 ゆきな",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Azhdaha",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Azhdaha",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kiyasu Kouhei",
+        "NativeName": "喜安 浩平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Baishi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Baishi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mizuhana Amano",
+        "NativeName": "水花 天乃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Baiwen",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Baiwen",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amemiya Mito",
+        "NativeName": "雨宮 美都",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Baizhu",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/baizhu.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Baizhu",
     "JapaneseVoiceActors": [
@@ -97,6 +586,7 @@
   },
   {
     "Name": "Baizhu (Changsheng)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/baizhu.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Baizhu",
     "JapaneseVoiceActors": [
@@ -108,7 +598,34 @@
     ]
   },
   {
+    "Name": "Baltasar",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Baltasar",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tsuchiike Yuusuke",
+        "NativeName": "土池悠介",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Bao'er",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bao%27er",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Miyauchi Moeri",
+        "NativeName": "宮内 萌李",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Barbara",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/barbara.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Barbara",
     "JapaneseVoiceActors": [
@@ -120,7 +637,47 @@
     ]
   },
   {
+    "Name": "Barbeloth",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Barbeloth",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shintani Mayumi",
+        "NativeName": "新谷真弓",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Bavilliers",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bavilliers",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takabatake Renta",
+        "NativeName": "高畑 廉太",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Beatrice",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Beatrice",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Koshimizu Risa",
+        "NativeName": "小清水 里紗",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Beidou",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/beidou.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Beidou",
     "JapaneseVoiceActors": [
@@ -133,6 +690,7 @@
   },
   {
     "Name": "Bennett",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/bennett.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bennett",
     "JapaneseVoiceActors": [
@@ -144,7 +702,190 @@
     ]
   },
   {
+    "Name": "Bernhard",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bernhard",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Masahide",
+        "NativeName": "山口正秀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Biram",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Biram",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Furukawa Yutaka",
+        "NativeName": "古川 裕隆",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Blanche (Mondstadt)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Blanche_(Mondstadt)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ando Reina",
+        "NativeName": "安藤 鈴菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Blathine",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Blathine",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakurazawa Asahi",
+        "NativeName": "櫻澤 あさひ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Boborano",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Boborano",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sasa Tsubasa",
+        "NativeName": "笹翼",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Bolai",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bolai",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kubo Takuma",
+        "NativeName": "久保 拓馬",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Bona",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bona",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakura Mao",
+        "NativeName": "咲楽 菜央",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Bonanus",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bonanus",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shoji Yui",
+        "NativeName": "庄子裕衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Boreas",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Boreas",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kusunoki Taiten",
+        "NativeName": "楠 大典",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Bosacius",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bosacius",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Matsuda Kenichirou",
+        "NativeName": "松田健一郎",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Boyang",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Boyang",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabuchi Shohei",
+        "NativeName": "田渕将平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Bracari",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Bracari",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Oomori Kokoro",
+        "NativeName": "大森こころ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Cacucu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cacucu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Komatsu Shouhei",
+        "NativeName": "小松昌平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Callirhoe",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Callirhoe",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okaki Haruka",
+        "NativeName": "岡木 陽夏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Candace",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/candace.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Candace",
     "JapaneseVoiceActors": [
@@ -156,7 +897,151 @@
     ]
   },
   {
+    "Name": "Capac",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Capac",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kimura Akari",
+        "NativeName": "木村 朱里",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Capitano",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Capitano",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Narita Ken",
+        "NativeName": "成田剣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Caribert (NPC) (Hilichurl)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Caribert_(NPC)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Akagi Haruna",
+        "NativeName": "赤木 春菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Caribert (NPC) (Human)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Caribert_(NPC)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Inoue Yuki",
+        "NativeName": "井上 雄貴",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Celaeno",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Celaeno",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shinfuku Sakura",
+        "NativeName": "新福 桜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Chandra",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chandra",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nonoi Aki",
+        "NativeName": "野々井 爽",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Changchang",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Changchang",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Chihiro",
+        "NativeName": "渡辺 千絢",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Changsheng",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Changsheng",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shoji Yui",
+        "NativeName": "庄子裕衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Changshun",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Changshun",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Iizumi Momone",
+        "NativeName": "飯泉 桃音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Chard Lombro",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chard_Lombro",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shibasaki Noriko",
+        "NativeName": "芝崎 典子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Charles",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Charles",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Masutani Yasunori",
+        "NativeName": "増谷 康紀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Charlotte",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/charlotte.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Charlotte",
     "JapaneseVoiceActors": [
@@ -169,6 +1054,7 @@
   },
   {
     "Name": "Chasca",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/chasca.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chasca",
     "JapaneseVoiceActors": [
@@ -180,7 +1066,21 @@
     ]
   },
   {
+    "Name": "Cheven",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cheven",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakamura Sakura",
+        "NativeName": "中村 桜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Chevreuse",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/chevreuse.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chevreuse",
     "JapaneseVoiceActors": [
@@ -192,7 +1092,21 @@
     ]
   },
   {
+    "Name": "Child",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Child",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamamoto Ai",
+        "NativeName": "山本 亜衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Chiori",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/chiori.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chiori",
     "JapaneseVoiceActors": [
@@ -204,7 +1118,21 @@
     ]
   },
   {
+    "Name": "Chloris",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chloris",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nagaki Sakura",
+        "NativeName": "永木 さくら",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Chongyun",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/chongyun.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chongyun",
     "JapaneseVoiceActors": [
@@ -216,7 +1144,34 @@
     ]
   },
   {
+    "Name": "Chuychu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chuychu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Horigome Saya",
+        "NativeName": "堀籠沙耶",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Chuyi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Chuyi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kosaka Honoka",
+        "NativeName": "小坂 ほのか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Citlali",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/citlali.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Citlali",
     "JapaneseVoiceActors": [
@@ -228,7 +1183,21 @@
     ]
   },
   {
+    "Name": "Clervie",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Clervie",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Aoto Hiroka",
+        "NativeName": "青戸浩香",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Clorinde",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/clorinde.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Clorinde",
     "JapaneseVoiceActors": [
@@ -240,7 +1209,34 @@
     ]
   },
   {
+    "Name": "Clotaire",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Clotaire",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Abo Maria",
+        "NativeName": "阿保まりあ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Cochitta",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cochitta",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Iwahashi Yuka",
+        "NativeName": "岩橋 由佳",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Collei",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/collei.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Collei",
     "JapaneseVoiceActors": [
@@ -253,6 +1249,7 @@
   },
   {
     "Name": "Columbina",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/columbina.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Columbina",
     "JapaneseVoiceActors": [
@@ -264,7 +1261,86 @@
     ]
   },
   {
+    "Name": "Congzi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Congzi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabata Nene",
+        "NativeName": "田畑 寧々",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Cooper",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cooper",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sasamoto Naoki",
+        "NativeName": "笹本 直起",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Crucabena",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Crucabena",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nagashima Yuko",
+        "NativeName": "永島由子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Cuallee",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cuallee",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Wakamori Mizuki",
+        "NativeName": "若守 みづき",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Cucuya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cucuya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakahara Yuno",
+        "NativeName": "中原 ゆの",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Cui'er",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cui%27er",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fukuta Junna",
+        "NativeName": "福田 純梨",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Cyno",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/cyno.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cyno",
     "JapaneseVoiceActors": [
@@ -276,7 +1352,21 @@
     ]
   },
   {
+    "Name": "Cyrus (Mondstadt)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Cyrus_(Mondstadt)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tashiro Tetsuya",
+        "NativeName": "田代 哲哉",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Dahlia",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/dahlia.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dahlia",
     "JapaneseVoiceActors": [
@@ -288,7 +1378,47 @@
     ]
   },
   {
+    "Name": "Dainsleif",
+    "IsNpc": false,
+    "ImageUrl": "images/extensions/genshin-impact/characters/dainsleif.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dainsleif",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tsuda Kenjiro",
+        "NativeName": "津田健次郎",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dalong",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dalong",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakatomi Mana",
+        "NativeName": "中臣 真菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dandy",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dandy",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Dehya",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/dehya.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dehya",
     "JapaneseVoiceActors": [
@@ -300,7 +1430,34 @@
     ]
   },
   {
+    "Name": "Delaroche",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Delaroche",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tanaka Shiori",
+        "NativeName": "田中しおり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dietmar",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dietmar",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Zenyoji Kyohei",
+        "NativeName": "善養寺恭平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Diluc",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/diluc.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Diluc",
     "JapaneseVoiceActors": [
@@ -313,6 +1470,7 @@
   },
   {
     "Name": "Diona",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/diona.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Diona",
     "JapaneseVoiceActors": [
@@ -324,7 +1482,86 @@
     ]
   },
   {
+    "Name": "Direidyth",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Direidyth",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kurosaki Shiori",
+        "NativeName": "黒崎 しおり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dixin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dixin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Katsuno Rina",
+        "NativeName": "勝野 里奈",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dolora",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dolora",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Oomori Kokoro",
+        "NativeName": "大森こころ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dongdong",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dongdong",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dongsheng",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dongsheng",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabuchi Shohei",
+        "NativeName": "田渕将平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Donna",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Donna",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ellen Taira",
+        "NativeName": "平流 エレン",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Dori",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/dori.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dori",
     "JapaneseVoiceActors": [
@@ -336,7 +1573,60 @@
     ]
   },
   {
+    "Name": "Dottore",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dottore",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Seki Toshihiko",
+        "NativeName": "関俊彦",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dr. Edith",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dr._Edith",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dugu Shuo",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dugu_Shuo",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dunyarzad",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dunyarzad",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mikawa Haruna",
+        "NativeName": "三川華月",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Durin (Dragon)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/durin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Durin",
     "JapaneseVoiceActors": [
@@ -349,6 +1639,7 @@
   },
   {
     "Name": "Durin (Human)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/durin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Durin",
     "JapaneseVoiceActors": [
@@ -360,7 +1651,151 @@
     ]
   },
   {
+    "Name": "Dvalin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dvalin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takeuchi Shunsuke",
+        "NativeName": "武内 駿輔",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dvorak",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dvorak",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sanpei Yuuki",
+        "NativeName": "三瓶雄樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Dzenana",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dzenana",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hanaoka Shiori",
+        "NativeName": "花岡 志織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Eclancher",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Eclancher",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Abo Maria",
+        "NativeName": "阿保まりあ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Egeria",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Egeria",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yahagi Sayuri",
+        "NativeName": "矢作紗友里",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Eggie",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Eggie",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yuzuki Shoko",
+        "NativeName": "柚木 尚子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ei",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ei",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sawashiro Miyuki",
+        "NativeName": "沢城みゆき",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ekaterina",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ekaterina",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Iizumi Momone",
+        "NativeName": "飯泉 桃音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ellin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ellin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Oguri Moka",
+        "NativeName": "小栗 もか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Elphane",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Elphane",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mukai Live",
+        "NativeName": "向井 莉生",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Elzer",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Elzer",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fukuma Shunpei",
+        "NativeName": "福間竣兵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Emilie",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/emilie.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Emilie",
     "JapaneseVoiceActors": [
@@ -372,7 +1807,21 @@
     ]
   },
   {
+    "Name": "Enjou",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Enjou",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Satoshi",
+        "NativeName": "山口 恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Escoffier",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/escoffier.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Escoffier",
     "JapaneseVoiceActors": [
@@ -384,7 +1833,21 @@
     ]
   },
   {
+    "Name": "Esther",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Esther",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fukuta Junna",
+        "NativeName": "福田 純梨",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Eula",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/eula.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Eula",
     "JapaneseVoiceActors": [
@@ -396,7 +1859,47 @@
     ]
   },
   {
+    "Name": "Eunomia",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Eunomia",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hanaoka Shiori",
+        "NativeName": "花岡志織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Euphrasie",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Euphrasie",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Honami",
+        "NativeName": "ほなみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Eury",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Eury",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Erica Yoshizumi",
+        "NativeName": "吉住 絵里加",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Faruzan",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/faruzan.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Faruzan",
     "JapaneseVoiceActors": [
@@ -409,6 +1912,7 @@
   },
   {
     "Name": "Fischl",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/fischl.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Fischl",
     "JapaneseVoiceActors": [
@@ -421,6 +1925,7 @@
   },
   {
     "Name": "Fischl (Oz)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/fischl.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Fischl",
     "JapaneseVoiceActors": [
@@ -432,7 +1937,21 @@
     ]
   },
   {
+    "Name": "Fleicher",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Fleicher",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tsuchiike Yuusuke",
+        "NativeName": "土池悠介",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Flins",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/flins.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Flins",
     "JapaneseVoiceActors": [
@@ -444,7 +1963,47 @@
     ]
   },
   {
+    "Name": "Flo",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Flo",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Honami",
+        "NativeName": "ほなみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Flora",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Flora",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Aoto Hiroka",
+        "NativeName": "青戸浩香",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Focalors",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Focalors",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Minase Inori",
+        "NativeName": "水瀬いのり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Freminet",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/freminet.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Freminet",
     "JapaneseVoiceActors": [
@@ -456,7 +2015,34 @@
     ]
   },
   {
+    "Name": "Frithr",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Frithr",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Oda Anju",
+        "NativeName": "小田 杏樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Frozen Soul",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Frozen_Soul",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hatori Mami",
+        "NativeName": "羽鳥 まみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Furina",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/furina.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Furina",
     "JapaneseVoiceActors": [
@@ -468,7 +2054,21 @@
     ]
   },
   {
+    "Name": "Furong",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Furong",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fujita Yoko",
+        "NativeName": "藤田 曜子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Gaming",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/gaming.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Gaming",
     "JapaneseVoiceActors": [
@@ -481,6 +2081,7 @@
   },
   {
     "Name": "Ganyu",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/ganyu.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ganyu",
     "JapaneseVoiceActors": [
@@ -492,7 +2093,47 @@
     ]
   },
   {
+    "Name": "Garvipidam",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Garvipidam",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kajikawa Shohei",
+        "NativeName": "梶川 翔平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Gillian",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Gillian",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hanaoka Shiori",
+        "NativeName": "花岡 志織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Glory",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Glory",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabata Nene",
+        "NativeName": "田畑 寧々",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Gorou",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/gorou.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Gorou",
     "JapaneseVoiceActors": [
@@ -504,7 +2145,242 @@
     ]
   },
   {
+    "Name": "Grace",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Grace",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hatori Mami",
+        "NativeName": "羽鳥 まみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Grand Rook Sennichi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Grand_Rook_Sennichi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Masahide",
+        "NativeName": "山口正秀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Grandmaster Hanakado",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Grandmaster_Hanakado",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Granny Shan",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Granny_Shan",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Iizumi Momone",
+        "NativeName": "飯泉 桃音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Guanhai",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Guanhai",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mitou Yutaka",
+        "NativeName": "美藤 優",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Gulab",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Gulab",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Hiroshi",
+        "NativeName": "渡辺紘",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Hagihara",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hagihara",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Koga Erina",
+        "NativeName": "古賀英里奈",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Halfdan",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Halfdan",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabuchi Shohei",
+        "NativeName": "田渕将平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Haniyyah",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Haniyyah",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Aoto Hiroka",
+        "NativeName": "青戸浩香",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Hanyuuda Chizuru",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hanyuuda_Chizuru",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kiuchi Yukako",
+        "NativeName": "城内由茄子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Haumia",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Haumia",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Machida Kayu",
+        "NativeName": "町田 佳優",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Heinz",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Heinz",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yoshikawa Yuriko",
+        "NativeName": "吉川 幸宏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Hertta",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hertta",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hanaoka Shiori",
+        "NativeName": "花岡 志織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Heryshaf",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Heryshaf",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okai Katsunori",
+        "NativeName": "岡井 カツノリ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Hillie",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hillie",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amemiya Mito",
+        "NativeName": "雨宮 美都",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Hine",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hine",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Horigome Saya",
+        "NativeName": "堀籠沙耶",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Hisham",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hisham",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Hiroshi",
+        "NativeName": "渡辺紘",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Homura",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Homura",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Morisaki Miho",
+        "NativeName": "森嵜 美穂",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Hu Tao",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/hu-tao.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hu_Tao",
     "JapaneseVoiceActors": [
@@ -516,7 +2392,60 @@
     ]
   },
   {
+    "Name": "Huachu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Huachu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ninomiya Yukino",
+        "NativeName": "二ノ宮 雪乃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Huffman",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Huffman",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hayakawa Kei",
+        "NativeName": "早川 慧",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Hunza",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Hunza",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kawaguchi Sora",
+        "NativeName": "川口 蒼天",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "I. Ivanovna N.",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/I._Ivanovna_N.",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nazuka Kaori",
+        "NativeName": "名塚佳織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Iansan",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/iansan.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Iansan",
     "JapaneseVoiceActors": [
@@ -528,7 +2457,34 @@
     ]
   },
   {
+    "Name": "Idrisi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Idrisi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kojima Hideki",
+        "NativeName": "小島 英樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Idyia",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Idyia",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okamoto Mika",
+        "NativeName": "岡本美歌",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Ifa",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/ifa.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ifa",
     "JapaneseVoiceActors": [
@@ -541,6 +2497,7 @@
   },
   {
     "Name": "Ifa (Cacucu)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/ifa.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ifa",
     "JapaneseVoiceActors": [
@@ -553,6 +2510,7 @@
   },
   {
     "Name": "Illuga",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/illuga.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Illuga",
     "JapaneseVoiceActors": [
@@ -564,7 +2522,60 @@
     ]
   },
   {
+    "Name": "Ilyas",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ilyas",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yoshino Takahiro",
+        "NativeName": "吉野 貴大",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Inagi Hotomi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Inagi_Hotomi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okaki Haruka",
+        "NativeName": "岡木 陽夏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Inayah",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Inayah",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ellen Taira",
+        "NativeName": "平流 エレン",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Indarias",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Indarias",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Matsueda Yuka",
+        "NativeName": "松枝裕香",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Ineffa",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/ineffa.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ineffa",
     "JapaneseVoiceActors": [
@@ -576,7 +2587,99 @@
     ]
   },
   {
+    "Name": "Inkanak",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Inkanak",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Wakamori Mizuki",
+        "NativeName": "若守 みづき",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Iratxa",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Iratxa",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Oguri Moka",
+        "NativeName": "小栗 もか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Iron Tongue Tian",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Iron_Tongue_Tian",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Masahide",
+        "NativeName": "山口 正秀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Isak",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Isak",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shimizu Seira",
+        "NativeName": "清水星来",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Istaroth",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Istaroth",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Murase Ayumu",
+        "NativeName": "村瀬 歩",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ivanovich",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ivanovich",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mitou Yutaka",
+        "NativeName": "美藤 優",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ix Raq'lapuj Chue'q Buluk",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ix_Raq%27lapuj_Chue%27q_Buluk",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nohana Yuuka",
+        "NativeName": "野椛 ゆうか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Jahoda",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/jahoda.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Jahoda",
     "JapaneseVoiceActors": [
@@ -588,7 +2691,21 @@
     ]
   },
   {
+    "Name": "Janaki",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Janaki",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Chihiro",
+        "NativeName": "渡辺 千絢",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Jean",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/jean.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Jean",
     "JapaneseVoiceActors": [
@@ -600,7 +2717,60 @@
     ]
   },
   {
+    "Name": "Jeht",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Jeht",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Aihara Kotomi",
+        "NativeName": "藍原 ことみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Jilliana",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Jilliana",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sawaki Yuuha",
+        "NativeName": "沢樹 ゆうは",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Jolanta",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Jolanta",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nishihata Misako",
+        "NativeName": "西畑 美沙子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Judar",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Judar",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fukuma Shunpei",
+        "NativeName": "福間竣兵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Kachina",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kachina.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kachina",
     "JapaneseVoiceActors": [
@@ -613,6 +2783,7 @@
   },
   {
     "Name": "Kaedehara Kazuha",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kaedehara-kazuha.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kaedehara_Kazuha",
     "JapaneseVoiceActors": [
@@ -625,6 +2796,7 @@
   },
   {
     "Name": "Kaeya",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kaeya.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kaeya",
     "JapaneseVoiceActors": [
@@ -636,7 +2808,21 @@
     ]
   },
   {
+    "Name": "Kamai Kenji",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kamai_Kenji",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sanpei Yuuki",
+        "NativeName": "三瓶雄樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Kamisato Ayaka",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kamisato-ayaka.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kamisato_Ayaka",
     "JapaneseVoiceActors": [
@@ -649,6 +2835,7 @@
   },
   {
     "Name": "Kamisato Ayato",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kamisato-ayato.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kamisato_Ayato",
     "JapaneseVoiceActors": [
@@ -660,7 +2847,73 @@
     ]
   },
   {
+    "Name": "Kamuna Harunosuke",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kamuna_Harunosuke",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamagishi Haruo",
+        "NativeName": "山岸治雄",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Kasala",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kasala",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mogami Tsuguo",
+        "NativeName": "最上嗣生",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Katayoun",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Katayoun",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nishizono Yukino",
+        "NativeName": "西薗 雪乃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Katheryne",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Katheryne",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mai Sato",
+        "NativeName": "佐藤舞",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Kaunea",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kaunea",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nishihata Misako",
+        "NativeName": "西畑 美沙子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Kaveh",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kaveh.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kaveh",
     "JapaneseVoiceActors": [
@@ -673,6 +2926,7 @@
   },
   {
     "Name": "Keqing",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/keqing.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Keqing",
     "JapaneseVoiceActors": [
@@ -684,7 +2938,21 @@
     ]
   },
   {
+    "Name": "Kid Kujirai",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kid_Kujirai",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Akagi Haruna",
+        "NativeName": "赤木 春菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Kinich",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kinich.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kinich",
     "JapaneseVoiceActors": [
@@ -697,6 +2965,7 @@
   },
   {
     "Name": "Kinich (Ajaw)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kinich.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kinich",
     "JapaneseVoiceActors": [
@@ -709,6 +2978,7 @@
   },
   {
     "Name": "Kirara",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kirara.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kirara",
     "JapaneseVoiceActors": [
@@ -721,6 +2991,7 @@
   },
   {
     "Name": "Klee",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/klee.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Klee",
     "JapaneseVoiceActors": [
@@ -732,7 +3003,21 @@
     ]
   },
   {
+    "Name": "Kotimy",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kotimy",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakurai Mia",
+        "NativeName": "櫻井 海亜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Kujou Sara",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kujou-sara.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kujou_Sara",
     "JapaneseVoiceActors": [
@@ -745,6 +3030,7 @@
   },
   {
     "Name": "Kuki Shinobu",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/kuki-shinobu.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kuki_Shinobu",
     "JapaneseVoiceActors": [
@@ -756,7 +3042,73 @@
     ]
   },
   {
+    "Name": "Kun Jun",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kun_Jun",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kiyasu Kouhei",
+        "NativeName": "喜安 浩平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Kurisu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Kurisu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Satoshi",
+        "NativeName": "山口 恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Labna",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Labna",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Matsumura Natsuki",
+        "NativeName": "松村 夏紀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Laetitia",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Laetitia",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shigeeda Kiko",
+        "NativeName": "重枝 希呼",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Lan",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lan",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Lan Yan",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/lan-yan.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lan_Yan",
     "JapaneseVoiceActors": [
@@ -768,7 +3120,21 @@
     ]
   },
   {
+    "Name": "Lanoire",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lanoire",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kawamoto Yukine",
+        "NativeName": "川本 夕姫音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Lauma",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/lauma.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lauma",
     "JapaneseVoiceActors": [
@@ -780,7 +3146,34 @@
     ]
   },
   {
+    "Name": "Laume",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Laume",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ninomiya Eri",
+        "NativeName": "二宮愛理",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Laverune",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Laverune",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tooru Arizumi",
+        "NativeName": "有隅 融",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Layla",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/layla.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Layla",
     "JapaneseVoiceActors": [
@@ -792,7 +3185,112 @@
     ]
   },
   {
+    "Name": "Lelienne",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lelienne",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ninomiya Eri",
+        "NativeName": "二宮愛理",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Leone",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Leone",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shigeeda Kiko",
+        "NativeName": "重枝希呼",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Lepine-Pauline",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lepine-Pauline",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Oomori Mai",
+        "NativeName": "大森舞",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Leuca",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Leuca",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kanaya Rika",
+        "NativeName": "叶矢りか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Levin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Levin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kamiya Naomichi",
+        "NativeName": "神谷 直道",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Lianca",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lianca",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Matsumura Natsuki",
+        "NativeName": "松村 夏紀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Liben",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Liben",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tsushima Daiki",
+        "NativeName": "對馬 大樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Liloupar",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Liloupar",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kitazaki Hitomi",
+        "NativeName": "北﨑 ひとみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Linnea",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/linnea.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Linnea",
     "JapaneseVoiceActors": [
@@ -805,6 +3303,7 @@
   },
   {
     "Name": "Lisa",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/lisa.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lisa",
     "JapaneseVoiceActors": [
@@ -816,7 +3315,47 @@
     ]
   },
   {
+    "Name": "Lisette",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lisette",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yashiro Ruka",
+        "NativeName": "屋代瑠花",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Little Flying Squirrel",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Little_Flying_Squirrel",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mito Yui",
+        "NativeName": "美藤 悠衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Little Meng",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Little_Meng",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Lohen",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/lohen.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lohen",
     "JapaneseVoiceActors": [
@@ -828,7 +3367,47 @@
     ]
   },
   {
+    "Name": "Lourvine",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lourvine",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yumino Maki",
+        "NativeName": "弓野 真紀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Lovi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lovi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Abo Maria",
+        "NativeName": "阿保まりあ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Luzerne",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Luzerne",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Oomori Kokoro",
+        "NativeName": "大森こころ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Lynette",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/lynette.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lynette",
     "JapaneseVoiceActors": [
@@ -841,6 +3420,7 @@
   },
   {
     "Name": "Lyney",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/lyney.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lyney",
     "JapaneseVoiceActors": [
@@ -852,7 +3432,190 @@
     ]
   },
   {
+    "Name": "Lynn",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lynn",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kosaka Honoka",
+        "NativeName": "小坂 ほのか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Lyulka",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lyulka",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakura Yae",
+        "NativeName": "櫻 弥恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Macani",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Macani",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Isaka Akinosuke",
+        "NativeName": "伊坂 秋之介",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Madame Ping",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Madame_Ping",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Iizumi Momone",
+        "NativeName": "飯泉 桃音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Makoto",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Makoto",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sawashiro Miyuki",
+        "NativeName": "沢城 みゆき",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Manet",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Manet",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ninomiya Eri",
+        "NativeName": "二宮愛理",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Manetho",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Manetho",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Inoyama Shouji",
+        "NativeName": "猪山 翔志",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Manie",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Manie",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amemiya Mito",
+        "NativeName": "雨宮 美都",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Marcel (Fontaine)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Marcel_(Fontaine)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tada Keita",
+        "NativeName": "多田啓太",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Margaret",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Margaret",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mizuhana Amano",
+        "NativeName": "水花 天乃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Marjorie",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Marjorie",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakatomi Mana",
+        "NativeName": "中臣 真菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Marla",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Marla",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ando Reina",
+        "NativeName": "安藤 鈴菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Masakatsu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Masakatsu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Koyatsu Hisanori",
+        "NativeName": "小谷津 央典",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Matho",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Matho",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakura Mao",
+        "NativeName": "咲楽 菜央",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Mavuika",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/mavuika.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mavuika",
     "JapaneseVoiceActors": [
@@ -864,7 +3627,86 @@
     ]
   },
   {
+    "Name": "Meilhat",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Meilhat",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kawamoto Yukine",
+        "NativeName": "川本 夕姫音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Mela",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mela",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Koga Erina",
+        "NativeName": "古賀英里奈",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Meng",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Meng",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kojima Hideki",
+        "NativeName": "小島 英樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Menilek",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Menilek",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yanai Ken",
+        "NativeName": "谷内健",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Menogias",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Menogias",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kuze Shuichi",
+        "NativeName": "久瀬秋一",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Mequignon",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mequignon",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Abo Maria",
+        "NativeName": "阿保まりあ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Mika",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/mika.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mika",
     "JapaneseVoiceActors": [
@@ -876,7 +3718,34 @@
     ]
   },
   {
+    "Name": "Mikoshi Chiyo",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mikoshi_Chiyo",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Akahori Mikaru",
+        "NativeName": "赤堀 実華琉",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Moco",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Moco",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabata Nene",
+        "NativeName": "田畑 寧々",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Mona",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/mona.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mona",
     "JapaneseVoiceActors": [
@@ -888,7 +3757,125 @@
     ]
   },
   {
+    "Name": "Monica",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Monica",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Chisuga Haruka",
+        "NativeName": "千菅 春香",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Moniotte",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Moniotte",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tanaka Shiori",
+        "NativeName": "田中しおり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Monsieur Volonte Nouvelle",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Monsieur_Volonte_Nouvelle",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Zenyoji Kyohei",
+        "NativeName": "善養寺恭平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Moricztill",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Moricztill",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Inui Mayuri",
+        "NativeName": "乾 真由璃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Morris",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Morris",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Masahide",
+        "NativeName": "山口 正秀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Moseis",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Moseis",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Masahide",
+        "NativeName": "山口正秀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Mountain Shaper",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mountain_Shaper",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tashiro Tetsuya",
+        "NativeName": "田代哲哉",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Mr. Nine",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mr._Nine",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nishizono Yukino",
+        "NativeName": "西薗 雪乃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Mu Chen",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mu_Chen",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Mualani",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/mualani.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mualani",
     "JapaneseVoiceActors": [
@@ -900,7 +3887,60 @@
     ]
   },
   {
+    "Name": "Muirne",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Muirne",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shigeeda Kiko",
+        "NativeName": "重枝希呼",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Naberius",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Naberius",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Yuriko",
+        "NativeName": "山口 由里子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Nadia (Liyue)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nadia_(Liyue)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Nagato Sachiko",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nagato_Sachiko",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hatori Mami",
+        "NativeName": "羽鳥 まみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Nahida",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/nahida.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nahida",
     "JapaneseVoiceActors": [
@@ -912,7 +3952,21 @@
     ]
   },
   {
+    "Name": "Nanteuil",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nanteuil",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Suzuki Yuuto",
+        "NativeName": "鈴木 裕斗",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Navia",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/navia.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Navia",
     "JapaneseVoiceActors": [
@@ -924,7 +3978,21 @@
     ]
   },
   {
+    "Name": "Nechca",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nechca",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nose Midori",
+        "NativeName": "野瀬 碧里",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Nefer",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/nefer.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nefer",
     "JapaneseVoiceActors": [
@@ -936,7 +4004,21 @@
     ]
   },
   {
+    "Name": "Nelly",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nelly",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Kurea",
+        "NativeName": "山口 久玲愛",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Neuvillette",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/neuvillette.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Neuvillette",
     "JapaneseVoiceActors": [
@@ -949,6 +4031,7 @@
   },
   {
     "Name": "Nicole",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/nicole.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nicole",
     "JapaneseVoiceActors": [
@@ -961,6 +4044,7 @@
   },
   {
     "Name": "Nilou",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/nilou.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nilou",
     "JapaneseVoiceActors": [
@@ -973,6 +4057,7 @@
   },
   {
     "Name": "Ningguang",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/ningguang.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ningguang",
     "JapaneseVoiceActors": [
@@ -984,7 +4069,21 @@
     ]
   },
   {
+    "Name": "Niwa Hisahide",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Niwa_Hisahide",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Junta Terashima",
+        "NativeName": "寺島惇太",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Noelle",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/noelle.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Noelle",
     "JapaneseVoiceActors": [
@@ -996,7 +4095,86 @@
     ]
   },
   {
+    "Name": "Nolette",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Nolette",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Honami",
+        "NativeName": "ほなみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Norma",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Norma",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Suzuyama Misa",
+        "NativeName": "鈴山 未彩",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Odette",
+    "IsNpc": false,
+    "ImageUrl": "images/extensions/genshin-impact/characters/odette.png",
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Odette",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Uesaka Sumire",
+        "NativeName": "上坂すみれ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Olaf",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Olaf",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Masahide",
+        "NativeName": "山口正秀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Olaya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Olaya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Motomiya Kana",
+        "NativeName": "本宮 佳奈",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Orlog",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Orlog",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Akiyoshi Yui",
+        "NativeName": "秋吉 優衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Ororon",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/ororon.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ororon",
     "JapaneseVoiceActors": [
@@ -1008,7 +4186,203 @@
     ]
   },
   {
+    "Name": "Otila",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Otila",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kikuchi Shion",
+        "NativeName": "菊千始音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ottnit",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ottnit",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kawamoto Yukine",
+        "NativeName": "川本 夕姫音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Otto",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Otto",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mano Kyosuke",
+        "NativeName": "真野 恭輔",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Oz",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Oz",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Masutani Yasunori",
+        "NativeName": "増谷 康紀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Paban",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Paban",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kanaya Rika",
+        "NativeName": "叶矢りか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Padisarah (NPC)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Padisarah_(NPC)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mochikuzi Eri",
+        "NativeName": "望月 えり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Pahsiv",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Pahsiv",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Miyauchi Moeri",
+        "NativeName": "宮内 萌李",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Paimon",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Paimon",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Koga Aoi",
+        "NativeName": "古賀葵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Pantalone",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Pantalone",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hoshino Takanori",
+        "NativeName": "星野 貴紀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Patchi the Curious",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Patchi_the_Curious",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamauchi Nao",
+        "NativeName": "山内 捺生",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Pedrush",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Pedrush",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Hiroshi",
+        "NativeName": "渡辺紘",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Permingeat",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Permingeat",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Maeda Kirara",
+        "NativeName": "前田 きらら",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Pervases",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Pervases",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fukuma Shunpei",
+        "NativeName": "福間竣兵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Pierro",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Pierro",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mamiya Yasuhiro",
+        "NativeName": "間宮 康弘",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Plessia",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Plessia",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kanaya Rika",
+        "NativeName": "叶矢りか",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Prune",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/prune.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Prune",
     "JapaneseVoiceActors": [
@@ -1020,7 +4394,73 @@
     ]
   },
   {
+    "Name": "Puca",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Puca",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yashiro Ruka",
+        "NativeName": "屋代瑠花",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Pulcinella",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Pulcinella",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Cho",
+        "NativeName": "チョー",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Puma",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Puma",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kimura Akari",
+        "NativeName": "木村 朱里",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Qianyun",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Qianyun",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Katsuno Rina",
+        "NativeName": "勝野 里奈",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Qiming",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Qiming",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Qiqi",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/qiqi.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Qiqi",
     "JapaneseVoiceActors": [
@@ -1032,7 +4472,60 @@
     ]
   },
   {
+    "Name": "Qiu'ge",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Qiu%27ge",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amemiya Mito",
+        "NativeName": "雨宮 美都",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Quinn",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Quinn",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mano Kyosuke",
+        "NativeName": "真野 恭輔",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Raed",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Raed",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kojima Hideki",
+        "NativeName": "小島 英樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Rahman",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rahman",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kyousuke Mano",
+        "NativeName": "真野恭輔",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Raiden Shogun",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/raiden-shogun.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Raiden_Shogun",
     "JapaneseVoiceActors": [
@@ -1044,7 +4537,21 @@
     ]
   },
   {
+    "Name": "Rana",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rana",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Taira Ellen",
+        "NativeName": "平流 エレン",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Razor",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/razor.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Razor",
     "JapaneseVoiceActors": [
@@ -1056,7 +4563,125 @@
     ]
   },
   {
+    "Name": "Rege",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rege",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tsuchiike Yuusuke",
+        "NativeName": "土池悠介",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Reika",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Reika",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakatomi Mana",
+        "NativeName": "中臣 真菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Rerir",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rerir",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sasanuma Akira",
+        "NativeName": "笹沼 晃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Rhinedottir",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rhinedottir",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Yuriko",
+        "NativeName": "山口 由里子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Rhinedottir - Yamaguchi Yuriko (山口 由里子) &",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rhinedottir",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tanaka Atsuko",
+        "NativeName": "田中敦子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Rima",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rima",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shimizu Seira",
+        "NativeName": "清水星来",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Roialte",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Roialte",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Zenyoji Kyohei",
+        "NativeName": "善養寺恭平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Roland",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Roland",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakurai Kouki",
+        "NativeName": "櫻井皓基",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ronova",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ronova",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Orikasa Fumiko",
+        "NativeName": "折笠富美子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Rosaria",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/rosaria.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rosaria",
     "JapaneseVoiceActors": [
@@ -1068,7 +4693,34 @@
     ]
   },
   {
+    "Name": "Rosemary",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rosemary",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sawaki Yuuha",
+        "NativeName": "沢樹 ゆうは",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Rufina",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rufina",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yashiro Ruka",
+        "NativeName": "屋代瑠花",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Sandrone",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/sandrone.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sandrone",
     "JapaneseVoiceActors": [
@@ -1081,6 +4733,7 @@
   },
   {
     "Name": "Sangonomiya Kokomi",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/sangonomiya-kokomi.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sangonomiya_Kokomi",
     "JapaneseVoiceActors": [
@@ -1092,7 +4745,34 @@
     ]
   },
   {
+    "Name": "Sara",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sara",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nagaki Sakura",
+        "NativeName": "永木 さくら",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Savanna",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Savanna",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sasamoto Natsue",
+        "NativeName": "笹本菜津枝",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Sayu",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/sayu.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sayu",
     "JapaneseVoiceActors": [
@@ -1104,7 +4784,86 @@
     ]
   },
   {
+    "Name": "Schubert",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Schubert",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takanaka Hiroyuki",
+        "NativeName": "高仲祐之",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Schulz",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Schulz",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kunihiro Daisuke",
+        "NativeName": "國廣 大介",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Seamus Pegg",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Seamus_Pegg",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kawahara Motoyuki",
+        "NativeName": "川原 元幸",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sebas",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sebas",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Baretta Yutaka",
+        "NativeName": "バレッタ 裕",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sedene",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sedene",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Abo Maria",
+        "NativeName": "阿保まりあ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Serene",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Serene",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hanaoka Shiori",
+        "NativeName": "花岡志織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Sethos",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/sethos.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sethos",
     "JapaneseVoiceActors": [
@@ -1116,7 +4875,34 @@
     ]
   },
   {
+    "Name": "Shani",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Shani",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakatomi Mana",
+        "NativeName": "中臣 真菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sharif",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sharif",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kojima Hideki",
+        "NativeName": "小島 英樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Shenhe",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/shenhe.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Shenhe",
     "JapaneseVoiceActors": [
@@ -1129,6 +4915,7 @@
   },
   {
     "Name": "Shikanoin Heizou",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/shikanoin-heizou.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Shikanoin_Heizou",
     "JapaneseVoiceActors": [
@@ -1140,7 +4927,60 @@
     ]
   },
   {
+    "Name": "Shiliu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Shiliu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Suzuyama Misa",
+        "NativeName": "鈴山 未彩",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Shurayh",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Shurayh",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakatomi Mana",
+        "NativeName": "中臣 真菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Shuyun",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Shuyun",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Hiroshi",
+        "NativeName": "渡辺紘",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Siegfria",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Siegfria",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okaki Haruka",
+        "NativeName": "岡木 陽夏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Sigewinne",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/sigewinne.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sigewinne",
     "JapaneseVoiceActors": [
@@ -1152,7 +4992,60 @@
     ]
   },
   {
+    "Name": "Signora",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Signora",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shoji Yui",
+        "NativeName": "庄子裕衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Silver",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Silver",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Uenishi Teppei",
+        "NativeName": "上西哲平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Six-Fingered José",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Six-Fingered_Jos%C3%A9",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kunihiro Daisuke",
+        "NativeName": "國廣 大介",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Siyu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Siyu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Anna Ishikawa",
+        "NativeName": "石川 明日菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Skirk",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/skirk.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Skirk",
     "JapaneseVoiceActors": [
@@ -1164,7 +5057,112 @@
     ]
   },
   {
+    "Name": "Skofnungr",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Skofnungr",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ohizu Kairi",
+        "NativeName": "大井津 海里",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sluasi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sluasi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Koga Erina",
+        "NativeName": "古賀英里奈",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Soncco",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Soncco",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nodoka Yukina",
+        "NativeName": "和 ゆきな",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sonnet",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sonnet",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nanase Ayaka",
+        "NativeName": "七瀬 彩夏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sorush",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sorush",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shirasu Saho",
+        "NativeName": "白砂沙帆",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sousi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sousi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Murakami Yūya",
+        "NativeName": "村上裕哉",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Squirrel (Summertime Odyssey)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Squirrel_(Summertime_Odyssey)",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takase Yasuyuki",
+        "NativeName": "高瀬 泰幸",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Subject Two",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Subject_Two",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nojima Kenji",
+        "NativeName": "野島 健児",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Sucrose",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/sucrose.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sucrose",
     "JapaneseVoiceActors": [
@@ -1176,7 +5174,60 @@
     ]
   },
   {
+    "Name": "Sundjatta",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sundjatta",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kobayashi Tatsuya",
+        "NativeName": "小林達也",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Surtalogi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Surtalogi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takeuchi Ryōta",
+        "NativeName": "竹内良太",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Taj Radkani",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Taj_Radkani",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takahashi Kenji",
+        "NativeName": "高橋研二",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tarno",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tarno",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nonoi Aki",
+        "NativeName": "野々井 爽",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Tartaglia",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/tartaglia.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tartaglia",
     "JapaneseVoiceActors": [
@@ -1188,7 +5239,86 @@
     ]
   },
   {
+    "Name": "Tejima",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tejima",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamagishi Haruo",
+        "NativeName": "山岸治雄",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Teppei",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Teppei",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Iguchi Yuuichi",
+        "NativeName": "井口 祐一",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tetreaux",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tetreaux",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sasamoto Naoki",
+        "NativeName": "笹本 直起",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Teucer",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Teucer",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tamura Mutsumi",
+        "NativeName": "田村 睦心",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "The Shogun",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/The_Shogun",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sawashiro Miyuki",
+        "NativeName": "沢城 みゆき",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tholindis",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tholindis",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takamiya Saori",
+        "NativeName": "高宮 彩織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Thoma",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/thoma.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Thoma",
     "JapaneseVoiceActors": [
@@ -1200,7 +5330,21 @@
     ]
   },
   {
+    "Name": "Thoth",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Thoth",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shimada Takatora",
+        "NativeName": "島田 高虎",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Tighnari",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/tighnari.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tighnari",
     "JapaneseVoiceActors": [
@@ -1212,7 +5356,60 @@
     ]
   },
   {
+    "Name": "Tikraq",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tikraq",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakurai Mia",
+        "NativeName": "櫻井 海亜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Timmie",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Timmie",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nakatomi Mana",
+        "NativeName": "中臣 真菜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Toba",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Toba",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hasuda Miki",
+        "NativeName": "蓮田 美紀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tonina",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tonina",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hirabayashi Konatsu",
+        "NativeName": "平林 瑚夏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Traveler (Female)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/traveler.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Traveler",
     "JapaneseVoiceActors": [
@@ -1225,6 +5422,7 @@
   },
   {
     "Name": "Traveler (Male)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/traveler.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Traveler",
     "JapaneseVoiceActors": [
@@ -1236,7 +5434,151 @@
     ]
   },
   {
+    "Name": "Traveler's Sibling (Aether)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Traveler%27s_Sibling",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shun Horie",
+        "NativeName": "堀江瞬",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Traveler's Sibling (Lumine)",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Traveler%27s_Sibling",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Aoi Yuuki",
+        "NativeName": "悠木碧",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tristane",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tristane",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Shigeeda Kiko",
+        "NativeName": "重枝希呼",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Trudaine",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Trudaine",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hanaoka Shiori",
+        "NativeName": "花岡志織",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tsaritsa",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tsaritsa",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tomatsu Haruka",
+        "NativeName": "戸松 遥",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tubby",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tubby",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Chihiro",
+        "NativeName": "渡辺 千絢",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Tupac",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tupac",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ejiri Takumi",
+        "NativeName": "江尻拓己",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Ulman",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ulman",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tsushima Daiki",
+        "NativeName": "對馬 大樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Uncle Anpu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Uncle_Anpu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kojima Hideki",
+        "NativeName": "小島 英樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Uncle Tian",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Uncle_Tian",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kubo Takuma",
+        "NativeName": "久保 拓馬",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Uncle Yun",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Uncle_Yun",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Satoshi",
+        "NativeName": "山口 恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Varesa",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/varesa.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Varesa",
     "JapaneseVoiceActors": [
@@ -1249,6 +5591,7 @@
   },
   {
     "Name": "Varka",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/varka.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Varka",
     "JapaneseVoiceActors": [
@@ -1260,7 +5603,34 @@
     ]
   },
   {
+    "Name": "Vautrin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vautrin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Haruka Jinya",
+        "NativeName": "陣谷 遥",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Vedrfolnir",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vedrfolnir",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Horiuchi Kenyu",
+        "NativeName": "堀内賢雄",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Venti",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/venti.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Venti",
     "JapaneseVoiceActors": [
@@ -1272,7 +5642,151 @@
     ]
   },
   {
+    "Name": "Verr Goldet",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Verr_Goldet",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mizuhana Amano",
+        "NativeName": "水花 天乃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Vesna",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vesna",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hirano Aya",
+        "NativeName": "平野 綾",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Vichama",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vichama",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Irie Naoki",
+        "NativeName": "入江 直樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Victoria",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Victoria",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hatori Mami",
+        "NativeName": "羽鳥 まみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Vile",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vile",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hatori Mami",
+        "NativeName": "羽鳥 まみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Vilwis",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vilwis",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Akiyoshi Yui",
+        "NativeName": "秋吉 優衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Vind",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vind",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okaki Haruka",
+        "NativeName": "岡木 陽夏",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Vodyanitsa",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vodyanitsa",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ito Kanae",
+        "NativeName": "伊藤 かな恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Wagner",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wagner",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabuchi Shohei",
+        "NativeName": "田渕将平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Waiz",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Waiz",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Chihiro",
+        "NativeName": "渡辺 千絢",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Wakanka",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wakanka",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Aizawa Ayumi",
+        "NativeName": "藍沢 歩実",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Wanderer",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wanderer.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wanderer",
     "JapaneseVoiceActors": [
@@ -1284,7 +5798,47 @@
     ]
   },
   {
+    "Name": "Wang'ya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wang%27ya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okamoto Mika",
+        "NativeName": "岡本 美歌",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Wanjiru",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wanjiru",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yoshida Sayuri",
+        "NativeName": "吉田小百合",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Wanyan",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wanyan",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Watanabe Chihiro",
+        "NativeName": "渡辺 千絢",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Wonderland Manekin - Manekin (Voice A)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
     "JapaneseVoiceActors": [
@@ -1297,6 +5851,7 @@
   },
   {
     "Name": "Wonderland Manekin - Manekin (Voice B)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
     "JapaneseVoiceActors": [
@@ -1309,6 +5864,7 @@
   },
   {
     "Name": "Wonderland Manekin - Manekin (Voice C)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
     "JapaneseVoiceActors": [
@@ -1321,6 +5877,7 @@
   },
   {
     "Name": "Wonderland Manekin - Manekina (Voice A)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
     "JapaneseVoiceActors": [
@@ -1333,6 +5890,7 @@
   },
   {
     "Name": "Wonderland Manekin - Manekina (Voice B)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
     "JapaneseVoiceActors": [
@@ -1345,6 +5903,7 @@
   },
   {
     "Name": "Wonderland Manekin - Manekina (Voice C)",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wonderland-manekin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wonderland_Manekin",
     "JapaneseVoiceActors": [
@@ -1357,6 +5916,7 @@
   },
   {
     "Name": "Wriothesley",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/wriothesley.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wriothesley",
     "JapaneseVoiceActors": [
@@ -1368,7 +5928,47 @@
     ]
   },
   {
+    "Name": "Wuyuan",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wuyuan",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Amemiya Mito",
+        "NativeName": "雨宮 美都",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Wyratt",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Wyratt",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Mitou Yutaka",
+        "NativeName": "美藤 優",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Xbalanque",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xbalanque",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Okada Yuki",
+        "NativeName": "岡田雄樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Xiangling",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/xiangling.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xiangling",
     "JapaneseVoiceActors": [
@@ -1381,6 +5981,7 @@
   },
   {
     "Name": "Xianyun",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/xianyun.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xianyun",
     "JapaneseVoiceActors": [
@@ -1393,6 +5994,7 @@
   },
   {
     "Name": "Xiao",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/xiao.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xiao",
     "JapaneseVoiceActors": [
@@ -1405,6 +6007,7 @@
   },
   {
     "Name": "Xilonen",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/xilonen.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xilonen",
     "JapaneseVoiceActors": [
@@ -1416,7 +6019,21 @@
     ]
   },
   {
+    "Name": "Xinghuo",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xinghuo",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nonoi Aki",
+        "NativeName": "野々井 爽",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Xingqiu",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/xingqiu.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xingqiu",
     "JapaneseVoiceActors": [
@@ -1429,6 +6046,7 @@
   },
   {
     "Name": "Xinyan",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/xinyan.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Xinyan",
     "JapaneseVoiceActors": [
@@ -1441,6 +6059,7 @@
   },
   {
     "Name": "Yae Miko",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/yae-miko.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yae_Miko",
     "JapaneseVoiceActors": [
@@ -1452,7 +6071,34 @@
     ]
   },
   {
+    "Name": "Yakov",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yakov",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Nonoi Aki",
+        "NativeName": "野々井 爽",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Yanagibashi Takuto",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yanagibashi_Takuto",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamaguchi Masahide",
+        "NativeName": "山口正秀",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Yanfei",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/yanfei.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yanfei",
     "JapaneseVoiceActors": [
@@ -1465,6 +6111,7 @@
   },
   {
     "Name": "Yaoyao",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/yaoyao.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yaoyao",
     "JapaneseVoiceActors": [
@@ -1476,7 +6123,34 @@
     ]
   },
   {
+    "Name": "Yareche",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yareche",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakurai Mia",
+        "NativeName": "櫻井 海亜",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Yegana",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yegana",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Asahi Mashiro",
+        "NativeName": "朝陽 ましろ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Yelan",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/yelan.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yelan",
     "JapaneseVoiceActors": [
@@ -1488,7 +6162,60 @@
     ]
   },
   {
+    "Name": "Ying'er",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Ying%27er",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ninomiya Yukino",
+        "NativeName": "二ノ宮 雪乃",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Yingzhu",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yingzhu",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Koshimizu Risa",
+        "NativeName": "小清水 里紗",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Yinxing",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yinxing",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Fukuta Junna",
+        "NativeName": "福田 純梨",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Yohualtecuhtin, Lord of the Night",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yohualtecuhtin,_Lord_of_the_Night",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Machida Yuuko",
+        "NativeName": "まちだ 侑子",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Yoimiya",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/yoimiya.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yoimiya",
     "JapaneseVoiceActors": [
@@ -1500,7 +6227,34 @@
     ]
   },
   {
+    "Name": "Youko",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Youko",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamamoto Ai",
+        "NativeName": "山本亜衣",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Yuehui",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yuehui",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tabuchi Shohei",
+        "NativeName": "田渕将平",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Yumemizuki Mizuki",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/yumemizuki-mizuki.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yumemizuki_Mizuki",
     "JapaneseVoiceActors": [
@@ -1513,6 +6267,7 @@
   },
   {
     "Name": "Yun Jin",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/yun-jin.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yun_Jin",
     "JapaneseVoiceActors": [
@@ -1524,7 +6279,47 @@
     ]
   },
   {
+    "Name": "Yunning",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yunning",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Ellen Taira",
+        "NativeName": "平流 エレン",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Yuyan",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Yuyan",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Hatori Mami",
+        "NativeName": "羽鳥 まみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Zhiyi",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Zhiyi",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kuze Shuichi",
+        "NativeName": "久瀬 秋",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Zhongli",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/zhongli.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Zhongli",
     "JapaneseVoiceActors": [
@@ -1536,13 +6331,53 @@
     ]
   },
   {
+    "Name": "Zhunan",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Zhunan",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Aizawa Ayumi",
+        "NativeName": "藍沢 歩実",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Zibai",
+    "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/zibai.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Zibai",
     "JapaneseVoiceActors": [
       {
         "Name": "Fukuen Misato",
         "NativeName": "福圓 美里",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Zvoni",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Zvoni",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Sakura Yae",
+        "NativeName": "櫻 弥恵",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Zyanya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Zyanya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Motomiya Kana",
+        "NativeName": "本宮 佳奈",
         "AniListStaffId": null
       }
     ]
