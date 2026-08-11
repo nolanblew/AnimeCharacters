@@ -2,7 +2,7 @@
 <img src="http://thankful-hill-03c7b7e1e.azurestaticapps.net/icon-512.png" width="90" height="90" />
 Quickly find the characters that a Seyu (voice actor) has also played in other anime you've watched as listed on [Kitsu](https://kitsu.app)
 
-The app supports optional media extensions. The core extension is **Kitsu Library** for anime, and **Genshin Impact** is available under the Video Games category so shared Japanese voice actors can appear alongside anime credits.
+The app supports optional media extensions. The core extension is **Kitsu Library** for anime, and **Genshin Impact** is available under the Video Games category so shared Japanese voice actors can appear alongside anime credits. Playable/upcoming characters and voiced NPCs remain part of the same game extension but appear in separate **Genshin Impact** and **Genshin Impact NPC** result sections.
 
 **Live site**: https://www.animecharacters.app/
 
@@ -42,7 +42,7 @@ A push to `main` builds and deploys the app to Azure Static Web Apps. Deployment
 
 ## Extension Data
 
-Genshin Impact character data is checked in under `AnimeCharacters/wwwroot/data/extensions/genshin-impact-characters.json` for low runtime overhead. Poster and character artwork is cached under `AnimeCharacters/wwwroot/images/extensions/genshin-impact` so the app does not hotlink Fandom images at runtime. Video game extensions are opt-in by default. The updater reads Fandom's `Character/List` page for character icon URLs and the `Voice_Actor` page for Japanese voice actor credits, splitting multi-voice rows into separate character credits such as Traveler (Male) and Traveler (Female). Refresh it on Windows with:
+Genshin Impact character data is checked in under `AnimeCharacters/wwwroot/data/extensions/genshin-impact-characters.json` for low runtime overhead. Poster and character artwork is cached under `AnimeCharacters/wwwroot/images/extensions/genshin-impact` so the app does not hotlink Fandom images at runtime. Video game extensions are opt-in by default. The updater reads Fandom's `Character/List` page for character icon URLs and the `Voice_Actor` plus `Voice_Actor/NPCs` pages for Japanese voice actor credits. It marks NPC credits for separate display and splits multi-voice rows into separate character credits such as Traveler (Male) and Traveler (Female). Refresh it on Windows with:
 
 ```powershell
 .\tools\Update-GenshinImpactData.ps1

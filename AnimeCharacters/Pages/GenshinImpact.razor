@@ -44,37 +44,27 @@
 
         <br />
 
-        <div class="item-grid">
-            @foreach (var character in FilteredCharacters)
-            {
-                <div class="item-container" @onclick="() => OpenVoiceActorAsync(character)">
-                    <div class="item">
-                        <div class="row">
-                            <div class="col">
-                                @if (!string.IsNullOrWhiteSpace(character.ImageUrl))
-                                {
-                                    <img src="@character.ImageUrl" alt="@character.Name" referrerpolicy="no-referrer" />
-                                }
-                                else
-                                {
-                                    <div class="tile-image-placeholder">@character.Name</div>
-                                }
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-md-center text-primary">@character.Name</div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="text-md-center text-secondary">@GetJapaneseVoiceActorName(character)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
+        @if (FilteredPlayableCharacters.Any())
+        {
+            <h3>Genshin Impact</h3>
+            <div class="item-grid">
+                @foreach (var character in FilteredPlayableCharacters)
+                {
+                    @CharacterTile(character)
+                }
+            </div>
+        }
+
+        @if (FilteredNpcCharacters.Any())
+        {
+            <h3>Genshin Impact NPC</h3>
+            <div class="item-grid">
+                @foreach (var character in FilteredNpcCharacters)
+                {
+                    @CharacterTile(character)
+                }
+            </div>
+        }
     }
     else
     {
@@ -105,6 +95,39 @@
                 GetJapaneseVoiceActorName(character).Contains(SearchFilter, StringComparison.OrdinalIgnoreCase));
         }
     }
+
+    public IEnumerable<GenshinImpactCharacter> FilteredPlayableCharacters =>
+        FilteredCharacters.Where(character => !character.IsNpc);
+
+    public IEnumerable<GenshinImpactCharacter> FilteredNpcCharacters =>
+        FilteredCharacters.Where(character => character.IsNpc);
+
+    RenderFragment CharacterTile(GenshinImpactCharacter character) => @<div class="item-container" @onclick="() => OpenVoiceActorAsync(character)">
+        <div class="item">
+            <div class="row">
+                <div class="col">
+                    @if (!string.IsNullOrWhiteSpace(character.ImageUrl))
+                    {
+                        <img src="@character.ImageUrl" alt="@character.Name" referrerpolicy="no-referrer" />
+                    }
+                    else
+                    {
+                        <div class="tile-image-placeholder">@character.Name</div>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="text-md-center text-primary">@character.Name</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="text-md-center text-secondary">@GetJapaneseVoiceActorName(character)</div>
+                </div>
+            </div>
+        </div>
+    </div>;
 
     protected override async Task OnInitializedAsync()
     {

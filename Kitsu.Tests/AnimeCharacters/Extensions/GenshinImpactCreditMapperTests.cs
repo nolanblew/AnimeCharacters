@@ -57,6 +57,29 @@ namespace Kitsu.Tests.AnimeCharacters.Extensions
         }
 
         [TestMethod]
+        public void CreateCredits_WhenCharacterIsNpc_ReturnsSeparateNpcSectionInSameGame()
+        {
+            var staff = CreateStaff(fullName: "Rie Kugimiya", nativeName: "釘宮理恵");
+            var characters = new List<GenshinImpactCharacter>
+            {
+                new()
+                {
+                    Name = "Asmoday",
+                    IsNpc = true,
+                    JapaneseVoiceActorName = "Kugimiya Rie",
+                    JapaneseVoiceActorNativeName = "釘宮理恵"
+                }
+            };
+
+            var credit = GenshinImpactCreditMapper.CreateCredits(staff, characters).Single();
+
+            Assert.AreEqual(BuiltInExtensionIds.GenshinImpact, credit.ExtensionId);
+            Assert.AreEqual("Genshin Impact NPC", credit.ExtensionName);
+            Assert.AreEqual("Genshin Impact", credit.MediaTitle);
+            Assert.AreEqual("Asmoday", credit.CharacterName);
+        }
+
+        [TestMethod]
         public void CreateCredits_WhenStaffDoesNotMatch_ReturnsNoCredits()
         {
             var staff = CreateStaff(fullName: "Tomoaki Maeno", nativeName: "前野智昭");

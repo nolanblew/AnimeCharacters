@@ -363,62 +363,80 @@ $coverSourceUrl = "https://static.wikia.nocookie.net/gensin-impact/images/8/80/G
 Save-RemoteImage -Uri $coverSourceUrl -OutputPath (Join-Path $ImageOutputDirectory "cover.png") -Status "Downloading Genshin Impact cover"
 $characterImageDirectory = Join-Path $ImageOutputDirectory "characters"
 
-$voiceActorUri = "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor&prop=text&format=json&formatversion=2"
-$voiceActorResponse = Invoke-JsonApiRequest -Uri $voiceActorUri -Status "Fetching Voice Actor table from Fandom"
-$html = $voiceActorResponse.parse.text
-
-$tableMatch = [regex]::Match($html, "<table[^>]*wikitable[\s\S]*?</table>")
-if (!$tableMatch.Success) {
-    throw "Could not find the playable character voice actor table."
-}
-
 $characters = New-Object System.Collections.Generic.List[object]
-$rows = [regex]::Matches($tableMatch.Value, "<tr[\s\S]*?</tr>") | Select-Object -Skip 1
-$rowCount = [Math]::Max($rows.Count, 1)
-$rowIndex = 0
+$seenCharacterCredits = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+$voiceActorSources = @(
+    [ordered]@{
+        Label = "characters"
+        Uri = "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor&prop=text&format=json&formatversion=2"
+        IsNpc = $false
+    },
+    [ordered]@{
+        Label = "NPCs"
+        Uri = "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor/NPCs&prop=text&format=json&formatversion=2"
+        IsNpc = $true
+    }
+)
 
-foreach ($row in $rows) {
-    $rowIndex++
-    Write-Progress -Activity "Updating Genshin Impact data" -Status "Parsing voice actor rows" -PercentComplete (($rowIndex / $rowCount) * 100)
-
-    $cells = [regex]::Matches($row.Value, "<td[^>]*>[\s\S]*?</td>")
-    if ($cells.Count -lt 4) {
-        continue
+foreach ($source in $voiceActorSources) {
+    $voiceActorResponse = Invoke-JsonApiRequest -Uri $source.Uri -Status "Fetching Genshin Impact $($source.Label) voice actor tables from Fandom"
+    $tableMatches = [regex]::Matches($voiceActorResponse.parse.text, "<table[^>]*wikitable[\s\S]*?</table>")
+    if ($tableMatches.Count -eq 0) {
+        throw "Could not find the Genshin Impact $($source.Label) voice actor tables."
     }
 
-    $characterLink = [regex]::Match($cells[0].Value, "<a href=`"(?<href>/wiki/[^`"]+)`" title=`"(?<title>[^`"]+)`"[^>]*>[\s\S]*?</a>")
-    if (!$characterLink.Success) {
-        continue
-    }
+    $rows = @($tableMatches | ForEach-Object { [regex]::Matches($_.Value, "<tr[\s\S]*?</tr>") | Select-Object -Skip 1 })
+    $rowCount = [Math]::Max($rows.Count, 1)
+    $rowIndex = 0
 
-    $characterName = [System.Net.WebUtility]::HtmlDecode($characterLink.Groups["title"].Value)
-    $japaneseVoiceActors = Convert-JapaneseVoiceActorEntries $cells[3].Value
+    foreach ($row in $rows) {
+        $rowIndex++
+        Write-Progress -Activity "Updating Genshin Impact data" -Status "Parsing $($source.Label) voice actor rows" -PercentComplete (($rowIndex / $rowCount) * 100)
 
-    if ($japaneseVoiceActors.Count -eq 0) {
-        continue
-    }
-
-    $sourceImageUrl = $iconUrlsByCharacterName[$characterName]
-    $localImageUrl = $null
-
-    if (![string]::IsNullOrWhiteSpace($sourceImageUrl)) {
-        $assetFileName = "$(Convert-AssetFileName $characterName).png"
-        Save-RemoteImage -Uri $sourceImageUrl -OutputPath (Join-Path $characterImageDirectory $assetFileName) -Status "Downloading $characterName icon"
-        $localImageUrl = "$ImageUrlPrefix/characters/$assetFileName"
-    }
-
-    foreach ($voiceActor in $japaneseVoiceActors) {
-        $variantLabel = $voiceActor.CharacterVariantLabel
-        if ($voiceActor.Contains("CharacterVariantLabel")) {
-            $voiceActor.Remove("CharacterVariantLabel")
+        $cells = [regex]::Matches($row.Value, "<td[^>]*>[\s\S]*?</td>")
+        if ($cells.Count -lt 4) {
+            continue
         }
 
-        [void] $characters.Add([ordered]@{
-            Name = Get-CharacterDisplayName $characterName $variantLabel $japaneseVoiceActors.Count
-            ImageUrl = $localImageUrl
-            WikiUrl = "https://genshin-impact.fandom.com$($characterLink.Groups["href"].Value)"
-            JapaneseVoiceActors = @($voiceActor)
-        })
+        $characterLink = [regex]::Match($cells[0].Value, "<a href=`"(?<href>/wiki/[^`"]+)`" title=`"(?<title>[^`"]+)`"[^>]*>[\s\S]*?</a>")
+        if (!$characterLink.Success) {
+            continue
+        }
+
+        $characterName = [System.Net.WebUtility]::HtmlDecode($characterLink.Groups["title"].Value)
+        $japaneseVoiceActors = Convert-JapaneseVoiceActorEntries $cells[3].Value
+        if ($japaneseVoiceActors.Count -eq 0) {
+            continue
+        }
+
+        $sourceImageUrl = $iconUrlsByCharacterName[$characterName]
+        $localImageUrl = $null
+        if (![string]::IsNullOrWhiteSpace($sourceImageUrl)) {
+            $assetFileName = "$(Convert-AssetFileName $characterName).png"
+            Save-RemoteImage -Uri $sourceImageUrl -OutputPath (Join-Path $characterImageDirectory $assetFileName) -Status "Downloading $characterName icon"
+            $localImageUrl = "$ImageUrlPrefix/characters/$assetFileName"
+        }
+
+        foreach ($voiceActor in $japaneseVoiceActors) {
+            $variantLabel = $voiceActor.CharacterVariantLabel
+            if ($voiceActor.Contains("CharacterVariantLabel")) {
+                $voiceActor.Remove("CharacterVariantLabel")
+            }
+
+            $displayName = Get-CharacterDisplayName $characterName $variantLabel $japaneseVoiceActors.Count
+            $creditKey = "$($source.IsNpc)|$displayName|$($voiceActor.Name)|$($voiceActor.NativeName)"
+            if (!$seenCharacterCredits.Add($creditKey)) {
+                continue
+            }
+
+            [void] $characters.Add([ordered]@{
+                Name = $displayName
+                IsNpc = [bool] $source.IsNpc
+                ImageUrl = $localImageUrl
+                WikiUrl = "https://genshin-impact.fandom.com$($characterLink.Groups["href"].Value)"
+                JapaneseVoiceActors = @($voiceActor)
+            })
+        }
     }
 }
 
@@ -444,16 +462,19 @@ if ($ResolveAniListIds) {
 }
 
 $missingImageCount = @($characters | Where-Object { [string]::IsNullOrWhiteSpace($_.ImageUrl) }).Count
+$npcCount = @($characters | Where-Object { $_.IsNpc }).Count
 $outputDirectory = Split-Path -Parent $OutputPath
 if (!(Test-Path -LiteralPath $outputDirectory)) {
     New-Item -ItemType Directory -Path $outputDirectory | Out-Null
 }
 
-$characters |
+$json = $characters |
     Sort-Object { $_.Name } |
-    ConvertTo-Json -Depth 12 |
-    Set-Content -Path $OutputPath -Encoding utf8
+    ConvertTo-Json -Depth 12
+$json = $json.Replace("`r`n", "`n") + "`n"
+[System.IO.File]::WriteAllText($OutputPath, $json, [System.Text.UTF8Encoding]::new($false))
 
 Write-Progress -Activity "Updating Genshin Impact data" -Completed
 Write-Output "Wrote $($characters.Count) Genshin Impact characters to $OutputPath"
+Write-Output "Genshin Impact NPC credits: $npcCount"
 Write-Output "Missing character icon URLs: $missingImageCount"

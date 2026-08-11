@@ -33,7 +33,7 @@ namespace AnimeCharacters.Extensions.GenshinImpact
             new()
             {
                 ExtensionId = BuiltInExtensionIds.GenshinImpact,
-                ExtensionName = "Genshin Impact",
+                ExtensionName = character.IsNpc ? "Genshin Impact NPC" : "Genshin Impact",
                 CategoryName = "Video Games",
                 MediaId = BuiltInExtensionIds.GenshinImpact,
                 MediaTitle = "Genshin Impact",
