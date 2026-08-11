@@ -6,6 +6,7 @@ namespace AnimeCharacters.Extensions.GenshinImpact
     public class GenshinImpactCharacter
     {
         public string Name { get; set; }
+        public bool IsNpc { get; set; }
         public string ImageUrl { get; set; }
         public string WikiUrl { get; set; }
         public string JapaneseVoiceActorName { get; set; }

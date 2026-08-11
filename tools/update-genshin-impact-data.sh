@@ -304,51 +304,75 @@ download_image(
     "Downloading Genshin Impact cover")
 character_image_dir = os.path.join(args.image_output_dir, "characters")
 
-voice_actor_url = "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor&prop=text&format=json&formatversion=2"
-voice_actor_response = request_json(voice_actor_url, status="Fetching Voice Actor table from Fandom")
-voice_actor_html = voice_actor_response["parse"]["text"]
-table_match = re.search(r"<table[^>]*wikitable[\s\S]*?</table>", voice_actor_html)
-if not table_match:
-    raise RuntimeError("Could not find the playable character voice actor table.")
-
 characters = []
-rows = re.findall(r"<tr[\s\S]*?</tr>", table_match.group(0))[1:]
-for index, row in enumerate(rows, start=1):
-    if index % 25 == 0:
-        write_progress(f"Parsing voice actor rows {index}/{len(rows)}")
+seen_character_credits = set()
+voice_actor_sources = (
+    (
+        "characters",
+        "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor&prop=text&format=json&formatversion=2",
+        False),
+    (
+        "NPCs",
+        "https://genshin-impact.fandom.com/api.php?action=parse&page=Voice_Actor/NPCs&prop=text&format=json&formatversion=2",
+        True),
+)
 
-    cells = re.findall(r"<td[^>]*>[\s\S]*?</td>", row)
-    if len(cells) < 4:
-        continue
+for source_label, voice_actor_url, is_npc in voice_actor_sources:
+    voice_actor_response = request_json(
+        voice_actor_url,
+        status=f"Fetching Genshin Impact {source_label} voice actor tables from Fandom")
+    voice_actor_html = voice_actor_response["parse"]["text"]
+    tables = re.findall(r"<table[^>]*wikitable[\s\S]*?</table>", voice_actor_html)
+    if not tables:
+        raise RuntimeError(f"Could not find the Genshin Impact {source_label} voice actor tables.")
 
-    character_link = re.search(r'<a href="(?P<href>/wiki/[^"]+)" title="(?P<title>[^"]+)"[^>]*>[\s\S]*?</a>', cells[0])
-    if not character_link:
-        continue
+    rows = [row for table in tables for row in re.findall(r"<tr[\s\S]*?</tr>", table)[1:]]
+    for index, row in enumerate(rows, start=1):
+        if index % 25 == 0:
+            write_progress(f"Parsing {source_label} voice actor rows {index}/{len(rows)}")
 
-    character_name = html.unescape(character_link.group("title"))
-    voice_actors = voice_actor_entries(cells[3])
+        cells = re.findall(r"<td[^>]*>[\s\S]*?</td>", row)
+        if len(cells) < 4:
+            continue
 
-    if not voice_actors:
-        continue
+        character_link = re.search(r'<a href="(?P<href>/wiki/[^"]+)" title="(?P<title>[^"]+)"[^>]*>[\s\S]*?</a>', cells[0])
+        if not character_link:
+            continue
 
-    source_image_url = icons_by_name.get(character_name)
-    local_image_url = None
-    if source_image_url:
-        file_name = f"{asset_file_name(character_name)}.png"
-        download_image(
-            source_image_url,
-            os.path.join(character_image_dir, file_name),
-            f"Downloading {character_name} icon")
-        local_image_url = f"{args.image_url_prefix}/characters/{file_name}"
+        character_name = html.unescape(character_link.group("title"))
+        voice_actors = voice_actor_entries(cells[3])
+        if not voice_actors:
+            continue
 
-    for voice_actor in voice_actors:
-        variant_label = voice_actor.pop("CharacterVariantLabel", None)
-        characters.append({
-            "Name": character_display_name(character_name, variant_label, len(voice_actors)),
-            "ImageUrl": local_image_url,
-            "WikiUrl": f"https://genshin-impact.fandom.com{character_link.group('href')}",
-            "JapaneseVoiceActors": [voice_actor],
-        })
+        source_image_url = icons_by_name.get(character_name)
+        local_image_url = None
+        if source_image_url:
+            file_name = f"{asset_file_name(character_name)}.png"
+            download_image(
+                source_image_url,
+                os.path.join(character_image_dir, file_name),
+                f"Downloading {character_name} icon")
+            local_image_url = f"{args.image_url_prefix}/characters/{file_name}"
+
+        for voice_actor in voice_actors:
+            variant_label = voice_actor.pop("CharacterVariantLabel", None)
+            display_name = character_display_name(character_name, variant_label, len(voice_actors))
+            credit_key = (
+                is_npc,
+                display_name.casefold(),
+                (voice_actor.get("Name") or "").casefold(),
+                (voice_actor.get("NativeName") or "").casefold())
+            if credit_key in seen_character_credits:
+                continue
+            seen_character_credits.add(credit_key)
+
+            characters.append({
+                "Name": display_name,
+                "IsNpc": is_npc,
+                "ImageUrl": local_image_url,
+                "WikiUrl": f"https://genshin-impact.fandom.com{character_link.group('href')}",
+                "JapaneseVoiceActors": [voice_actor],
+            })
 
 if args.resolve_anilist_ids:
     cache = {}
@@ -372,6 +396,8 @@ with open(args.output, "w", encoding="utf-8") as handle:
     handle.write("\n")
 
 missing_images = sum(1 for character in characters if not character.get("ImageUrl"))
+npc_count = sum(1 for character in characters if character["IsNpc"])
 print(f"Wrote {len(characters)} Genshin Impact characters to {args.output}")
+print(f"Genshin Impact NPC credits: {npc_count}")
 print(f"Missing character icon URLs: {missing_images}")
 PY
