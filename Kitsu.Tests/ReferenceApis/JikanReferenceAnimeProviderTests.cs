@@ -4,6 +4,7 @@ using ReferenceApis;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -169,6 +170,30 @@ namespace Kitsu.Tests.ReferenceApis
         }
 
         [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanRateLimits_HonorsRetryAfterAndRetries()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+
+                if (requestCount == 1)
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+                    response.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromMilliseconds(1));
+                    return response;
+                }
+
+                return JsonResponse("""{ "data": [] }""");
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            await provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title });
+
+            Assert.AreEqual(2, requestCount);
+        }
+
+        [TestMethod]
         public async Task GetMediaWithCharactersAsync_WhenJikanReturnsInvalidJson_ThrowsProviderException()
         {
             var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
@@ -183,6 +208,61 @@ namespace Kitsu.Tests.ReferenceApis
 
             StringAssert.Contains(exception.Message, "invalid response");
             Assert.IsInstanceOfType<JsonException>(exception.InnerException);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanRemainsUnavailable_StopsAfterThreeAttempts()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+                return new HttpResponseMessage(HttpStatusCode.BadGateway);
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            Assert.AreEqual(3, requestCount);
+            StringAssert.Contains(exception.Message, "HTTP 502");
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenNetworkRemainsUnavailable_StopsAfterThreeAttempts()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+                throw new HttpRequestException("Network unavailable");
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            Assert.AreEqual(3, requestCount);
+            StringAssert.Contains(exception.Message, "after retrying");
+            Assert.IsInstanceOfType<HttpRequestException>(exception.InnerException);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanReturnsPermanentFailure_DoesNotRetry()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            Assert.AreEqual(1, requestCount);
+            StringAssert.Contains(exception.Message, "HTTP 404");
         }
 
         static HttpResponseMessage JsonResponse(string json) =>
