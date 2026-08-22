@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Net;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -16,6 +18,8 @@ namespace ReferenceApis
     {
         const string _BASE_URL = "https://api.jikan.moe/v4/";
         static readonly TimeSpan _DEFAULT_REQUEST_TIMEOUT = TimeSpan.FromSeconds(15);
+        static readonly TimeSpan _DEFAULT_RETRY_DELAY = TimeSpan.FromMilliseconds(250);
+        const int _MAX_REQUEST_ATTEMPTS = 3;
         readonly HttpClient _httpClient;
         readonly TimeSpan _requestTimeout;
 
@@ -26,7 +30,7 @@ namespace ReferenceApis
         }
 
         public string Name => ReferenceProviderNames.Jikan;
-        public string DisplayName => "Jikan / MyAnimeList";
+        public string DisplayName => "Jikan";
 
         public ReferenceAnimeKey GetKnownAnimeKey(Anime anime) =>
             !string.IsNullOrWhiteSpace(anime?.MyAnimeListId)
@@ -134,21 +138,85 @@ namespace ReferenceApis
 
         async Task<T> GetFromJsonAsync<T>(string relativeUrl)
         {
+            using var cancellation = new CancellationTokenSource(_requestTimeout);
+            HttpRequestException lastRequestException = null;
+
             try
             {
-                using var cancellation = new CancellationTokenSource(_requestTimeout);
-                return await _httpClient.GetFromJsonAsync<T>(
-                    new Uri(new Uri(_BASE_URL), relativeUrl),
-                    cancellation.Token);
+                for (var attempt = 1; attempt <= _MAX_REQUEST_ATTEMPTS; attempt++)
+                {
+                    try
+                    {
+                        using var response = await _httpClient.GetAsync(
+                            new Uri(new Uri(_BASE_URL), relativeUrl),
+                            cancellation.Token);
+
+                        if (IsTransient(response.StatusCode) && attempt < _MAX_REQUEST_ATTEMPTS)
+                        {
+                            await Task.Delay(GetRetryDelay(response, attempt), cancellation.Token);
+                            continue;
+                        }
+
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw new ReferenceApiProviderException(
+                                $"Jikan returned HTTP {(int)response.StatusCode} ({response.ReasonPhrase}).");
+                        }
+
+                        try
+                        {
+                            return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellation.Token);
+                        }
+                        catch (Exception ex) when (ex is JsonException || ex is NotSupportedException)
+                        {
+                            throw new ReferenceApiProviderException("Jikan returned an invalid response.", ex);
+                        }
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        lastRequestException = ex;
+
+                        if (attempt == _MAX_REQUEST_ATTEMPTS)
+                        {
+                            break;
+                        }
+
+                        await Task.Delay(TimeSpan.FromMilliseconds(_DEFAULT_RETRY_DELAY.TotalMilliseconds * attempt), cancellation.Token);
+                    }
+                }
             }
-            catch (HttpRequestException ex)
-            {
-                throw new ReferenceApiProviderException("Jikan could not be reached.", ex);
-            }
-            catch (TaskCanceledException ex)
+            catch (OperationCanceledException ex) when (cancellation.IsCancellationRequested)
             {
                 throw new ReferenceApiProviderException("Jikan request timed out.", ex);
             }
+
+            throw new ReferenceApiProviderException("Jikan could not be reached after retrying.", lastRequestException);
+        }
+
+        static bool IsTransient(HttpStatusCode statusCode) =>
+            statusCode == HttpStatusCode.RequestTimeout
+            || statusCode == HttpStatusCode.TooManyRequests
+            || (int)statusCode >= 500;
+
+        static TimeSpan GetRetryDelay(HttpResponseMessage response, int attempt)
+        {
+            var retryAfter = response.Headers.RetryAfter;
+
+            if (retryAfter?.Delta is TimeSpan delta && delta > TimeSpan.Zero)
+            {
+                return delta;
+            }
+
+            if (retryAfter?.Date is DateTimeOffset date)
+            {
+                var delay = date - DateTimeOffset.UtcNow;
+                if (delay > TimeSpan.Zero)
+                {
+                    return delay;
+                }
+            }
+
+            return TimeSpan.FromMilliseconds(_DEFAULT_RETRY_DELAY.TotalMilliseconds * attempt);
         }
 
         Character ToCharacter(JikanAnimeCharacterEntry entry)
