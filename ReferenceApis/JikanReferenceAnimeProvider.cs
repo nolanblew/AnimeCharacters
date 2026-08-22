@@ -24,19 +24,29 @@ namespace ReferenceApis
         readonly HttpClient _httpClient;
         readonly TimeSpan _requestTimeout;
         readonly Uri _baseUri;
+        readonly string _providerName;
+        readonly string _displayName;
 
         public JikanReferenceAnimeProvider(
             HttpClient httpClient,
             TimeSpan? requestTimeout = null,
-            Uri baseUri = null)
+            Uri baseUri = null,
+            string providerName = null,
+            string displayName = null)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _requestTimeout = requestTimeout ?? _DEFAULT_REQUEST_TIMEOUT;
             _baseUri = NormalizeBaseUri(baseUri ?? new Uri(_BASE_URL));
+            _providerName = string.IsNullOrWhiteSpace(providerName)
+                ? ReferenceProviderNames.Jikan
+                : providerName.Trim();
+            _displayName = string.IsNullOrWhiteSpace(displayName)
+                ? (_providerName == ReferenceProviderNames.Jikan ? "Jikan" : _providerName)
+                : displayName.Trim();
         }
 
-        public string Name => ReferenceProviderNames.Jikan;
-        public string DisplayName => "Jikan";
+        public string Name => _providerName;
+        public string DisplayName => _displayName;
 
         public ReferenceAnimeKey GetKnownAnimeKey(Anime anime) =>
             !string.IsNullOrWhiteSpace(anime?.MyAnimeListId)
@@ -56,7 +66,7 @@ namespace ReferenceApis
 
             if (string.IsNullOrWhiteSpace(animeId) || !int.TryParse(animeId, out var id))
             {
-                throw new ReferenceApiProviderException("Jikan could not find a matching MyAnimeList anime id.");
+                throw new ReferenceApiProviderException($"{DisplayName} could not find a matching MyAnimeList anime id.");
             }
 
             var response = await GetFromJsonAsync<JikanDataResponse<List<JikanAnimeCharacterEntry>>>(
@@ -83,7 +93,7 @@ namespace ReferenceApis
         {
             if (!int.TryParse(id, out var staffId))
             {
-                throw new ReferenceApiProviderException("Jikan requires a numeric MyAnimeList person id.");
+                throw new ReferenceApiProviderException($"{DisplayName} requires a numeric MyAnimeList person id.");
             }
 
             var response = await GetFromJsonAsync<JikanDataResponse<JikanPerson>>($"people/{staffId}/full");
@@ -91,7 +101,7 @@ namespace ReferenceApis
 
             if (person == null)
             {
-                throw new ReferenceApiProviderException("Jikan did not return person data.");
+                throw new ReferenceApiProviderException($"{DisplayName} did not return person data.");
             }
 
             return new Staff(
@@ -166,7 +176,7 @@ namespace ReferenceApis
                         if (!response.IsSuccessStatusCode)
                         {
                             throw new ReferenceApiProviderException(
-                                $"Jikan returned HTTP {(int)response.StatusCode} ({response.ReasonPhrase}).");
+                                $"{DisplayName} returned HTTP {(int)response.StatusCode} ({response.ReasonPhrase}).");
                         }
 
                         try
@@ -175,7 +185,7 @@ namespace ReferenceApis
                         }
                         catch (Exception ex) when (ex is JsonException || ex is NotSupportedException)
                         {
-                            throw new ReferenceApiProviderException("Jikan returned an invalid response.", ex);
+                            throw new ReferenceApiProviderException($"{DisplayName} returned an invalid response.", ex);
                         }
                     }
                     catch (HttpRequestException ex)
@@ -193,17 +203,17 @@ namespace ReferenceApis
             }
             catch (OperationCanceledException ex) when (cancellation.IsCancellationRequested)
             {
-                throw new ReferenceApiProviderException("Jikan request timed out.", ex);
+                throw new ReferenceApiProviderException($"{DisplayName} request timed out.", ex);
             }
 
-            throw new ReferenceApiProviderException("Jikan could not be reached after retrying.", lastRequestException);
+            throw new ReferenceApiProviderException($"{DisplayName} could not be reached after retrying.", lastRequestException);
         }
 
         static Uri NormalizeBaseUri(Uri baseUri)
         {
             if (!baseUri.IsAbsoluteUri)
             {
-                throw new ArgumentException("The Jikan base URI must be absolute.", nameof(baseUri));
+                throw new ArgumentException("The provider base URI must be absolute.", nameof(baseUri));
             }
 
             var value = baseUri.AbsoluteUri;

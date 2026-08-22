@@ -4,5 +4,6 @@ namespace ReferenceApis
     {
         public const string AniList = "anilist";
         public const string Jikan = "jikan";
+        public const string Tenrai = "tenrai";
     }
 }
