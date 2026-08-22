@@ -32,7 +32,14 @@ namespace AnimeCharacters
             builder.Services.AddScoped<IVoiceActorCreditProvider, KitsuLibraryCreditProvider>();
             builder.Services.AddScoped<IVoiceActorCreditProvider, GenshinImpactCreditProvider>();
             builder.Services.AddScoped<IVoiceActorCreditService, VoiceActorCreditService>();
-            builder.Services.AddScoped<IReferenceAnimeProvider, JikanReferenceAnimeProvider>();
+            var configuredJikanBaseUrl = builder.Configuration["ReferenceApis:JikanBaseUrl"];
+            var jikanBaseUri = string.IsNullOrWhiteSpace(configuredJikanBaseUrl)
+                ? null
+                : new Uri(configuredJikanBaseUrl, UriKind.Absolute);
+            builder.Services.AddScoped<IReferenceAnimeProvider>(services =>
+                new JikanReferenceAnimeProvider(
+                    services.GetRequiredService<HttpClient>(),
+                    baseUri: jikanBaseUri));
             builder.Services.AddScoped<IReferenceAnimeProvider, AniListReferenceAnimeProvider>();
             builder.Services.AddScoped<IReferenceAnimeService, ReferenceAnimeService>();
 

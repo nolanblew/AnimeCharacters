@@ -76,7 +76,7 @@ Debug builds prepend the version with `dev-`.
 
 ### External APIs
 - **Kitsu.app API** - User authentication and anime library data
-- **Jikan/MyAnimeList API** - Primary source for character and Japanese voice actor information
+- **Jikan API** - Primary source for MyAnimeList character and Japanese voice actor data; transient failures are retried and `ReferenceApis:JikanBaseUrl` can select a compatible private/self-hosted endpoint
 - **AniList GraphQL API** - Fallback source for character and voice actor information
 
 ## Development Notes

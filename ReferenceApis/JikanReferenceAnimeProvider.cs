@@ -19,14 +19,20 @@ namespace ReferenceApis
         const string _BASE_URL = "https://api.jikan.moe/v4/";
         static readonly TimeSpan _DEFAULT_REQUEST_TIMEOUT = TimeSpan.FromSeconds(15);
         static readonly TimeSpan _DEFAULT_RETRY_DELAY = TimeSpan.FromMilliseconds(250);
+        static readonly TimeSpan _MAX_RETRY_DELAY = TimeSpan.FromSeconds(2);
         const int _MAX_REQUEST_ATTEMPTS = 3;
         readonly HttpClient _httpClient;
         readonly TimeSpan _requestTimeout;
+        readonly Uri _baseUri;
 
-        public JikanReferenceAnimeProvider(HttpClient httpClient, TimeSpan? requestTimeout = null)
+        public JikanReferenceAnimeProvider(
+            HttpClient httpClient,
+            TimeSpan? requestTimeout = null,
+            Uri baseUri = null)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _requestTimeout = requestTimeout ?? _DEFAULT_REQUEST_TIMEOUT;
+            _baseUri = NormalizeBaseUri(baseUri ?? new Uri(_BASE_URL));
         }
 
         public string Name => ReferenceProviderNames.Jikan;
@@ -50,7 +56,7 @@ namespace ReferenceApis
 
             if (string.IsNullOrWhiteSpace(animeId) || !int.TryParse(animeId, out var id))
             {
-                throw new ReferenceApiProviderException("MyAnimeList does not have a matching anime id.");
+                throw new ReferenceApiProviderException("Jikan could not find a matching MyAnimeList anime id.");
             }
 
             var response = await GetFromJsonAsync<JikanDataResponse<List<JikanAnimeCharacterEntry>>>(
@@ -77,7 +83,7 @@ namespace ReferenceApis
         {
             if (!int.TryParse(id, out var staffId))
             {
-                throw new ReferenceApiProviderException("MyAnimeList person ids must be numeric.");
+                throw new ReferenceApiProviderException("Jikan requires a numeric MyAnimeList person id.");
             }
 
             var response = await GetFromJsonAsync<JikanDataResponse<JikanPerson>>($"people/{staffId}/full");
@@ -85,7 +91,7 @@ namespace ReferenceApis
 
             if (person == null)
             {
-                throw new ReferenceApiProviderException("MyAnimeList did not return person data.");
+                throw new ReferenceApiProviderException("Jikan did not return person data.");
             }
 
             return new Staff(
@@ -148,7 +154,7 @@ namespace ReferenceApis
                     try
                     {
                         using var response = await _httpClient.GetAsync(
-                            new Uri(new Uri(_BASE_URL), relativeUrl),
+                            new Uri(_baseUri, relativeUrl),
                             cancellation.Token);
 
                         if (IsTransient(response.StatusCode) && attempt < _MAX_REQUEST_ATTEMPTS)
@@ -193,6 +199,17 @@ namespace ReferenceApis
             throw new ReferenceApiProviderException("Jikan could not be reached after retrying.", lastRequestException);
         }
 
+        static Uri NormalizeBaseUri(Uri baseUri)
+        {
+            if (!baseUri.IsAbsoluteUri)
+            {
+                throw new ArgumentException("The Jikan base URI must be absolute.", nameof(baseUri));
+            }
+
+            var value = baseUri.AbsoluteUri;
+            return value.EndsWith('/') ? baseUri : new Uri($"{value}/");
+        }
+
         static bool IsTransient(HttpStatusCode statusCode) =>
             statusCode == HttpStatusCode.RequestTimeout
             || statusCode == HttpStatusCode.TooManyRequests
@@ -204,7 +221,7 @@ namespace ReferenceApis
 
             if (retryAfter?.Delta is TimeSpan delta && delta > TimeSpan.Zero)
             {
-                return delta;
+                return Min(delta, _MAX_RETRY_DELAY);
             }
 
             if (retryAfter?.Date is DateTimeOffset date)
@@ -212,12 +229,15 @@ namespace ReferenceApis
                 var delay = date - DateTimeOffset.UtcNow;
                 if (delay > TimeSpan.Zero)
                 {
-                    return delay;
+                    return Min(delay, _MAX_RETRY_DELAY);
                 }
             }
 
             return TimeSpan.FromMilliseconds(_DEFAULT_RETRY_DELAY.TotalMilliseconds * attempt);
         }
+
+        static TimeSpan Min(TimeSpan value, TimeSpan maximum) =>
+            value <= maximum ? value : maximum;
 
         Character ToCharacter(JikanAnimeCharacterEntry entry)
         {
