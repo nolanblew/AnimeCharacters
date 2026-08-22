@@ -81,20 +81,25 @@ namespace Kitsu.Tests.ReferenceApis
         }
 
         [TestMethod]
-        public async Task GetMediaWithCharactersAsync_WhenBaseUriIsConfigured_UsesConfiguredJikanEndpoint()
+        public async Task GetMediaWithCharactersAsync_WhenProviderIdentityAndBaseUriAreConfigured_UsesThem()
         {
             var provider = new JikanReferenceAnimeProvider(
                 new HttpClient(new StubHttpMessageHandler(request =>
                 {
-                    Assert.AreEqual("https://jikan.internal/api/v4/anime/1/characters", request.RequestUri.ToString());
+                    Assert.AreEqual("https://api.tenrai.org/v1/anime/1/characters", request.RequestUri.ToString());
                     return JsonResponse("""{ "data": [] }""");
                 })),
-                baseUri: new Uri("https://jikan.internal/api/v4/"));
+                baseUri: new Uri("https://api.tenrai.org/v1/"),
+                providerName: ReferenceProviderNames.Tenrai,
+                displayName: "Tenrai");
             var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
 
             var result = await provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title });
 
-            Assert.IsNotNull(result.Media);
+            Assert.AreEqual(ReferenceProviderNames.Tenrai, provider.Name);
+            Assert.AreEqual("Tenrai", provider.DisplayName);
+            Assert.AreEqual(ReferenceProviderNames.Tenrai, result.AnimeKey.ProviderName);
+            Assert.AreEqual(ReferenceProviderNames.Tenrai, result.Media.ProviderName);
         }
 
         [TestMethod]
@@ -280,6 +285,22 @@ namespace Kitsu.Tests.ReferenceApis
 
             Assert.AreEqual(1, requestCount);
             StringAssert.Contains(exception.Message, "HTTP 404");
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenTenraiFails_UsesTenraiInDiagnostic()
+        {
+            var provider = new JikanReferenceAnimeProvider(
+                new HttpClient(new StubHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound))),
+                baseUri: new Uri("https://api.tenrai.org/v1/"),
+                providerName: ReferenceProviderNames.Tenrai,
+                displayName: "Tenrai");
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            StringAssert.StartsWith(exception.Message, "Tenrai returned HTTP 404");
         }
 
         static HttpResponseMessage JsonResponse(string json) =>
