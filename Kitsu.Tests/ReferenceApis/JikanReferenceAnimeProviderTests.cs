@@ -81,6 +81,23 @@ namespace Kitsu.Tests.ReferenceApis
         }
 
         [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenBaseUriIsConfigured_UsesConfiguredJikanEndpoint()
+        {
+            var provider = new JikanReferenceAnimeProvider(
+                new HttpClient(new StubHttpMessageHandler(request =>
+                {
+                    Assert.AreEqual("https://jikan.internal/api/v4/anime/1/characters", request.RequestUri.ToString());
+                    return JsonResponse("""{ "data": [] }""");
+                })),
+                baseUri: new Uri("https://jikan.internal/api/v4/"));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var result = await provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title });
+
+            Assert.IsNotNull(result.Media);
+        }
+
+        [TestMethod]
         public async Task GetStaffByIdAsync_MapsPersonDetailsAndVoiceRoles()
         {
             var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(request =>

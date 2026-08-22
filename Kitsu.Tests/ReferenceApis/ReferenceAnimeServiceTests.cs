@@ -5,6 +5,9 @@ using ReferenceApis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kitsu.Tests.ReferenceApis
@@ -103,6 +106,41 @@ namespace Kitsu.Tests.ReferenceApis
             Assert.AreSame(expected, result);
         }
 
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanRetriesAreExhausted_UsesAniListProvider()
+        {
+            var anime = new Anime { MyAnimeListId = "1", AnilistId = "5" };
+            var expected = new ReferenceMediaResult(
+                new ReferenceAnimeKey(ReferenceProviderNames.AniList, "5"),
+                new Media(
+                    5,
+                    new Titles("Cowboy Bebop", null, null, "Cowboy Bebop"),
+                    null,
+                    null,
+                    MediaStatus.Finished,
+                    new List<Character>(),
+                    ReferenceProviderNames.AniList));
+            var jikanRequestCount = 0;
+            var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
+            {
+                new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(() =>
+                {
+                    jikanRequestCount++;
+                    return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+                }))),
+                new StubProvider(
+                    ReferenceProviderNames.AniList,
+                    "AniList",
+                    item => item.AnilistId,
+                    getMedia: (_, _) => Task.FromResult(expected))
+            });
+
+            var result = await service.GetMediaWithCharactersAsync(anime, new[] { "Cowboy Bebop" });
+
+            Assert.AreEqual(3, jikanRequestCount);
+            Assert.AreSame(expected, result);
+        }
+
         class StubProvider : IReferenceAnimeProvider
         {
             readonly Func<Anime, string> _animeIdSelector;
@@ -144,6 +182,19 @@ namespace Kitsu.Tests.ReferenceApis
             public async Task<Staff> FindStaffByNameAsync(string name) =>
                 (await (_searchStaffByName?.Invoke(name) ?? Task.FromResult<IReadOnlyList<Staff>>(new List<Staff>())))
                     .FirstOrDefault();
+        }
+
+        class StubHttpMessageHandler : HttpMessageHandler
+        {
+            readonly Func<HttpResponseMessage> _responseFactory;
+
+            public StubHttpMessageHandler(Func<HttpResponseMessage> responseFactory)
+            {
+                _responseFactory = responseFactory;
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+                Task.FromResult(_responseFactory());
         }
     }
 }
