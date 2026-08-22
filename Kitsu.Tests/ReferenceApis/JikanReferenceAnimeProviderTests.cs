@@ -4,7 +4,9 @@ using ReferenceApis;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -79,6 +81,28 @@ namespace Kitsu.Tests.ReferenceApis
         }
 
         [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenProviderIdentityAndBaseUriAreConfigured_UsesThem()
+        {
+            var provider = new JikanReferenceAnimeProvider(
+                new HttpClient(new StubHttpMessageHandler(request =>
+                {
+                    Assert.AreEqual("https://api.tenrai.org/v1/anime/1/characters", request.RequestUri.ToString());
+                    return JsonResponse("""{ "data": [] }""");
+                })),
+                baseUri: new Uri("https://api.tenrai.org/v1/"),
+                providerName: ReferenceProviderNames.Tenrai,
+                displayName: "Tenrai");
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var result = await provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title });
+
+            Assert.AreEqual(ReferenceProviderNames.Tenrai, provider.Name);
+            Assert.AreEqual("Tenrai", provider.DisplayName);
+            Assert.AreEqual(ReferenceProviderNames.Tenrai, result.AnimeKey.ProviderName);
+            Assert.AreEqual(ReferenceProviderNames.Tenrai, result.Media.ProviderName);
+        }
+
+        [TestMethod]
         public async Task GetStaffByIdAsync_MapsPersonDetailsAndVoiceRoles()
         {
             var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(request =>
@@ -139,6 +163,144 @@ namespace Kitsu.Tests.ReferenceApis
                 () => provider.GetStaffByIdAsync("37562"));
 
             Assert.AreEqual("Jikan request timed out.", exception.Message);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanIsTemporarilyUnavailable_RetriesRequest()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+
+                if (requestCount == 1)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                    {
+                        Content = new StringContent("Temporary upstream failure")
+                    };
+                }
+
+                return JsonResponse("""{ "data": [] }""");
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var result = await provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title });
+
+            Assert.AreEqual(2, requestCount);
+            Assert.IsNotNull(result.Media);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanRateLimits_HonorsRetryAfterAndRetries()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+
+                if (requestCount == 1)
+                {
+                    var response = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+                    response.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromMilliseconds(1));
+                    return response;
+                }
+
+                return JsonResponse("""{ "data": [] }""");
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            await provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title });
+
+            Assert.AreEqual(2, requestCount);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanReturnsInvalidJson_ThrowsProviderException()
+        {
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+                new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("<html>Gateway error</html>", Encoding.UTF8, "text/html")
+                })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            StringAssert.Contains(exception.Message, "invalid response");
+            Assert.IsInstanceOfType<JsonException>(exception.InnerException);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanRemainsUnavailable_StopsAfterThreeAttempts()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+                return new HttpResponseMessage(HttpStatusCode.BadGateway);
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            Assert.AreEqual(3, requestCount);
+            StringAssert.Contains(exception.Message, "HTTP 502");
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenNetworkRemainsUnavailable_StopsAfterThreeAttempts()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+                throw new HttpRequestException("Network unavailable");
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            Assert.AreEqual(3, requestCount);
+            StringAssert.Contains(exception.Message, "after retrying");
+            Assert.IsInstanceOfType<HttpRequestException>(exception.InnerException);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanReturnsPermanentFailure_DoesNotRetry()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            Assert.AreEqual(1, requestCount);
+            StringAssert.Contains(exception.Message, "HTTP 404");
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenTenraiFails_UsesTenraiInDiagnostic()
+        {
+            var provider = new JikanReferenceAnimeProvider(
+                new HttpClient(new StubHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound))),
+                baseUri: new Uri("https://api.tenrai.org/v1/"),
+                providerName: ReferenceProviderNames.Tenrai,
+                displayName: "Tenrai");
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            StringAssert.StartsWith(exception.Message, "Tenrai returned HTTP 404");
         }
 
         static HttpResponseMessage JsonResponse(string json) =>

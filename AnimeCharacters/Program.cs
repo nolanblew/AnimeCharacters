@@ -32,7 +32,22 @@ namespace AnimeCharacters
             builder.Services.AddScoped<IVoiceActorCreditProvider, KitsuLibraryCreditProvider>();
             builder.Services.AddScoped<IVoiceActorCreditProvider, GenshinImpactCreditProvider>();
             builder.Services.AddScoped<IVoiceActorCreditService, VoiceActorCreditService>();
-            builder.Services.AddScoped<IReferenceAnimeProvider, JikanReferenceAnimeProvider>();
+            var tenraiBaseUri = new Uri(
+                builder.Configuration["ReferenceApis:TenraiBaseUrl"] ?? "https://api.tenrai.org/v1/",
+                UriKind.Absolute);
+            var jikanBaseUri = new Uri(
+                builder.Configuration["ReferenceApis:JikanBaseUrl"] ?? "https://api.jikan.moe/v4/",
+                UriKind.Absolute);
+            builder.Services.AddScoped<IReferenceAnimeProvider>(services =>
+                new JikanReferenceAnimeProvider(
+                    services.GetRequiredService<HttpClient>(),
+                    baseUri: tenraiBaseUri,
+                    providerName: ReferenceProviderNames.Tenrai,
+                    displayName: "Tenrai"));
+            builder.Services.AddScoped<IReferenceAnimeProvider>(services =>
+                new JikanReferenceAnimeProvider(
+                    services.GetRequiredService<HttpClient>(),
+                    baseUri: jikanBaseUri));
             builder.Services.AddScoped<IReferenceAnimeProvider, AniListReferenceAnimeProvider>();
             builder.Services.AddScoped<IReferenceAnimeService, ReferenceAnimeService>();
 

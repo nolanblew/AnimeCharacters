@@ -5,6 +5,10 @@ using ReferenceApis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Kitsu.Tests.ReferenceApis
@@ -22,14 +26,15 @@ namespace Kitsu.Tests.ReferenceApis
             };
             var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
             {
-                new StubProvider(ReferenceProviderNames.Jikan, "Jikan / MyAnimeList", anime => anime.MyAnimeListId),
+                new StubProvider(ReferenceProviderNames.Tenrai, "Tenrai", anime => anime.MyAnimeListId),
+                new StubProvider(ReferenceProviderNames.Jikan, "Jikan", anime => anime.MyAnimeListId),
                 new StubProvider(ReferenceProviderNames.AniList, "AniList", anime => anime.AnilistId)
             });
 
             var keys = service.GetKnownAnimeKeys(anime).Select(key => key.CacheKey).ToList();
 
             CollectionAssert.AreEquivalent(
-                new[] { "jikan:1", "anilist:5" },
+                new[] { "tenrai:1", "jikan:1", "anilist:5" },
                 keys);
         }
 
@@ -70,24 +75,137 @@ namespace Kitsu.Tests.ReferenceApis
             Assert.AreSame(expectedStaff, staff);
         }
 
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenFirstProviderFails_UsesNextProvider()
+        {
+            var anime = new Anime { MyAnimeListId = "1", AnilistId = "5" };
+            var expected = new ReferenceMediaResult(
+                new ReferenceAnimeKey(ReferenceProviderNames.AniList, "5"),
+                new Media(
+                    5,
+                    new Titles("Cowboy Bebop", null, null, "Cowboy Bebop"),
+                    null,
+                    null,
+                    MediaStatus.Finished,
+                    new List<Character>(),
+                    ReferenceProviderNames.AniList));
+            var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
+            {
+                new StubProvider(
+                    ReferenceProviderNames.Jikan,
+                    "Jikan",
+                    item => item.MyAnimeListId,
+                    getMedia: (_, _) => throw new ReferenceApiProviderException("Jikan returned an invalid response.")),
+                new StubProvider(
+                    ReferenceProviderNames.AniList,
+                    "AniList",
+                    item => item.AnilistId,
+                    getMedia: (_, _) => Task.FromResult(expected))
+            });
+
+            var result = await service.GetMediaWithCharactersAsync(anime, new[] { "Cowboy Bebop" });
+
+            Assert.AreSame(expected, result);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenTenraiRetriesAreExhausted_UsesJikanProvider()
+        {
+            var anime = new Anime { MyAnimeListId = "1" };
+            var tenraiRequestCount = 0;
+            var jikanRequestCount = 0;
+            var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
+            {
+                new JikanReferenceAnimeProvider(
+                    new HttpClient(new StubHttpMessageHandler(() =>
+                    {
+                        tenraiRequestCount++;
+                        return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+                    })),
+                    baseUri: new Uri("https://api.tenrai.org/v1/"),
+                    providerName: ReferenceProviderNames.Tenrai,
+                    displayName: "Tenrai"),
+                new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(() =>
+                {
+                    jikanRequestCount++;
+                    return JsonResponse("""{ "data": [] }""");
+                })))
+            });
+
+            var result = await service.GetMediaWithCharactersAsync(anime, new[] { "Cowboy Bebop" });
+
+            Assert.AreEqual(3, tenraiRequestCount);
+            Assert.AreEqual(1, jikanRequestCount);
+            Assert.AreEqual(ReferenceProviderNames.Jikan, result.AnimeKey.ProviderName);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenTenraiAndJikanRetriesAreExhausted_UsesAniListProvider()
+        {
+            var anime = new Anime { MyAnimeListId = "1", AnilistId = "5" };
+            var expected = new ReferenceMediaResult(
+                new ReferenceAnimeKey(ReferenceProviderNames.AniList, "5"),
+                new Media(
+                    5,
+                    new Titles("Cowboy Bebop", null, null, "Cowboy Bebop"),
+                    null,
+                    null,
+                    MediaStatus.Finished,
+                    new List<Character>(),
+                    ReferenceProviderNames.AniList));
+            var tenraiRequestCount = 0;
+            var jikanRequestCount = 0;
+            var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
+            {
+                new JikanReferenceAnimeProvider(
+                    new HttpClient(new StubHttpMessageHandler(() =>
+                    {
+                        tenraiRequestCount++;
+                        return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+                    })),
+                    baseUri: new Uri("https://api.tenrai.org/v1/"),
+                    providerName: ReferenceProviderNames.Tenrai,
+                    displayName: "Tenrai"),
+                new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(() =>
+                {
+                    jikanRequestCount++;
+                    return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+                }))),
+                new StubProvider(
+                    ReferenceProviderNames.AniList,
+                    "AniList",
+                    item => item.AnilistId,
+                    getMedia: (_, _) => Task.FromResult(expected))
+            });
+
+            var result = await service.GetMediaWithCharactersAsync(anime, new[] { "Cowboy Bebop" });
+
+            Assert.AreEqual(3, tenraiRequestCount);
+            Assert.AreEqual(3, jikanRequestCount);
+            Assert.AreSame(expected, result);
+        }
+
         class StubProvider : IReferenceAnimeProvider
         {
             readonly Func<Anime, string> _animeIdSelector;
             readonly Func<string, Task<Staff>> _getStaffById;
             readonly Func<string, Task<IReadOnlyList<Staff>>> _searchStaffByName;
+            readonly Func<Anime, IReadOnlyCollection<string>, Task<ReferenceMediaResult>> _getMedia;
 
             public StubProvider(
                 string name,
                 string displayName,
                 Func<Anime, string> animeIdSelector,
                 Func<string, Task<Staff>> getStaffById = null,
-                Func<string, Task<IReadOnlyList<Staff>>> searchStaffByName = null)
+                Func<string, Task<IReadOnlyList<Staff>>> searchStaffByName = null,
+                Func<Anime, IReadOnlyCollection<string>, Task<ReferenceMediaResult>> getMedia = null)
             {
                 Name = name;
                 DisplayName = displayName;
                 _animeIdSelector = animeIdSelector;
                 _getStaffById = getStaffById;
                 _searchStaffByName = searchStaffByName;
+                _getMedia = getMedia;
             }
 
             public string Name { get; }
@@ -100,7 +218,7 @@ namespace Kitsu.Tests.ReferenceApis
             }
 
             public Task<ReferenceMediaResult> GetMediaWithCharactersAsync(Anime anime, IReadOnlyCollection<string> searchTitles) =>
-                Task.FromResult<ReferenceMediaResult>(null);
+                _getMedia?.Invoke(anime, searchTitles) ?? Task.FromResult<ReferenceMediaResult>(null);
 
             public Task<Staff> GetStaffByIdAsync(string id) =>
                 _getStaffById?.Invoke(id) ?? Task.FromResult<Staff>(null);
@@ -109,5 +227,24 @@ namespace Kitsu.Tests.ReferenceApis
                 (await (_searchStaffByName?.Invoke(name) ?? Task.FromResult<IReadOnlyList<Staff>>(new List<Staff>())))
                     .FirstOrDefault();
         }
+
+        class StubHttpMessageHandler : HttpMessageHandler
+        {
+            readonly Func<HttpResponseMessage> _responseFactory;
+
+            public StubHttpMessageHandler(Func<HttpResponseMessage> responseFactory)
+            {
+                _responseFactory = responseFactory;
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+                Task.FromResult(_responseFactory());
+        }
+
+        static HttpResponseMessage JsonResponse(string json) =>
+            new(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
     }
 }

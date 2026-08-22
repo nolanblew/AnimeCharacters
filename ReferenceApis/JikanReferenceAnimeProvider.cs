@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Net;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -16,17 +18,35 @@ namespace ReferenceApis
     {
         const string _BASE_URL = "https://api.jikan.moe/v4/";
         static readonly TimeSpan _DEFAULT_REQUEST_TIMEOUT = TimeSpan.FromSeconds(15);
+        static readonly TimeSpan _DEFAULT_RETRY_DELAY = TimeSpan.FromMilliseconds(250);
+        static readonly TimeSpan _MAX_RETRY_DELAY = TimeSpan.FromSeconds(2);
+        const int _MAX_REQUEST_ATTEMPTS = 3;
         readonly HttpClient _httpClient;
         readonly TimeSpan _requestTimeout;
+        readonly Uri _baseUri;
+        readonly string _providerName;
+        readonly string _displayName;
 
-        public JikanReferenceAnimeProvider(HttpClient httpClient, TimeSpan? requestTimeout = null)
+        public JikanReferenceAnimeProvider(
+            HttpClient httpClient,
+            TimeSpan? requestTimeout = null,
+            Uri baseUri = null,
+            string providerName = null,
+            string displayName = null)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _requestTimeout = requestTimeout ?? _DEFAULT_REQUEST_TIMEOUT;
+            _baseUri = NormalizeBaseUri(baseUri ?? new Uri(_BASE_URL));
+            _providerName = string.IsNullOrWhiteSpace(providerName)
+                ? ReferenceProviderNames.Jikan
+                : providerName.Trim();
+            _displayName = string.IsNullOrWhiteSpace(displayName)
+                ? (_providerName == ReferenceProviderNames.Jikan ? "Jikan" : _providerName)
+                : displayName.Trim();
         }
 
-        public string Name => ReferenceProviderNames.Jikan;
-        public string DisplayName => "Jikan / MyAnimeList";
+        public string Name => _providerName;
+        public string DisplayName => _displayName;
 
         public ReferenceAnimeKey GetKnownAnimeKey(Anime anime) =>
             !string.IsNullOrWhiteSpace(anime?.MyAnimeListId)
@@ -46,7 +66,7 @@ namespace ReferenceApis
 
             if (string.IsNullOrWhiteSpace(animeId) || !int.TryParse(animeId, out var id))
             {
-                throw new ReferenceApiProviderException("MyAnimeList does not have a matching anime id.");
+                throw new ReferenceApiProviderException($"{DisplayName} could not find a matching MyAnimeList anime id.");
             }
 
             var response = await GetFromJsonAsync<JikanDataResponse<List<JikanAnimeCharacterEntry>>>(
@@ -73,7 +93,7 @@ namespace ReferenceApis
         {
             if (!int.TryParse(id, out var staffId))
             {
-                throw new ReferenceApiProviderException("MyAnimeList person ids must be numeric.");
+                throw new ReferenceApiProviderException($"{DisplayName} requires a numeric MyAnimeList person id.");
             }
 
             var response = await GetFromJsonAsync<JikanDataResponse<JikanPerson>>($"people/{staffId}/full");
@@ -81,7 +101,7 @@ namespace ReferenceApis
 
             if (person == null)
             {
-                throw new ReferenceApiProviderException("MyAnimeList did not return person data.");
+                throw new ReferenceApiProviderException($"{DisplayName} did not return person data.");
             }
 
             return new Staff(
@@ -134,22 +154,100 @@ namespace ReferenceApis
 
         async Task<T> GetFromJsonAsync<T>(string relativeUrl)
         {
+            using var cancellation = new CancellationTokenSource(_requestTimeout);
+            HttpRequestException lastRequestException = null;
+
             try
             {
-                using var cancellation = new CancellationTokenSource(_requestTimeout);
-                return await _httpClient.GetFromJsonAsync<T>(
-                    new Uri(new Uri(_BASE_URL), relativeUrl),
-                    cancellation.Token);
+                for (var attempt = 1; attempt <= _MAX_REQUEST_ATTEMPTS; attempt++)
+                {
+                    try
+                    {
+                        using var response = await _httpClient.GetAsync(
+                            new Uri(_baseUri, relativeUrl),
+                            cancellation.Token);
+
+                        if (IsTransient(response.StatusCode) && attempt < _MAX_REQUEST_ATTEMPTS)
+                        {
+                            await Task.Delay(GetRetryDelay(response, attempt), cancellation.Token);
+                            continue;
+                        }
+
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            throw new ReferenceApiProviderException(
+                                $"{DisplayName} returned HTTP {(int)response.StatusCode} ({response.ReasonPhrase}).");
+                        }
+
+                        try
+                        {
+                            return await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellation.Token);
+                        }
+                        catch (Exception ex) when (ex is JsonException || ex is NotSupportedException)
+                        {
+                            throw new ReferenceApiProviderException($"{DisplayName} returned an invalid response.", ex);
+                        }
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        lastRequestException = ex;
+
+                        if (attempt == _MAX_REQUEST_ATTEMPTS)
+                        {
+                            break;
+                        }
+
+                        await Task.Delay(TimeSpan.FromMilliseconds(_DEFAULT_RETRY_DELAY.TotalMilliseconds * attempt), cancellation.Token);
+                    }
+                }
             }
-            catch (HttpRequestException ex)
+            catch (OperationCanceledException ex) when (cancellation.IsCancellationRequested)
             {
-                throw new ReferenceApiProviderException("Jikan could not be reached.", ex);
+                throw new ReferenceApiProviderException($"{DisplayName} request timed out.", ex);
             }
-            catch (TaskCanceledException ex)
-            {
-                throw new ReferenceApiProviderException("Jikan request timed out.", ex);
-            }
+
+            throw new ReferenceApiProviderException($"{DisplayName} could not be reached after retrying.", lastRequestException);
         }
+
+        static Uri NormalizeBaseUri(Uri baseUri)
+        {
+            if (!baseUri.IsAbsoluteUri)
+            {
+                throw new ArgumentException("The provider base URI must be absolute.", nameof(baseUri));
+            }
+
+            var value = baseUri.AbsoluteUri;
+            return value.EndsWith('/') ? baseUri : new Uri($"{value}/");
+        }
+
+        static bool IsTransient(HttpStatusCode statusCode) =>
+            statusCode == HttpStatusCode.RequestTimeout
+            || statusCode == HttpStatusCode.TooManyRequests
+            || (int)statusCode >= 500;
+
+        static TimeSpan GetRetryDelay(HttpResponseMessage response, int attempt)
+        {
+            var retryAfter = response.Headers.RetryAfter;
+
+            if (retryAfter?.Delta is TimeSpan delta && delta > TimeSpan.Zero)
+            {
+                return Min(delta, _MAX_RETRY_DELAY);
+            }
+
+            if (retryAfter?.Date is DateTimeOffset date)
+            {
+                var delay = date - DateTimeOffset.UtcNow;
+                if (delay > TimeSpan.Zero)
+                {
+                    return Min(delay, _MAX_RETRY_DELAY);
+                }
+            }
+
+            return TimeSpan.FromMilliseconds(_DEFAULT_RETRY_DELAY.TotalMilliseconds * attempt);
+        }
+
+        static TimeSpan Min(TimeSpan value, TimeSpan maximum) =>
+            value <= maximum ? value : maximum;
 
         Character ToCharacter(JikanAnimeCharacterEntry entry)
         {
