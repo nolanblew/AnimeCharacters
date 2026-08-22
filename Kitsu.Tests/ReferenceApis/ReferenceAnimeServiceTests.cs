@@ -70,24 +70,60 @@ namespace Kitsu.Tests.ReferenceApis
             Assert.AreSame(expectedStaff, staff);
         }
 
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenFirstProviderFails_UsesNextProvider()
+        {
+            var anime = new Anime { MyAnimeListId = "1", AnilistId = "5" };
+            var expected = new ReferenceMediaResult(
+                new ReferenceAnimeKey(ReferenceProviderNames.AniList, "5"),
+                new Media(
+                    5,
+                    new Titles("Cowboy Bebop", null, null, "Cowboy Bebop"),
+                    null,
+                    null,
+                    MediaStatus.Finished,
+                    new List<Character>(),
+                    ReferenceProviderNames.AniList));
+            var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
+            {
+                new StubProvider(
+                    ReferenceProviderNames.Jikan,
+                    "Jikan",
+                    item => item.MyAnimeListId,
+                    getMedia: (_, _) => throw new ReferenceApiProviderException("Jikan returned an invalid response.")),
+                new StubProvider(
+                    ReferenceProviderNames.AniList,
+                    "AniList",
+                    item => item.AnilistId,
+                    getMedia: (_, _) => Task.FromResult(expected))
+            });
+
+            var result = await service.GetMediaWithCharactersAsync(anime, new[] { "Cowboy Bebop" });
+
+            Assert.AreSame(expected, result);
+        }
+
         class StubProvider : IReferenceAnimeProvider
         {
             readonly Func<Anime, string> _animeIdSelector;
             readonly Func<string, Task<Staff>> _getStaffById;
             readonly Func<string, Task<IReadOnlyList<Staff>>> _searchStaffByName;
+            readonly Func<Anime, IReadOnlyCollection<string>, Task<ReferenceMediaResult>> _getMedia;
 
             public StubProvider(
                 string name,
                 string displayName,
                 Func<Anime, string> animeIdSelector,
                 Func<string, Task<Staff>> getStaffById = null,
-                Func<string, Task<IReadOnlyList<Staff>>> searchStaffByName = null)
+                Func<string, Task<IReadOnlyList<Staff>>> searchStaffByName = null,
+                Func<Anime, IReadOnlyCollection<string>, Task<ReferenceMediaResult>> getMedia = null)
             {
                 Name = name;
                 DisplayName = displayName;
                 _animeIdSelector = animeIdSelector;
                 _getStaffById = getStaffById;
                 _searchStaffByName = searchStaffByName;
+                _getMedia = getMedia;
             }
 
             public string Name { get; }
@@ -100,7 +136,7 @@ namespace Kitsu.Tests.ReferenceApis
             }
 
             public Task<ReferenceMediaResult> GetMediaWithCharactersAsync(Anime anime, IReadOnlyCollection<string> searchTitles) =>
-                Task.FromResult<ReferenceMediaResult>(null);
+                _getMedia?.Invoke(anime, searchTitles) ?? Task.FromResult<ReferenceMediaResult>(null);
 
             public Task<Staff> GetStaffByIdAsync(string id) =>
                 _getStaffById?.Invoke(id) ?? Task.FromResult<Staff>(null);

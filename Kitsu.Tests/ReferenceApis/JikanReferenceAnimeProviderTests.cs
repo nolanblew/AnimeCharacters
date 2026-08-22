@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -139,6 +140,49 @@ namespace Kitsu.Tests.ReferenceApis
                 () => provider.GetStaffByIdAsync("37562"));
 
             Assert.AreEqual("Jikan request timed out.", exception.Message);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanIsTemporarilyUnavailable_RetriesRequest()
+        {
+            var requestCount = 0;
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+            {
+                requestCount++;
+
+                if (requestCount == 1)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                    {
+                        Content = new StringContent("Temporary upstream failure")
+                    };
+                }
+
+                return JsonResponse("""{ "data": [] }""");
+            })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var result = await provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title });
+
+            Assert.AreEqual(2, requestCount);
+            Assert.IsNotNull(result.Media);
+        }
+
+        [TestMethod]
+        public async Task GetMediaWithCharactersAsync_WhenJikanReturnsInvalidJson_ThrowsProviderException()
+        {
+            var provider = new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(_ =>
+                new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent("<html>Gateway error</html>", Encoding.UTF8, "text/html")
+                })));
+            var anime = new Anime { MyAnimeListId = "1", Title = "Cowboy Bebop" };
+
+            var exception = await Assert.ThrowsExceptionAsync<ReferenceApiProviderException>(
+                () => provider.GetMediaWithCharactersAsync(anime, new[] { anime.Title }));
+
+            StringAssert.Contains(exception.Message, "invalid response");
+            Assert.IsInstanceOfType<JsonException>(exception.InnerException);
         }
 
         static HttpResponseMessage JsonResponse(string json) =>
