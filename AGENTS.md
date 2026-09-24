@@ -58,6 +58,7 @@ Debug builds prepend the version with `dev-`.
 - `DatabaseProvider` - LocalStorage wrapper with event notifications
 - `PageStateManager` - Navigation state management
 - `VoiceActorCreditService` - Aggregates enabled extension credits for voice actor pages
+- Anime detail pages persist resolved MyAnimeList IDs from both Tenrai and Jikan before navigating to voice actor credits, so title-resolved anime remain matchable to the Kitsu library.
 - `KitsuClient` - REST API client for Kitsu.app
 - `AniListClient` - GraphQL client for AniList API; fallback staff histories resolve by name, keep nested media data ID-only, and preserve completed pages if later pagination times out
 - `ReferenceAnimeService` - Chooses reference API providers, merges provider IDs for matching, and falls back to an exact staff-name match when the routed provider is unavailable or exceeds its provider timeout

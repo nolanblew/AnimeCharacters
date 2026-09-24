@@ -325,6 +325,19 @@
     ]
   },
   {
+    "Name": "Anastasya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Anastasya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Tomatsu Haruka",
+        "NativeName": "戸松 遥",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Andersdotter",
     "IsNpc": true,
     "ImageUrl": null,
@@ -1417,6 +1430,19 @@
     ]
   },
   {
+    "Name": "Dariya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Dariya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Someya Maho",
+        "NativeName": "染谷 茉穂",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Dehya",
     "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/dehya.png",
@@ -1893,6 +1919,19 @@
       {
         "Name": "Erica Yoshizumi",
         "NativeName": "吉住 絵里加",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Eye of Graeae",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Eye_of_Graeae",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Udagawa Kaito",
+        "NativeName": "宇田川 かいと",
         "AniListStaffId": null
       }
     ]
@@ -3100,7 +3139,7 @@
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lan",
     "JapaneseVoiceActors": [
       {
-        "Name": "Anna Ishikawa",
+        "Name": "Ishikawa Anna",
         "NativeName": "石川 明日菜",
         "AniListStaffId": null
       }
@@ -3360,7 +3399,7 @@
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Lohen",
     "JapaneseVoiceActors": [
       {
-        "Name": "Amasaki Kōhei",
+        "Name": "Amasaki Kohei",
         "NativeName": "天﨑 滉平",
         "AniListStaffId": null
       }
@@ -3726,6 +3765,32 @@
       {
         "Name": "Akahori Mikaru",
         "NativeName": "赤堀 実華琉",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Mironova",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mironova",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yuruduzu Kanon",
+        "NativeName": "ユルドゥズ 香音",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Mitya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Mitya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kobayashi Yusuke",
+        "NativeName": "小林 裕介",
         "AniListStaffId": null
       }
     ]
@@ -4706,6 +4771,19 @@
     ]
   },
   {
+    "Name": "Rosolino",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Rosolino",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Takabatake Renta",
+        "NativeName": "高畑 廉太",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Rufina",
     "IsNpc": true,
     "ImageUrl": null,
@@ -4896,6 +4974,19 @@
       {
         "Name": "Kojima Hideki",
         "NativeName": "小島 英樹",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Shemyakin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Shemyakin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamamoto Maki",
+        "NativeName": "山本 真綺",
         "AniListStaffId": null
       }
     ]
@@ -5200,6 +5291,45 @@
     ]
   },
   {
+    "Name": "Svetlana",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Svetlana",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Someya Maho",
+        "NativeName": "染谷 茉穂",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Sytin",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Sytin",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Kamezawa Taiga",
+        "NativeName": "亀沢 大虎",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Taisiya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Taisiya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yamamoto Maki",
+        "NativeName": "山本 真綺",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Taj Radkani",
     "IsNpc": true,
     "ImageUrl": null,
@@ -5395,6 +5525,19 @@
     ]
   },
   {
+    "Name": "Tonia",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tonia",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yanagi Miri",
+        "NativeName": "柳木 みり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Tonina",
     "IsNpc": true,
     "ImageUrl": null,
@@ -5486,19 +5629,6 @@
     ]
   },
   {
-    "Name": "Tsaritsa",
-    "IsNpc": true,
-    "ImageUrl": null,
-    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Tsaritsa",
-    "JapaneseVoiceActors": [
-      {
-        "Name": "Tomatsu Haruka",
-        "NativeName": "戸松 遥",
-        "AniListStaffId": null
-      }
-    ]
-  },
-  {
     "Name": "Tubby",
     "IsNpc": true,
     "ImageUrl": null,
@@ -5577,6 +5707,19 @@
     ]
   },
   {
+    "Name": "Valeriy",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Valeriy",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Furukawa Makoto",
+        "NativeName": "古川 慎",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Varesa",
     "IsNpc": false,
     "ImageUrl": "images/extensions/genshin-impact/characters/varesa.png",
@@ -5642,6 +5785,19 @@
     ]
   },
   {
+    "Name": "Veronique",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Veronique",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yanagi Miri",
+        "NativeName": "柳木 みり",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
     "Name": "Verr Goldet",
     "IsNpc": true,
     "ImageUrl": null,
@@ -5656,8 +5812,8 @@
   },
   {
     "Name": "Vesna",
-    "IsNpc": true,
-    "ImageUrl": null,
+    "IsNpc": false,
+    "ImageUrl": "images/extensions/genshin-impact/characters/vesna.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vesna",
     "JapaneseVoiceActors": [
       {
@@ -5734,8 +5890,8 @@
   },
   {
     "Name": "Vodyanitsa",
-    "IsNpc": true,
-    "ImageUrl": null,
+    "IsNpc": false,
+    "ImageUrl": "images/extensions/genshin-impact/characters/vodyanitsa.png",
     "WikiUrl": "https://genshin-impact.fandom.com/wiki/Vodyanitsa",
     "JapaneseVoiceActors": [
       {
@@ -6300,6 +6456,19 @@
       {
         "Name": "Hatori Mami",
         "NativeName": "羽鳥 まみ",
+        "AniListStaffId": null
+      }
+    ]
+  },
+  {
+    "Name": "Zarechnaya",
+    "IsNpc": true,
+    "ImageUrl": null,
+    "WikiUrl": "https://genshin-impact.fandom.com/wiki/Zarechnaya",
+    "JapaneseVoiceActors": [
+      {
+        "Name": "Yuruduzu Kanon",
+        "NativeName": "ユルドゥズ 香音",
         "AniListStaffId": null
       }
     ]
