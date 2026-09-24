@@ -156,7 +156,8 @@ namespace AnimeCharacters.Pages
                 hasChange = true;
             }
 
-            if (ReferenceAnimeKey.MatchesProvider(result.AnimeKey.ProviderName, ReferenceProviderNames.Jikan)
+            if ((ReferenceAnimeKey.MatchesProvider(result.AnimeKey.ProviderName, ReferenceProviderNames.Jikan)
+                || ReferenceAnimeKey.MatchesProvider(result.AnimeKey.ProviderName, ReferenceProviderNames.Tenrai))
                 && string.IsNullOrWhiteSpace(CurrentAnime.MyAnimeListId))
             {
                 CurrentAnime.MyAnimeListId = result.AnimeKey.Id;
