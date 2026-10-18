@@ -1,28 +1,16 @@
 @using AnimeCharacters.Models
+@using AnimeCharacters.Extensions
 
 <div class="item">
     <div class="row">
         <div class="col" @onclick="_OnMediaClicked">
-            @if (!string.IsNullOrWhiteSpace(Credit?.MediaImageUrl))
-            {
-                <img src="@Credit.MediaImageUrl" alt="@Credit.MediaTitle" referrerpolicy="no-referrer" />
-            }
-            else
-            {
-                <div class="tile-image-placeholder">@Credit?.MediaTitle</div>
-            }
+            <AnimeCharacters.Components.RemoteImage Src="@Credit?.MediaImageUrl" Alt="@Credit?.MediaTitle"
+                KitsuId="@(Credit?.ExtensionId == BuiltInExtensionIds.KitsuLibrary ? Credit.MediaId : null)" />
         </div>
     </div>
     <div class="row">
         <div class="col" @onclick="_OnCharacterClicked">
-            @if (!string.IsNullOrWhiteSpace(Credit?.CharacterImageUrl))
-            {
-                <img src="@Credit.CharacterImageUrl" alt="@Credit.CharacterName" referrerpolicy="no-referrer" />
-            }
-            else
-            {
-                <div class="tile-image-placeholder">@Credit?.CharacterName</div>
-            }
+            <AnimeCharacters.Components.RemoteImage Src="@Credit?.CharacterImageUrl" Alt="@Credit?.CharacterName" />
         </div>
     </div>
     <div class="row">

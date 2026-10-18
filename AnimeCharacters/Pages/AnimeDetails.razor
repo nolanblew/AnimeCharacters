@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col text-center">
             <div class="anime-detail-poster-container">
-                <img class="anime-detail-poster" src="@CurrentAnime?.PosterImageUrl" alt="@GetAnimeTitle()" />
+                <AnimeCharacters.Components.RemoteImage CssClass="anime-detail-poster" Src="@CurrentAnime?.PosterImageUrl" KitsuId="@CurrentAnime?.KitsuId" Alt="@GetAnimeTitle()" />
             </div>
         </div>
     </div>

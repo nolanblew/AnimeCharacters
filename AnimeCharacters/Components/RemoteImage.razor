@@ -1,0 +1,85 @@
+@using AnimeCharacters.Helpers
+@using AnimeCharacters.Services
+@inject KitsuPosterService PosterService
+
+@if (!string.IsNullOrWhiteSpace(_currentSource))
+{
+    <img @key="_currentSource" src="@_currentSource" alt="@Alt" class="@CssClass" referrerpolicy="no-referrer" @onerror="TryNextSourceAsync" />
+}
+else
+{
+    <img src="images/image-placeholder.svg" alt="@Alt" class="@CssClass" />
+}
+
+@code {
+    [Parameter] public string Src { get; set; }
+    [Parameter] public string Alt { get; set; }
+    [Parameter] public string CssClass { get; set; }
+    [Parameter] public string KitsuId { get; set; }
+
+    string _source;
+    string _kitsuId;
+    string _currentSource;
+    bool _initialized;
+    bool _hasRenewed;
+    bool _isRenewing;
+    int _version;
+    readonly HashSet<string> _failedSources = new(StringComparer.Ordinal);
+    Queue<string> _alternatives = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_initialized && _source == Src && _kitsuId == KitsuId)
+        {
+            return;
+        }
+
+        _initialized = true;
+        _source = Src;
+        _kitsuId = KitsuId;
+        _version++;
+        _hasRenewed = false;
+        _isRenewing = false;
+        _failedSources.Clear();
+        _alternatives.Clear();
+        _currentSource = Src;
+
+        if (!string.IsNullOrWhiteSpace(KitsuId)
+            && (string.IsNullOrWhiteSpace(Src) || Src.StartsWith("data:", StringComparison.OrdinalIgnoreCase)
+                || ImageUrlHelper.NeedsRefresh(Src, DateTimeOffset.UtcNow)))
+        {
+            _currentSource = null;
+            await TryNextSourceAsync();
+        }
+    }
+
+    async Task TryNextSourceAsync()
+    {
+        if (_isRenewing)
+        {
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(_currentSource))
+        {
+            _failedSources.Add(_currentSource);
+        }
+
+        if (!_hasRenewed && !string.IsNullOrWhiteSpace(KitsuId))
+        {
+            _hasRenewed = true;
+            _isRenewing = true;
+            var version = _version;
+            var urls = await PosterService.GetPosterUrlsAsync(KitsuId);
+            if (version != _version)
+            {
+                return;
+            }
+
+            _isRenewing = false;
+            _alternatives = new Queue<string>(urls.Where(url => !_failedSources.Contains(url)));
+        }
+
+        _currentSource = _alternatives.TryDequeue(out var next) ? next : null;
+    }
+}

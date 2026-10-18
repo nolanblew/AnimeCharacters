@@ -22,15 +22,11 @@ namespace AnimeCharacters.Pages
             15;
 #endif
 
-        const int _CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS = 6;
-
         readonly KitsuClient _kitsuClient = new();
 
         readonly SemaphoreSlim _refreshLibrariesSemaphoreSlim = new SemaphoreSlim(1, 1);
 
         bool _isMigrating = false;
-
-        DateTime? _lastShallowRefresh = null;
 
         Dictionary<long, LibraryEntry> _LibraryEntries { get; set; } = new Dictionary<long, LibraryEntry>();
 
@@ -141,6 +137,11 @@ namespace AnimeCharacters.Pages
                 if (_TryRestorePageState())
                 {
                     StateHasChanged();
+                    if (LibraryRefreshPolicy.RequiresFullRefresh(_LibraryEntries.Values,
+                        false, false, DateTimeOffset.UtcNow))
+                    {
+                        await _FetchLibraries();
+                    }
                     return;
                 }
 
@@ -148,15 +149,8 @@ namespace AnimeCharacters.Pages
                 // TODO: Remove after everyone has updated to latest version
                 _isMigrating = !MigrationHelper.IsOnLatestVersion(await DatabaseProvider.GetMigrationVersionAsnyc());
 
-                if (_isMigrating)
-                {
-                    _LibraryEntries = new();
-                }
-                else
-                {
-                    _LibraryEntries = ((await DatabaseProvider.GetLibrariesAsync()) ?? new List<LibraryEntry>())
-                        .ToDictionary(lib => lib.Id);
-                }
+                _LibraryEntries = ((await DatabaseProvider.GetLibrariesAsync()) ?? new List<LibraryEntry>())
+                    .ToDictionary(lib => lib.Id);
 
                 UpdateHeaderContents();
                 StateHasChanged();
@@ -184,28 +178,16 @@ namespace AnimeCharacters.Pages
             {
                 IsBusy = true;
 
-                var forceFullRefresh = false;
-
-                if (_isMigrating) { forceFullRefresh = true; }
-
-                if (isManualRefresh && _lastShallowRefresh.HasValue && _lastShallowRefresh.Value.AddSeconds(45) > DateTime.Now)
-                {
-                    // If we have a manual refresh that was clicked twice in the last 45 seconds then do a full refresh
-                    forceFullRefresh = true;
-                }
-
                 var lastFetchedDate = await DatabaseProvider.GetLastFetchedDateAsnyc();
 
-                if (forceFullRefresh
-                    || lastFetchedDate == null
-                    || DateTimeOffset.Now.Subtract(TimeSpan.FromDays(_CACHE_REFRESH_TIME_FORCE_REFRESH_DAYS)) > lastFetchedDate
-                    || !_LibraryEntries.Any())
+                if (LibraryRefreshPolicy.RequiresFullRefresh(_LibraryEntries.Values,
+                        isManualRefresh, _isMigrating, DateTimeOffset.UtcNow)
+                    || lastFetchedDate == null)
                 {
                     Console.WriteLine($"PATH: Fetching full list from the start.");
-                    _lastShallowRefresh = null;
-                    await _FetchAllUserAnime();
+                    var refreshed = await _FetchAllUserAnime();
 
-                    if (_isMigrating)
+                    if (refreshed && _isMigrating)
                     {
                         await DatabaseProvider.SetMigrationVersionAsync(MigrationHelper.CURRENT_MIGRATION_VERSION);
                         _isMigrating = false;
@@ -221,8 +203,6 @@ namespace AnimeCharacters.Pages
                     Console.WriteLine($"PATH: Fetching only updates from the start.");
                     await _UpdateUserAnime();
 
-                    _lastShallowRefresh = DateTime.Now;
-
                     return;
                 }
             }
@@ -236,27 +216,45 @@ namespace AnimeCharacters.Pages
             }
         }
 
-        async Task _FetchAllUserAnime()
+        async Task<bool> _FetchAllUserAnime()
         {
             try
             {
-                _LibraryEntries =
-                    (await _kitsuClient.UserLibraries.GetCompleteLibraryCollectionAsync
+                var libraries =
+                    await _kitsuClient.UserLibraries.GetCompleteLibraryCollectionAsync
                         (CurrentUser.Id,
                         LibraryType.Anime,
-                        LibraryStatus.Current | LibraryStatus.Completed))
-                    .ToDictionary(lib => lib.Id);
+                        LibraryStatus.Current | LibraryStatus.Completed);
+
+                foreach (var library in libraries)
+                {
+                    if (_LibraryEntries.TryGetValue(library.Id, out var previous)
+                        && library.Anime != null && library.Anime.KitsuId == previous.Anime?.KitsuId)
+                    {
+                        if (string.IsNullOrWhiteSpace(library.Anime.MyAnimeListId))
+                        {
+                            library.Anime.MyAnimeListId = previous.Anime.MyAnimeListId;
+                        }
+                        if (string.IsNullOrWhiteSpace(library.Anime.AnilistId))
+                        {
+                            library.Anime.AnilistId = previous.Anime.AnilistId;
+                        }
+                    }
+                }
+
+                _LibraryEntries = libraries.ToDictionary(lib => lib.Id);
 
                 await DatabaseProvider.SetLibrariesAsync(_LibraryEntries.Values.ToList());
                 await _SetLastFetchedId();
                 UpdateHeaderContents();
-                return;
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"ERROR in _FetchAllUserAnime(): {ex.Message}");
                 Console.WriteLine($" STACKTRACE: {ex.StackTrace}");
                 await _EventAggregator.PublishAsync(new Events.SnackbarEvent("Error updating library. Please refresh page."));
+                return false;
             }
         }
 
@@ -286,7 +284,7 @@ namespace AnimeCharacters.Pages
                     _LibraryEntries.Remove(oldItem.Id);
                 }
 
-                foreach (var updatedItem in libraryDeltas.Updated)
+                foreach (var updatedItem in updatedLibraries)
                 {
                     _LibraryEntries[updatedItem.Id] = updatedItem;
                 }
@@ -453,7 +451,6 @@ namespace AnimeCharacters.Pages
             CurrentUser = state.CurrentUser;
             _LibraryEntries = state.LibraryEntries.ToDictionary(libraryEntry => libraryEntry.Id);
             _searchFilter = state.SearchFilter;
-            _lastShallowRefresh = state.LastShallowRefresh;
             _isMigrating = false;
             IsBusy = false;
 
@@ -480,7 +477,6 @@ namespace AnimeCharacters.Pages
                 CurrentUser = CurrentUser,
                 LibraryEntries = _LibraryEntries.Values.ToList(),
                 SearchFilter = SearchFilter,
-                LastShallowRefresh = _lastShallowRefresh,
                 CollapsedHeaderTitles = headerStates
                     .Where(header => header.IsCollapsed)
                     .Select(header => header.Title)
@@ -502,7 +498,6 @@ namespace AnimeCharacters.Pages
             public User CurrentUser { get; set; }
             public List<LibraryEntry> LibraryEntries { get; set; } = new();
             public string SearchFilter { get; set; }
-            public DateTime? LastShallowRefresh { get; set; }
             public HashSet<string> CollapsedHeaderTitles { get; set; } = new();
         }
     }

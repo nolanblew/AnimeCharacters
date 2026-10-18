@@ -27,14 +27,13 @@ namespace Kitsu.Tests.ReferenceApis
             var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
             {
                 new StubProvider(ReferenceProviderNames.Tenrai, "Tenrai", anime => anime.MyAnimeListId),
-                new StubProvider(ReferenceProviderNames.Jikan, "Jikan", anime => anime.MyAnimeListId),
                 new StubProvider(ReferenceProviderNames.AniList, "AniList", anime => anime.AnilistId)
             });
 
             var keys = service.GetKnownAnimeKeys(anime).Select(key => key.CacheKey).ToList();
 
             CollectionAssert.AreEquivalent(
-                new[] { "tenrai:1", "jikan:1", "anilist:5" },
+                new[] { "tenrai:1", "anilist:5" },
                 keys);
         }
 
@@ -56,10 +55,10 @@ namespace Kitsu.Tests.ReferenceApis
             var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
             {
                 new StubProvider(
-                    ReferenceProviderNames.Jikan,
-                    "Jikan / MyAnimeList",
+                    ReferenceProviderNames.Tenrai,
+                    "Tenrai / MyAnimeList",
                     anime => anime.MyAnimeListId,
-                    getStaffById: _ => throw new ReferenceApiProviderException("Jikan could not be reached.")),
+                    getStaffById: _ => throw new ReferenceApiProviderException("Tenrai could not be reached.")),
                 new StubProvider(
                     ReferenceProviderNames.AniList,
                     "AniList",
@@ -68,7 +67,7 @@ namespace Kitsu.Tests.ReferenceApis
             });
 
             var staff = await service.GetStaffByIdAsync(
-                ReferenceProviderNames.Jikan,
+                ReferenceProviderNames.Tenrai,
                 "37562",
                 "Shouya Chiba");
 
@@ -92,10 +91,10 @@ namespace Kitsu.Tests.ReferenceApis
             var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
             {
                 new StubProvider(
-                    ReferenceProviderNames.Jikan,
-                    "Jikan",
+                    ReferenceProviderNames.Tenrai,
+                    "Tenrai",
                     item => item.MyAnimeListId,
-                    getMedia: (_, _) => throw new ReferenceApiProviderException("Jikan returned an invalid response.")),
+                    getMedia: (_, _) => throw new ReferenceApiProviderException("Tenrai returned an invalid response.")),
                 new StubProvider(
                     ReferenceProviderNames.AniList,
                     "AniList",
@@ -109,38 +108,32 @@ namespace Kitsu.Tests.ReferenceApis
         }
 
         [TestMethod]
-        public async Task GetMediaWithCharactersAsync_WhenTenraiRetriesAreExhausted_UsesJikanProvider()
+        public async Task GetMediaWithCharactersAsync_WhenTenraiSucceeds_DoesNotCallAniList()
         {
-            var anime = new Anime { MyAnimeListId = "1" };
-            var tenraiRequestCount = 0;
-            var jikanRequestCount = 0;
+            var requestCount = 0;
             var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
             {
-                new JikanReferenceAnimeProvider(
-                    new HttpClient(new StubHttpMessageHandler(() =>
-                    {
-                        tenraiRequestCount++;
-                        return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
-                    })),
-                    baseUri: new Uri("https://api.tenrai.org/v1/"),
-                    providerName: ReferenceProviderNames.Tenrai,
-                    displayName: "Tenrai"),
-                new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(() =>
+                new TenraiReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(() =>
                 {
-                    jikanRequestCount++;
+                    requestCount++;
                     return JsonResponse("""{ "data": [] }""");
-                })))
+                }))),
+                new StubProvider(
+                    ReferenceProviderNames.AniList,
+                    "AniList",
+                    anime => anime.AnilistId,
+                    getMedia: (_, _) => throw new AssertFailedException("AniList should only be called after Tenrai fails."))
             });
 
-            var result = await service.GetMediaWithCharactersAsync(anime, new[] { "Cowboy Bebop" });
+            var result = await service.GetMediaWithCharactersAsync(
+                new Anime { MyAnimeListId = "1", AnilistId = "5" }, new[] { "Cowboy Bebop" });
 
-            Assert.AreEqual(3, tenraiRequestCount);
-            Assert.AreEqual(1, jikanRequestCount);
-            Assert.AreEqual(ReferenceProviderNames.Jikan, result.AnimeKey.ProviderName);
+            Assert.AreEqual(1, requestCount);
+            Assert.AreEqual(ReferenceProviderNames.Tenrai, result.AnimeKey.ProviderName);
         }
 
         [TestMethod]
-        public async Task GetMediaWithCharactersAsync_WhenTenraiAndJikanRetriesAreExhausted_UsesAniListProvider()
+        public async Task GetMediaWithCharactersAsync_WhenTenraiRetriesAreExhausted_UsesAniListProvider()
         {
             var anime = new Anime { MyAnimeListId = "1", AnilistId = "5" };
             var expected = new ReferenceMediaResult(
@@ -154,23 +147,14 @@ namespace Kitsu.Tests.ReferenceApis
                     new List<Character>(),
                     ReferenceProviderNames.AniList));
             var tenraiRequestCount = 0;
-            var jikanRequestCount = 0;
             var service = new ReferenceAnimeService(new IReferenceAnimeProvider[]
             {
-                new JikanReferenceAnimeProvider(
+                new TenraiReferenceAnimeProvider(
                     new HttpClient(new StubHttpMessageHandler(() =>
                     {
                         tenraiRequestCount++;
                         return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
-                    })),
-                    baseUri: new Uri("https://api.tenrai.org/v1/"),
-                    providerName: ReferenceProviderNames.Tenrai,
-                    displayName: "Tenrai"),
-                new JikanReferenceAnimeProvider(new HttpClient(new StubHttpMessageHandler(() =>
-                {
-                    jikanRequestCount++;
-                    return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
-                }))),
+                    }))),
                 new StubProvider(
                     ReferenceProviderNames.AniList,
                     "AniList",
@@ -181,7 +165,6 @@ namespace Kitsu.Tests.ReferenceApis
             var result = await service.GetMediaWithCharactersAsync(anime, new[] { "Cowboy Bebop" });
 
             Assert.AreEqual(3, tenraiRequestCount);
-            Assert.AreEqual(3, jikanRequestCount);
             Assert.AreSame(expected, result);
         }
 
