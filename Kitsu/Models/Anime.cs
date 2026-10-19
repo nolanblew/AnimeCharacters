@@ -21,6 +21,7 @@ namespace Kitsu.Models
             EnglishTitle = animeResponse.Titles?.En ?? animeResponse.Titles?.EnUs;
             KitsuSlug = animeResponse.Slug;
             PosterImageUrl = GetPosterImageUrl(animeResponse.PosterImage, Title);
+            MetadataFetchedAt = DateTimeOffset.UtcNow;
             YoutubeId = animeResponse.YoutubeVideoId;
             ShowType = animeResponse.ShowType.HasValue ? ParseAnimeType(animeResponse.ShowType.Value) : null;
 
@@ -62,6 +63,8 @@ namespace Kitsu.Models
         public string RomanjiTitle { get; set; }
         public string EnglishTitle { get; set; }
         public string PosterImageUrl { get; set; }
+        /// <summary>When this anime's metadata was fetched, independently of library progress.</summary>
+        public DateTimeOffset? MetadataFetchedAt { get; set; }
         public string KitsuSlug { get; set; }
         public string YoutubeId { get; set; }
         public AnimeType? ShowType { get; set; }
@@ -89,7 +92,8 @@ namespace Kitsu.Models
             var url = posterImage?.Large?.AbsoluteUri
                 ?? posterImage?.Medium?.AbsoluteUri
                 ?? posterImage?.Original?.AbsoluteUri
-                ?? posterImage?.Small?.AbsoluteUri;
+                ?? posterImage?.Small?.AbsoluteUri
+                ?? posterImage?.Tiny?.AbsoluteUri;
 
             if (!string.IsNullOrWhiteSpace(url))
             {
@@ -101,7 +105,8 @@ namespace Kitsu.Models
 
         private static string GeneratePlaceholderDataUri(string title)
         {
-            var initial = !string.IsNullOrWhiteSpace(title) ? title[0].ToString().ToUpperInvariant() : "?";
+            var initial = System.Security.SecurityElement.Escape(
+                !string.IsNullOrWhiteSpace(title) ? title[0].ToString().ToUpperInvariant() : "?");
             var svg = $@"<svg xmlns='http://www.w3.org/2000/svg' width='225' height='350'>
   <defs>
     <linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'>

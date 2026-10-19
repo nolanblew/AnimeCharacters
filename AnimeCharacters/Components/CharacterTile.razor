@@ -1,7 +1,7 @@
 ﻿<div class="item">
     <div class="row">
         <div class="col">
-            <img src="@(Character?.Image?.GetOptimalImage() ?? "#")" />
+            <AnimeCharacters.Components.RemoteImage Src="@Character?.Image?.GetOptimalImage()" Alt="@Character?.Name?.Full" />
         </div>
     </div>
     <div class="row">

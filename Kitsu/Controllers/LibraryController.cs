@@ -4,6 +4,7 @@ using Kitsu.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -11,8 +12,8 @@ namespace Kitsu.Controllers
 {
     public class LibraryController : ControllerBase
     {
-        public LibraryController(string baseUrl)
-            : base(baseUrl, "library-entries") { }
+        public LibraryController(string baseUrl, HttpClient httpClient = null)
+            : base(baseUrl, "library-entries", httpClient) { }
 
         // https://kitsu.app/api/edge/library-entries?filter[userId]={{user_id}}&filter[kind]=anime&filter[status]=completed&include=anime,anime.mappings
         public async Task<List<LibraryEntry>> GetCompleteLibraryCollectionAsync(int userId, LibraryType type = LibraryType.All, LibraryStatus status = LibraryStatus.All)
@@ -63,7 +64,8 @@ namespace Kitsu.Controllers
                 var listedResults = result.Data.Select(entry =>
                 {
                     var includedAnime = result.Included
-                        .FirstOrDefault(a => a.Id == entry.Relationships.Anime.Data.Id);
+                        .FirstOrDefault(a => a.Type == UserLibraryGetRequest.DataType.Anime
+                            && a.Id == entry.Relationships.Anime.Data.Id);
 
                     var mappingIds = includedAnime.Relationships.Mappings.Data.Select(map => map.Id).ToArray();
 
@@ -138,9 +140,11 @@ namespace Kitsu.Controllers
                 encode: false);
 
             var idChunks = ids.Chunk(10);
+            var requestUrl = request.RequestUri.AbsoluteUri;
 
             foreach (var idChunk in idChunks)
             {
+                request = GetBaseRequest(requestUrl);
                 while (request != null)
                 {
                     request.AddQueryParameter(
@@ -160,7 +164,8 @@ namespace Kitsu.Controllers
                     var listedResults = result.Data.Select(entry =>
                     {
                         var includedAnime = result.Included
-                            .FirstOrDefault(a => a.Id == entry.Relationships.Anime.Data.Id);
+                            .FirstOrDefault(a => a.Type == UserLibraryGetRequest.DataType.Anime
+                                && a.Id == entry.Relationships.Anime.Data.Id);
 
                         var mappingIds = includedAnime.Relationships.Mappings.Data.Select(map => map.Id).ToArray();
 

@@ -3,7 +3,7 @@
     margin-bottom: 1rem;
 }
 
-.va-photo {
+.va-photo-container ::deep .va-photo {
     width: 200px;
     height: 300px;
     object-fit: cover;
@@ -142,38 +142,38 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .va-photo {
+    .va-photo-container ::deep .va-photo {
         width: 150px;
         height: 225px;
     }
-    
+
     .va-name {
         font-size: 1.5rem;
         text-align: center;
         margin-top: 1rem;
     }
-    
+
     .va-detail-grid {
         grid-template-columns: 1fr;
         gap: 0.5rem;
     }
-    
+
     .va-detail-item {
         padding: 0.75rem;
     }
-    
+
     .va-bio {
         padding: 0.75rem;
     }
-    
+
     .va-links {
         padding: 0.75rem;
     }
-    
+
     .va-links-container {
         gap: 0.5rem;
     }
-    
+
     .va-link {
         padding: 0.5rem;
         font-size: 0.85rem;
@@ -181,15 +181,15 @@
 }
 
 @media (max-width: 576px) {
-    .va-photo {
+    .va-photo-container ::deep .va-photo {
         width: 120px;
         height: 180px;
     }
-    
+
     .va-name {
         font-size: 1.3rem;
     }
-    
+
     .va-detail-item strong {
         min-width: 80px;
         font-size: 0.9rem;

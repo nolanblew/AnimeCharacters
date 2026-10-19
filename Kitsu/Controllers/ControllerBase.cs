@@ -9,12 +9,13 @@ namespace Kitsu.Controllers
 {
     public abstract class ControllerBase : IDisposable
     {
-        public ControllerBase(string baseUrl, string controllerRoute)
+        public ControllerBase(string baseUrl, string controllerRoute, HttpClient httpClient = null)
         {
             _baseUrl = new Uri(new Uri(baseUrl), controllerRoute);
+            HttpClient = httpClient ?? new HttpClient();
         }
 
-        protected HttpClient HttpClient { get; } = new();
+        protected HttpClient HttpClient { get; }
 
         protected readonly string _controllerRoute;
 

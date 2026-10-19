@@ -58,8 +58,10 @@ Debug builds prepend the version with `dev-`.
 - `DatabaseProvider` - LocalStorage wrapper with event notifications
 - `PageStateManager` - Navigation state management
 - `VoiceActorCreditService` - Aggregates enabled extension credits for voice actor pages
-- Anime detail pages persist resolved MyAnimeList IDs from both Tenrai and Jikan before navigating to voice actor credits, so title-resolved anime remain matchable to the Kitsu library.
+- Anime detail pages persist resolved MyAnimeList IDs from Tenrai before navigating to voice actor credits, so title-resolved anime remain matchable to the Kitsu library.
 - `KitsuClient` - REST API client for Kitsu.app
+- `KitsuPosterService` and `RemoteImage` - Renew expired/failed Kitsu poster URLs by exact anime ID, share renewal requests briefly, try current image sizes, and show a local SVG placeholder on failure. Character and voice actor images also use the placeholder. The service worker caches SVG assets. Manual library refresh clears poster renewal results and resets image attempts even when URLs are unchanged. Voice actor photo styles reach the shared image component through scoped descendant selectors.
+- `LibraryRefreshPolicy` - Refresh anime metadata daily based on `Anime.MetadataFetchedAt`, independently of progress sync; manual refresh fetches current metadata immediately and legacy caches refresh automatically. Preserve locally resolved reference IDs when refreshed Kitsu mappings are missing. Library ID batches must each get a new request, and included anime must match both resource type and ID.
 - `AniListClient` - GraphQL client for AniList API; fallback staff histories resolve by name, keep nested media data ID-only, and preserve completed pages if later pagination times out
 - `ReferenceAnimeService` - Chooses reference API providers, merges provider IDs for matching, and falls back to an exact staff-name match when the routed provider is unavailable or exceeds its provider timeout
 
@@ -77,15 +79,15 @@ Debug builds prepend the version with `dev-`.
 
 ### External APIs
 - **Kitsu.app API** - User authentication and anime library data
-- **Tenrai API** - Primary cached source for MyAnimeList character and Japanese voice actor data; transient failures are retried and `ReferenceApis:TenraiBaseUrl` selects its Jikan-compatible endpoint
-- **Jikan API** - Secondary source for MyAnimeList character and Japanese voice actor data; `ReferenceApis:JikanBaseUrl` can select a compatible private/self-hosted endpoint
-- **AniList GraphQL API** - Final fallback source for character and voice actor information
+- **Tenrai API** - Primary cached source for MyAnimeList character and Japanese voice actor data; transient failures are retried and `ReferenceApis:TenraiBaseUrl` selects a compatible Tenrai endpoint
+- **AniList GraphQL API** - Direct fallback after Tenrai for character and voice actor information
 
 ## Development Notes
 
 The application uses:
 - MatBlazor for UI components
 - Blazored.LocalStorage for client-side persistence
+- Blazor .NET 8 packages use servicing release 8.0.32; persistence has no Entity Framework/SQLite dependency.
 - EventAggregator.Blazor for pub/sub messaging
 - Polly for retry policies
 - Service worker for PWA capabilities
