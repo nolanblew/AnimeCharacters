@@ -45,6 +45,9 @@ namespace AnimeCharacters.Services
             return request;
         }
 
+        /// <summary>Clears cached renewal results so an explicit refresh can recover from failures.</summary>
+        public void ClearCache() => _requests.Clear();
+
         async Task<IReadOnlyList<string>> FetchPosterUrlsAsync(long id)
         {
             try

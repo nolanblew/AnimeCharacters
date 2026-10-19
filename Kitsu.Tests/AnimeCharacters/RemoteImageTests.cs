@@ -73,6 +73,45 @@ namespace Kitsu.Tests.AnimeCharacters
             Assert.IsFalse(renderer.HasErrorHandler);
         }
 
+        [TestMethod]
+        public async Task ManualRefresh_RetriesUnchangedPosterAfterTemporaryFailure()
+        {
+            using var handler = new ImageHandler { StatusCode = HttpStatusCode.ServiceUnavailable };
+            using var renderer = CreateRenderer(handler);
+            const string source = "https://example.com/old.jpg";
+            await renderer.RenderAsync(source, "50021");
+            await renderer.ImageErrorAsync();
+            Assert.AreEqual("images/image-placeholder.svg", renderer.Source);
+
+            handler.StatusCode = HttpStatusCode.OK;
+            await renderer.RenderAsync(source, "50021");
+            Assert.AreEqual("images/image-placeholder.svg", renderer.Source);
+            Assert.AreEqual(1, handler.RequestCount);
+
+            renderer.ClearPosterCache();
+            await renderer.RenderAsync(source, "50021", refreshVersion: 1);
+            Assert.AreEqual(source, renderer.Source);
+            await renderer.ImageErrorAsync();
+            Assert.AreEqual("https://example.com/large.jpg", renderer.Source);
+            Assert.AreEqual(2, handler.RequestCount);
+        }
+
+        [TestMethod]
+        public async Task ManualRefresh_RenewsUnchangedExpiredPosterAfterTemporaryFailure()
+        {
+            using var handler = new ImageHandler { StatusCode = HttpStatusCode.ServiceUnavailable };
+            using var renderer = CreateRenderer(handler);
+            const string source = "https://example.com/expired.jpg?X-Amz-Date=20200101T000000Z&X-Amz-Expires=900";
+            await renderer.RenderAsync(source, "50021");
+            Assert.AreEqual("images/image-placeholder.svg", renderer.Source);
+
+            handler.StatusCode = HttpStatusCode.OK;
+            renderer.ClearPosterCache();
+            await renderer.RenderAsync(source, "50021", refreshVersion: 1);
+            Assert.AreEqual("https://example.com/large.jpg", renderer.Source);
+            Assert.AreEqual(2, handler.RequestCount);
+        }
+
         static ImageRenderer CreateRenderer(ImageHandler handler)
         {
             var services = new ServiceCollection()
@@ -84,10 +123,12 @@ namespace Kitsu.Tests.AnimeCharacters
         sealed class ImageRenderer : Renderer
         {
             readonly int _componentId;
+            readonly KitsuPosterService _posterService;
             public override Dispatcher Dispatcher { get; } = Dispatcher.CreateDefault();
 
             public ImageRenderer(IServiceProvider services) : base(services, NullLoggerFactory.Instance)
             {
+                _posterService = services.GetRequiredService<KitsuPosterService>();
                 _componentId = AssignRootComponentId(InstantiateComponent(typeof(RemoteImage)));
             }
 
@@ -103,10 +144,13 @@ namespace Kitsu.Tests.AnimeCharacters
             public string Source => (string)Attributes.Single(frame => frame.AttributeName == "src").AttributeValue;
             public bool HasErrorHandler => Attributes.Any(frame => frame.AttributeName == "onerror");
 
-            public Task RenderAsync(string source, string kitsuId = null) => Dispatcher.InvokeAsync(() =>
+            public void ClearPosterCache() => _posterService.ClearCache();
+
+            public Task RenderAsync(string source, string kitsuId = null, int refreshVersion = 0) => Dispatcher.InvokeAsync(() =>
                 RenderRootComponentAsync(_componentId, ParameterView.FromDictionary(new Dictionary<string, object>
                 {
                     [nameof(RemoteImage.Src)] = source,
+                    [nameof(RemoteImage.RefreshVersion)] = refreshVersion,
                     [nameof(RemoteImage.KitsuId)] = kitsuId,
                     [nameof(RemoteImage.Alt)] = "Example anime"
                 })));

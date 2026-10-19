@@ -17,6 +17,10 @@ else
     [Parameter] public string CssClass { get; set; }
     [Parameter] public string KitsuId { get; set; }
 
+    /// <summary>Change this value to retry images after an explicit refresh.</summary>
+    [Parameter] public int RefreshVersion { get; set; }
+
+    int _refreshVersion;
     string _source;
     string _kitsuId;
     string _currentSource;
@@ -29,12 +33,14 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        if (_initialized && _source == Src && _kitsuId == KitsuId)
+        if (_initialized && _source == Src && _kitsuId == KitsuId
+            && _refreshVersion == RefreshVersion)
         {
             return;
         }
 
         _initialized = true;
+        _refreshVersion = RefreshVersion;
         _source = Src;
         _kitsuId = KitsuId;
         _version++;

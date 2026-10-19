@@ -37,7 +37,7 @@ The Jikan public API was [discontinued on October 1, 2026](https://github.com/ji
 
 Kitsu supplies anime library posters, including signed original-image URLs that can expire after 15 minutes. `RemoteImage` renews expired or failed poster links through `KitsuPosterService` using the exact Kitsu anime ID, tries the currently available image sizes, and shows a local placeholder if loading fails. Renewal requests for the same anime are shared briefly. Character and voice actor images also use the local placeholder on failure. The service worker includes SVG assets so the placeholder is available offline.
 
-The library refresh control fetches current anime metadata and artwork in one click. Automatic metadata refresh runs daily using each anime's `MetadataFetchedAt` timestamp, independently of watch-progress synchronization; legacy browser caches are refreshed automatically. Locally resolved reference IDs are preserved when Kitsu has no mapping. Library updates fetch every batch of IDs and match included anime by both resource type and ID.
+The library refresh control fetches current anime metadata and artwork in one click. It also clears cached poster renewal results and retries failed images even if their URLs have not changed. Automatic metadata refresh runs daily using each anime's `MetadataFetchedAt` timestamp, independently of watch-progress synchronization; legacy browser caches are refreshed automatically. Locally resolved reference IDs are preserved when Kitsu has no mapping. Library updates fetch every batch of IDs and match included anime by both resource type and ID.
 
 Blazor packages target the .NET 8 servicing release 8.0.32. Persistence uses browser LocalStorage; unused Entity Framework/SQLite package references have been removed.
 

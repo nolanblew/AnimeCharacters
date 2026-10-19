@@ -1,4 +1,5 @@
 using AnimeCharacters.Helpers;
+using AnimeCharacters.Services;
 using Kitsu;
 using Kitsu.Comparers;
 using Kitsu.Controllers;
@@ -21,6 +22,11 @@ namespace AnimeCharacters.Pages
 #else
             15;
 #endif
+
+        [Inject]
+        KitsuPosterService PosterService { get; set; }
+
+        int _imageRefreshVersion;
 
         readonly KitsuClient _kitsuClient = new();
 
@@ -208,6 +214,12 @@ namespace AnimeCharacters.Pages
             }
             finally
             {
+                if (isManualRefresh)
+                {
+                    PosterService.ClearCache();
+                    _imageRefreshVersion++;
+                }
+
                 IsBusy = false;
                 _refreshLibrariesSemaphoreSlim.Release();
                 UpdateHeaderContents();

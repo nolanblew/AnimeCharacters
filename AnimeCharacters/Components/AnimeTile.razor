@@ -7,7 +7,7 @@
 <div class="item">
     <div class="row">
         <div class="col">
-            <AnimeCharacters.Components.RemoteImage Src="@Anime?.PosterImageUrl" KitsuId="@Anime?.KitsuId" Alt="@GetDisplayTitle()" />
+            <AnimeCharacters.Components.RemoteImage Src="@Anime?.PosterImageUrl" KitsuId="@Anime?.KitsuId" RefreshVersion="@RefreshVersion" Alt="@GetDisplayTitle()" />
         </div>
     </div>
     <div class="row">
@@ -20,6 +20,10 @@
 @code {
     [Parameter]
     public Anime Anime { get; set; } = null;
+
+    /// <summary>Changes when the library explicitly retries its poster images.</summary>
+    [Parameter]
+    public int RefreshVersion { get; set; }
 
     private UserSettings _userSettings;
 

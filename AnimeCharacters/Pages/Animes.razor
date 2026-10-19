@@ -25,7 +25,7 @@
                             @:You currently have @(_LibraryEntries.Count) animes in your library.
                         }
                     </div>
-                 
+
                     <div class="col-auto d-flex align-items-center" style="min-width: 0px;">
                         @if (IsBusy)
                         {
@@ -71,7 +71,7 @@
                         @foreach (var libraryEntry in header.Content ?? new List<LibraryEntry>())
                         {
                             <div class="item-container" @onclick="() => _Anime_OnClicked(libraryEntry)">
-                                <AnimeCharacters.Components.AnimeTile Anime="@libraryEntry.Anime" />
+                                <AnimeCharacters.Components.AnimeTile Anime="@libraryEntry.Anime" RefreshVersion="@_imageRefreshVersion" />
                             </div>
                         }
                     </div>
